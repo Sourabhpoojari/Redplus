@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://sourabh:7zt87Dq9w4xLsWw@bms.zyi7p.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    "MESSAGEBIRD_API_KEY" : "FQqLWziaxu32Fg4zNLabXoUAG"
+}
