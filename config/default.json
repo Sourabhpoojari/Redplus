@@ -1,4 +1,8 @@
 {
     "mongoURI": "mongodb+srv://sourabh:7zt87Dq9w4xLsWw@bms.zyi7p.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    "MESSAGEBIRD_API_KEY" : "FQqLWziaxu32Fg4zNLabXoUAG"
+    "MESSAGEBIRD_API_KEY" : "FQqLWziaxu32Fg4zNLabXoUAG",
+    "TWILIO_ACCOUNT_SID1" : "AC27dc10a24c7cf846c215117081b33ef4",
+    "TWILIO_AUTH_TOKEN":"a64b10f1fedba6a66bf529846919982a",
+    "TWILIO_SID" : "VA7e9aad31815aabf643f3ca7ab0acb91c",
+    "jwtSecret" : "trdt7wadyh7i6adtvt7a6uthg"
 }
