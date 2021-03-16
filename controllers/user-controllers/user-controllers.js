@@ -124,11 +124,49 @@ const signUp = async (req,res,next) => {
     }
 }
 
-//  @route /api/user/signup
-// @desc  User sign-up && put user info
+//  @route /api/user/logIn
+// @desc  User login
 // @access Public
+const logIn = async (req,res,next) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors:errors.array()});
+    }
+    const {phone,password} = req.body;
+    let user
+    try {
+         user= await User.findOne({phone});
+        if(!user){
+            return res.status(400).json({errors:[{msg : "invalid credentials"}]});
+        }
+        // check password
+        const match =await bcrypt.compare(password,user.password);
+        if(!match){
+            return res.status(400).json({errors:[{msg : "invalid credentials"}]});
+        }
+        // setting jwt
+        const payload = {
+            user : {
+                id : user.id
+            }
+        };
+        jwt.sign(
+            payload,
+            config.get('jwtSecret'),
+            {expiresIn : 3600},
+            (err,token)=>{
+                if(err) throw err;
+                 res.status(200).json({token});
+            }
+        );
+    } catch (err) {
+        console.log(err);
+       return res.status(500).send('Server error');
+    }
+}
 
 
 exports.getPhone = getPhone;
 exports.verifyOtp = verifyOtp;
 exports.signUp = signUp;
+exports.logIn = logIn;
