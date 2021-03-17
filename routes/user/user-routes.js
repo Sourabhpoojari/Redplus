@@ -1,6 +1,7 @@
 const router = require('express').Router(),
     userControllers = require('../../controllers/user-controllers/user-controllers'),
-    {check} = require('express-validator');
+    {check} = require('express-validator'),
+    auth = require('../../middleware/userAuth');
 
 
 router.post('/phone',check('phone','Enter a valid phone number').isLength({min:13,max:13}).isMobilePhone(),userControllers.getPhone);
@@ -14,5 +15,6 @@ check('phone','Enter a valid phone number').isLength({min:13,max:13}).isMobilePh
 router.post('/logIn',check('phone','Enter a valid phone number').isLength({min:13,max:13}).isMobilePhone(),
 check('password','password is required').isLength({min:6}),
 userControllers.logIn);
+router.get('/',auth,userControllers.getUser);
 
 module.exports = router;

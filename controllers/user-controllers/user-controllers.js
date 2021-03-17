@@ -9,7 +9,7 @@ sid = config.get('TWILIO_SID'),
  jwt = require('jsonwebtoken');
 
 
-//  @route /api/phone
+//  @route /api/user/phone
 // @desc post user phone number && send OTP
 // @access Public
 const getPhone = async (req,res,next) => {
@@ -40,7 +40,7 @@ const getPhone = async (req,res,next) => {
         return res.status(500).send("Phone number error!");
     }
 }
-//  @route /api/phone/verify
+//  @route /api/user/phone/verify
 // @desc post user phone number && verify OTP
 // @access Public
 const verifyOtp = async (req,res,next) => {
@@ -165,8 +165,21 @@ const logIn = async (req,res,next) => {
     }
 }
 
+//  @route /api/user
+// @desc get user
+// @access Private
+const getUser = async (req,res,next) =>{
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        res.status(201).json(user);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("cannot get user!");
+    }
+}
 
 exports.getPhone = getPhone;
 exports.verifyOtp = verifyOtp;
 exports.signUp = signUp;
 exports.logIn = logIn;
+exports.getUser = getUser;
