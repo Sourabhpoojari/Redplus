@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    profileImage:{
+        type:String,
+        default : "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-social-media-user-vector-default-avatar-profile-icon-social-media-user-vector-portrait-176194876.jpg"
+    },
     date:{
         type:Date,
         default:Date.now()

@@ -4,5 +4,7 @@
     "TWILIO_ACCOUNT_SID1" : "AC27dc10a24c7cf846c215117081b33ef4",
     "TWILIO_AUTH_TOKEN":"a64b10f1fedba6a66bf529846919982a",
     "TWILIO_SID" : "VA7e9aad31815aabf643f3ca7ab0acb91c",
-    "jwtSecret" : "trdt7wadyh7i6adtvt7a6uthg"
+    "jwtSecret" : "trdt7wadyh7i6adtvt7a6uthg",
+    "CLOUDINARY_API_KEY":"225796958684434",
+    "CLOUDINARY_SECRET":"hqB_ho9nAhzfizNn3y-L1OjvDIE"
 }
