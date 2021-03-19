@@ -1,10 +1,14 @@
 const router = require('express').Router(),
-    profileController = require('../../controllers/user-controllers/profile-controllers'),
+    profileControllers = require('../../controllers/user-controllers/profile-controllers'),
     multer = require('multer'),
     path = require('path'),
     isLogin = require('../../middleware/userAuth'),
     {check} = require('express-validator');
+    auth = require('../../middleware/userAuth');
 
+    //get profile 
+
+    router.get('/profile/:user_id',auth,profileControllers.getProfile);
 // Set The Storage Engine
 const storage = multer.diskStorage({
     filename: (req, file, cb) => {
@@ -49,6 +53,6 @@ router.post('/profile',isLogin,
   check('dateOfBirth','Date Of Birth is required').exists().isDate(),
   check('aadhaar','Enter a valid number').isLength({min:12}),
   check('bloodGroup','Blood Group is required').exists(),
-upload.single('profileImage'),profileController.createProfile);
+upload.single('profileImage'),profileControllers.createProfile);
 
 module.exports = router;

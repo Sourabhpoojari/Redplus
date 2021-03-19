@@ -5,6 +5,7 @@ const Profile = require('../../models/user/profileSchema'),
     {validationResult} = require('express-validator'),
     CLOUDINARY_API_KEY = config.get('CLOUDINARY_API_KEY'),
     CLOUDINARY_SECRET = config.get('CLOUDINARY_SECRET');
+    User = require('../../models/user/userSchema');
 
 // set-up cloudinary
 cloudinary.config({
@@ -14,6 +15,26 @@ cloudinary.config({
 });
 
   
+//  @route /api/user/getprofile
+// @desc post user getprofile
+// @access Private
+
+const getProfile = async (req,res,next)=>{
+    try {
+        const profile = await Profile.findOne({user : req.params.user_id}).populate('user',['phone']);
+        if (!profile) {
+           return res.status(400).json({msg:"Profile not found!"});
+        }
+        res.json(profile);
+    } catch (err) {
+        console.error(err.message);
+        if(err.kind == 'ObjectId'){
+            return res.status(400).json({msg:"Profile not found!"});
+        }
+        res.status(500).send("Server error");
+    }
+};
+
 
 //  @route /api/user/profile
 // @desc post user profile
@@ -65,5 +86,5 @@ const createProfile = async (req,res,next)  => {
     }
 }
 
-
+exports.getProfile = getProfile;
 exports.createProfile = createProfile;
