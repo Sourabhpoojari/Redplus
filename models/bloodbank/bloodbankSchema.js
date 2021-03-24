@@ -8,7 +8,6 @@ const bloodbankSchema = new mongoose.Schema({
     btype:{
         type: String,
         required : true,
-        
     },
     baddress:{
         type: String,

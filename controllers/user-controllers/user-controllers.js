@@ -33,7 +33,7 @@ const getPhone = async (req,res,next) => {
 
                     return res.status(200).send(verification.sid);
                     })
-                    .catch(err => console.error(err));
+                    .catch(err => console.error(err));      
                    
     } catch (err) {
         console.error(err.message);
