@@ -1,0 +1,26 @@
+const mongoose = require('mongoose');
+
+const donationSchema = new mongoose.Schema({
+    donatedOn : {
+        type:Date,
+        default:Date.now()
+    },
+    credits:{
+        type:Number,
+        default:0
+    },
+    bloodBank :{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'BloodBank'
+    },
+    camp:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Camp'
+    },
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User'
+    }
+});
+
+module.exports = mongoose.model('Donation',donationSchema);
