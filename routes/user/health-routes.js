@@ -4,7 +4,7 @@ const router = require('express').Router(),
 
 
 router.post('/',auth,healthController.addHealthInfo);
-router.get('/:user_id',auth,healthController.getDonation);
+router.get('/',auth,healthController.getDonation);
 
 
 module.exports = router;

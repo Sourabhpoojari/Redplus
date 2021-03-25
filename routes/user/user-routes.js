@@ -9,8 +9,8 @@ router.post('/phone/verify',check('phone','Enter a valid phone number').isLength
 check('code','Enter valid otp').isLength({min:6,max:6})
 ,userControllers.verifyOtp);
 router.put('/signUp',check('name','Enter a valid name').not().isEmpty(),
-check('phone','Enter a valid phone number').isLength({min:13,max:13}).isMobilePhone(),
-    check('password','password must contain atleast 6 characters').isStrongPassword({minLength:6,minLowercase:1,minUppercase:1,minNumbers:1})
+check('phone','Enter a valid phone number').isLength({min:13,max:13}).isMobilePhone()
+    // check('password','password must contain atleast 6 characters').isStrongPassword({minLength:6,minLowercase:1,minUppercase:1,minNumbers:1})
     , userControllers.signUp);
 router.post('/logIn',check('phone','Enter a valid phone number').isLength({min:13,max:13}).isMobilePhone(),
 check('password','password is required').isLength({min:6}),
