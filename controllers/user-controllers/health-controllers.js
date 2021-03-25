@@ -1,7 +1,8 @@
 const { findById } = require('../../models/user/healthInfoSchema');
 const Health = require('../../models/user/healthInfoSchema'),
     Profile = require('../../models/user/profileSchema'),
-    Donation = require('../../models/user/donationSchema');
+    Donation = require('../../models/user/donationSchema'),
+    moment = require('moment');
 
 
 
@@ -11,16 +12,18 @@ const Health = require('../../models/user/healthInfoSchema'),
 const addHealthInfo = async (req,res,next) => {
     let {isDonated, date,  lastMeal, history, disease, consumptions, result, isPregnant, abortion, child, periods} = req.body;
     try {
-        const profile = await Profile.findOne({user:req.user.id});
-        if (profile.gender == 'Male'&& isPregnant ) {
+        const gender = await Profile.findOne({user:req.user.id}).select('gender');
+        if (gender == 'Male'&& isPregnant ) {
             return res.status(422).send('You cannot be pregnant');   
         }
         // const d = date;
-        date = new Date(date);
-        lastMeal = new Date(lastMeal);
-        console.log(lastMeal);
-        const data = new Health({
-            user:req.user_id,
+       
+        // lastMeal = new Date(lastMeal);
+        
+        // console.log(lastMeal);
+        // console.log(typeof(lastMeal));
+        let data = {
+            user:req.user.id,
             previousDonation:{
                 isDonated,
                 date
@@ -36,24 +39,36 @@ const addHealthInfo = async (req,res,next) => {
                 child,
                 periods
             }
-        });
+        };
+        lastMeal = moment(lastMeal,'HH:mm');
+        if (moment()>=lastMeal.add(2,'h') ) {
+            console.log("jabdckj");
+            return res.status(422).send("Please have some food");
+        }
+        let health;
+        health = await Health.findOne({user:req.user.id});
+        if (health) {
+            health = await Health.findOneAndUpdate(
+                { user : req.user.id },
+                { $set: data},
+                { new : true}
+               );
+        //    return res.json(health);
+        }else{
+            data = new Health(data);
+            await data.save();
+        }
         
-        await data.save();
         if (history || disease || consumptions || isPregnant) {
             return res.status(422).send("You cannot donate blood");
-        }
-         
-        
+        } 
+        date = new Date(date);
         date.setDate(date.getDate()+90);
         const current = new Date();
         if (current <= date) {
             return res.status(422).send("You cannot donate blood");
         }
-        //console.log(lastMeal.getHours());
-    if (current.getHours() <= lastMeal+2 ) {
-        return res.status(422).send("Please have some food");
-    }
-
+  
     return res.status(201).json(data);
         
     } catch (err) {

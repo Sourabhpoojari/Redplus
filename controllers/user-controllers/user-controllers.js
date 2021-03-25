@@ -31,9 +31,12 @@ const getPhone = async (req,res,next) => {
                     .then(verification => {
                         // console.log(verification);
 
-                    return res.status(200).send(verification.sid);
+                    return res.status(200).json(verification.status);
                     })
-                    .catch(err => console.error(err));      
+                    .catch(err =>{
+                        console.error(err);
+                        return res.status(408).send("OTP Problem");
+                    } )
                    
     } catch (err) {
         console.error(err.message);
@@ -51,8 +54,7 @@ const verifyOtp = async (req,res,next) => {
     }
     let user;
     try {
-    //     const service = await  client.verify.services.create({friendlyName: 'Red Plus'});
-    // console.log(service);
+
         user= await User.findOne({phone});
         if(user){
             return res.status(400).json({errors:[{msg : "User with this phone number already exists"}]});
@@ -62,13 +64,14 @@ const verifyOtp = async (req,res,next) => {
       .verificationChecks
       .create({to: phone, code: code})
       .then(verification_check => {
-          console.log(verification_check);
+        //   console.log(verification_check);
           if (verification_check.status == 'approved') {
               user =  new User({phone});
               user.isVerified = true;
                user.save();
+               return res.status(200).json(verification_check.status);
           }
-          return res.status(200).send(verification_check.status);
+          return res.status(408).send("Incorrect OTP");
     })
     .catch(err => {console.error(err);
         return res.status(408).send("Incorrect OTP");

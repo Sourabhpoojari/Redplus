@@ -16,7 +16,7 @@ const healthInfoSchema = mongoose.Schema({
         }
     },
     lastMeal:{
-        type:Date
+        type:String
         // required:true
     },
     history :[
