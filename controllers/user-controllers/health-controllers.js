@@ -82,7 +82,7 @@ const addHealthInfo = async (req,res,next) => {
 // @access Private
 const getDonation = async (req,res,next) => {
     try {
-        let previousDonation = await Donation.findById({user:req.params.user_id}).sort('-donaterOn');
+        let previousDonation = await Donation.findById({user:req.user.id}).sort('-donaterOn');
         previousDonation = previousDonation[0];
         if (previousDonation) {
             return res.status(201).json({previousDonation});
