@@ -40,15 +40,44 @@ const getProfile = async (req,res,next)=>{
 // @desc post user profile
 // @access Private
 const createProfile = async (req,res,next)  => {
-    // console.log(req.body);
-    const {  name, fatherName, email, address, gender, dateOfBirth, aadhaar, bloodGroup } = req.body;
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({errors:errors.array()});
+    const {  name, fatherName, email, address, gender, dateOfBirth, aadhaar, bloodGroup, bName, relation, bPhone } = req.body;
+    let errors = validationResult(req);
+    errors = errors.array();
+    if (bName || relation || bPhone) {
+        if (!bPhone || bPhone.length !== 13) {
+            errors.push({
+                value:bPhone,
+                msg:"Enter a valid Benificiary Phone Number",
+                param : 'bPhone',
+                location:"body"
+            });
+        }
+       if (!bName) {
+        errors.push({
+            value:bName,
+            msg:"Benificiary Name is required",
+            param : 'bName',
+            location:"body"
+        });
+       }
+       if (!relation) {
+        errors.push({
+            value:relation,
+            msg:"Benificiary Relation is required",
+            param : 'relation',
+            location:"body"
+        });
+       }
+    }
+   
+    if(errors.length !== 0){
+        return res.status(422).json({errors:errors});
     }
     if (!validator.isValidNumber(aadhaar) ) {
-        return res.status(400).send("Invalid aadhar number");
+        return res.status(422).send("Invalid aadhar number");
     }
+    
+    
     let profile;
     try {
 
@@ -67,7 +96,13 @@ const createProfile = async (req,res,next)  => {
            const result = await cloudinary.uploader.upload(req.file.path);
            profileFields.profileImage = result.secure_url;
         }
-        
+        if (bName) {
+            profileFields.benificiary = {
+                name:bName,
+                relation,
+                phone:bPhone
+            }
+        }
         profile = await Profile.findOne({user:req.user.id});
         if (profile) {
             profile = await Profile.findOneAndUpdate(

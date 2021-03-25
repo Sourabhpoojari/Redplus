@@ -44,7 +44,7 @@ function checkFileType(file, cb){
 
 
 
-router.post('/profile',isLogin,
+router.post('/',isLogin,
   check('name','Name is required').not().isEmpty(),
   check('fatherName','Father name is required').not().isEmpty(),
   check('email','Enter a valid Email address').isEmail(),

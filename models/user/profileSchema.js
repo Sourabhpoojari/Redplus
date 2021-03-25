@@ -36,7 +36,8 @@ const profileSchema = mongoose.Schema({
     },
     aadhaar :{
         type:Number,
-        required:true
+        required:true,
+        unique:true
     },
     bloodGroup : {
         type:String,
@@ -45,6 +46,17 @@ const profileSchema = mongoose.Schema({
     createdOn :{
         type:Date,
         default:Date.now()
+    },
+    benificiary :{
+        name:{
+            type:String
+        },
+        relation : {
+            type : String
+        },
+        phone:{
+            type:Number
+        }
     }
 
 });
