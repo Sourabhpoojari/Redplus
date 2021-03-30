@@ -27,4 +27,4 @@ const primarytestReport=({
     }
 });
 
-module.exports = mongoose.model('PrimaryTestReport',primarytestSchema);
+module.exports = mongoose.model('primarytestr eport',primarytestReport);
