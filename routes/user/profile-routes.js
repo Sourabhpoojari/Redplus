@@ -8,7 +8,7 @@ const router = require('express').Router(),
 
     //get profile 
 
-    router.get('/profile/:user_id',auth,profileControllers.getProfile);
+    router.get('/',auth,profileControllers.getProfile);
 // Set The Storage Engine
 const storage = multer.diskStorage({
     filename: (req, file, cb) => {
@@ -42,17 +42,15 @@ function checkFileType(file, cb){
   }
 
 
-
-
-router.post('/',isLogin,
-  check('name','Name is required').not().isEmpty(),
+  router.put('/',isLogin,[auth,[check('name','Name is required').not().isEmpty(),
   check('fatherName','Father name is required').not().isEmpty(),
   check('email','Enter a valid Email address').isEmail(),
   check('address','Address is required').exists(),
   check('gender','Gender is required').exists(),
   check('dateOfBirth','Date Of Birth is required').exists().isDate(),
   check('aadhaar','Enter a valid number').isLength({min:12}),
-  check('bloodGroup','Blood Group is required').exists(),
-upload.single('profileImage'),profileControllers.createProfile);
+  check('bloodGroup','Blood Group is required').exists()]],upload.single('profileImage'),profileControllers.createProfile);
+
+
 
 module.exports = router;

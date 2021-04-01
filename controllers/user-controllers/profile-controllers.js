@@ -21,11 +21,13 @@ cloudinary.config({
 
 const getProfile = async (req,res,next)=>{
     try {
-        const profile = await Profile.findOne({user : req.params.user_id}).populate('user',['phone']);
+        const profile = await Profile.find({user : req.user.id}).populate('user',['phone']);
         if (!profile) {
            return res.status(400).json({msg:"Profile not found!"});
         }
-        res.json(profile);
+        else{
+        
+        res.json(profile);}
     } catch (err) {
         console.error(err.message);
         if(err.kind == 'ObjectId'){
@@ -43,6 +45,10 @@ const createProfile = async (req,res,next)  => {
     const {  name, fatherName, email, address, gender, dateOfBirth, aadhaar, bloodGroup, bName, relation, bPhone } = req.body;
     let errors = validationResult(req);
     errors = errors.array();
+
+    if(name == "null"){
+
+    }
     if (bName || relation || bPhone) {
         if (!bPhone || bPhone.length !== 13) {
             errors.push({
@@ -73,6 +79,7 @@ const createProfile = async (req,res,next)  => {
     if(errors.length !== 0){
         return res.status(422).json({errors:errors});
     }
+    
     if (!validator.isValidNumber(aadhaar) ) {
         return res.status(422).send("Invalid aadhar number");
     }

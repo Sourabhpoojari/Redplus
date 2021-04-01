@@ -159,7 +159,7 @@ const logIn = async (req,res,next) => {
             {expiresIn : 3600},
             (err,token)=>{
                 if(err) throw err;
-                 res.status(200).json({token});
+                 res.status(200).json({tok:token});
             }
         );
     } catch (err) {
