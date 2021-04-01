@@ -51,4 +51,6 @@ router.post('/',isLogin,
   check('bloodGroup','Blood Group is required').exists(),
 upload.single('profileImage'),profileController.createProfile);
 
+router.get('/',isLogin,profileController.getProfile);
+
 module.exports = router;

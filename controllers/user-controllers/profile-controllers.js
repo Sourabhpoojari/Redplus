@@ -13,7 +13,28 @@ cloudinary.config({
     api_secret: CLOUDINARY_SECRET
 });
 
-  
+  //  @route /api/user/getprofile
+// @desc post user getprofile
+// @access Private
+
+const getProfile = async (req,res,next)=>{
+    try {
+        const profile = await Profile.find({user : req.user.id}).populate('user',['phone']);
+        if (!profile) {
+           return res.status(400).json({msg:"Profile not found!"});
+        }
+        else{
+        
+        res.json(profile);}
+    } catch (err) {
+        console.error(err.message);
+        if(err.kind == 'ObjectId'){
+            return res.status(400).json({msg:"Profile not found!"});
+        }
+        res.status(500).send("Server error");
+    }
+};
+
 
 //  @route /api/user/profile
 // @desc post user profile
@@ -102,3 +123,4 @@ const createProfile = async (req,res,next)  => {
 
 
 exports.createProfile = createProfile;
+exports.getProfile = getProfile;
