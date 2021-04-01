@@ -6,23 +6,23 @@ const primarytestReport=({
         ref:'User'
     },
     weight : {
-        type:String,
+        type:Number,
         required:true
     },
     pulse : {
-        type: String,
+        type: Number,
         required:true
     },
     hb :{
-        type : String,
+        type : Number,
         required:true
     },
     bp :{
-        type : String,
+        type : Number,
         required:true
     },
     tempreture :{
-        type : String,
+        type : Number,
         required : true
     }
 });
