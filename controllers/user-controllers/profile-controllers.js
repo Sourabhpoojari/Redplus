@@ -121,6 +121,80 @@ const createProfile = async (req,res,next)  => {
     }
 }
 
+//  @route /api/user/profile
+// @desc put update user profile
+// @access Private
+const editProfile = async (req,res,next) =>{
+    const {  name, fatherName, email, address, gender, dateOfBirth, aadhaar, bloodGroup, bName, relation, bPhone } = req.body;
+    let errors = validationResult(req);
+    errors = errors.array();
+    if (bName || relation || bPhone) {
+        if (!bPhone || bPhone.length !== 13) {
+            errors.push({
+                value:bPhone,
+                msg:"Enter a valid Benificiary Phone Number",
+                param : 'bPhone',
+                location:"body"
+            });
+        }
+       if (!bName) {
+        errors.push({
+            value:bName,
+            msg:"Benificiary Name is required",
+            param : 'bName',
+            location:"body"
+        });
+       }
+       if (!relation) {
+        errors.push({
+            value:relation,
+            msg:"Benificiary Relation is required",
+            param : 'relation',
+            location:"body"
+        });
+       }
+    }
+   
+    if(errors.length !== 0){
+        return res.status(422).json({errors:errors});
+    }
+    if (!validator.isValidNumber(aadhaar) ) {
+        return res.status(422).send("Invalid aadhar number");
+    }
+    let profile;
+    try {
+        profile = await Profile.findOne({user:req.user.id});
+        if (!profile) {
+            return res.status(404).send("Profile not found!");
+        }
+        // profile = {
+        //     name, fatherName, email, address, gender, dateOfBirth, aadhaar, bloodGroup, bName, relation, bPhone
+        // }
+        profile.name = name;
+        profile.fatherName = fatherName;
+        profile.email = email;
+        profile.address = address;
+        profile.gender = gender;
+        profile.dateOfBirth = dateOfBirth;
+        profile.aadhaar = aadhaar;
+        profile.bloodGroup = bloodGroup;
+        
+        if (bName) {
+            profile.benificiary = {
+                name:bName,
+                relation,
+                phone:bPhone
+            }
+        }
+        await profile.save();
+        return res.status(200).json(profile); 
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+    }
+}
 
 exports.createProfile = createProfile;
 exports.getProfile = getProfile;
+exports.editProfile  = editProfile;
