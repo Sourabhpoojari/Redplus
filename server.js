@@ -18,5 +18,8 @@ app.use('/api/user/',require('./routes/user/user-routes'));
 app.use('/api/user/profile',require('./routes/user/profile-routes'));
 app.use('/api/user/health',require('./routes/user/health-routes'));
 
+// admin routes
+app.use('/api/admin/',require('./routes/admin/admin-routes'));
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT,()=>console.log(`Server started on port ${PORT}`)); 
