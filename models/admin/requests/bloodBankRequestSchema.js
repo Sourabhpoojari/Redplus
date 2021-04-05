@@ -35,6 +35,10 @@ const bloodBankRequestSchema = mongoose.Schema({
   },
   bloodBankRegistrationDocument:{
       type:String
+  },
+  createdAt :{
+    type:Date,
+    default:Date.now()
   }
 });
 

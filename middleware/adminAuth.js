@@ -12,7 +12,6 @@ module.exports =async (req,res,next)=>{
     let admin;
     try {
         const decoded = jwt.verify(token,config.get('jwtSecret'));
-        console.log(decoded);
         admin = await Admin.findById(decoded.admin.id);
         if (!admin.isAdmin) {
             return res.status(401).json({msg:'Authorization denied'});
