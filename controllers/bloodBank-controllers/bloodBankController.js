@@ -13,6 +13,10 @@ const signUp = async (req,res,next) => {
     }
     let request;
     try {
+        request = await BloodBankRequest.findOne({bloodBankEmail});
+        if(request){
+            return res.status(400).json({errors:[{msg : "Blood Bank already exists!"}]});
+        }
         request = await new BloodBankRequest({
             bloodBankName, bloodBankEmail, bloodBankAddress, bloodBankPhone, bloodBankRegistrationNumber, bloodBankRegistrationDocument
         });
