@@ -20,6 +20,11 @@ app.use('/api/user/health',require('./routes/user/health-routes'));
 
 // admin routes
 app.use('/api/admin/',require('./routes/admin/admin-routes'));
+app.use('/api/admin/requests/',require('./routes/admin/request-routes'));
+
+
+// bloodBank routes
+app.use('/api/bloodBank',require('./routes/bloodBank/bloodBank-routes'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT,()=>console.log(`Server started on port ${PORT}`)); 

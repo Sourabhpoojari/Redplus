@@ -14,7 +14,7 @@ const bloodBankRequestSchema = mongoose.Schema({
       required:true
   },
   bloodBankPhone:{
-      type:Number,
+      type:String,
       required:true
   },
   bloodBankRegistrationNumber:{
@@ -24,16 +24,17 @@ const bloodBankRequestSchema = mongoose.Schema({
   location: {
     type: {
       type: String, // Don't do `{ location: { type: String } }`
-      enum: ['Point'], // 'location.type' must be 'Point'
-      required: true
+      enum: ['Point']// 'location.type' must be 'Point'
+      // required: true
     },
+    // type:Point,
     coordinates: {
       type: [Number],
       required: true
     }
   },
   bloodBankRegistrationDocument:{
-      type:File
+      type:String
   }
 });
 
