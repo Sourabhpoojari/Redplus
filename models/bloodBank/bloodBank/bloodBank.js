@@ -9,6 +9,10 @@ const bloodBankSchema = mongoose.Schema({
     password:{
         type:String
     },
+    isBloodBank:{
+        type:Boolean,
+        default:false
+    },
     createdAt:{
         type:Date,
         default:Date.now()

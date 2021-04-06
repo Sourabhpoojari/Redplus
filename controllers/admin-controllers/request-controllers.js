@@ -25,7 +25,7 @@ const getBloodBankRequest = async (req,res,next) => {
 }
 
 //  @route /api/admin/bloodBankRequests/:req_id
-// @desc DELETE accept blood bank request
+// @desc POST accept blood bank request
 // @access Private - admin access only
 const acceptBloodBankRequest = async (req,res,next) =>{
     let request, bloodBank, profile;
@@ -61,11 +61,12 @@ const acceptBloodBankRequest = async (req,res,next) =>{
             to: bloodBankEmail, // Change to your recipient
             from: 'redplus112@gmail.com', // Change to your verified sender
             subject: 'Request accepted',
-            text: 'Your registraion to Redplus is accepted. Kindly use below link to set-up your password and login to your account using emailID'+bloodBankEmail
+            text: 'Your registraion to Redplus is accepted. Kindly use below link to set-up your password and login to your account using emailID '+bloodBankEmail
             // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
           }
         const status = await sgMail.send(msg);
         if (status) {
+            bloodBank.isBloodBank = true;
             await bloodBank.save();
             await profile.save();
         await request.delete();
