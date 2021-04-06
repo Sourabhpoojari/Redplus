@@ -1,6 +1,10 @@
 const BloodBankRequest = require('../../models/admin/requests/bloodBankRequestSchema'),
 BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
-BloodBank = require('../../models/bloodBank/bloodBank/bloodBank');
+BloodBank = require('../../models/bloodBank/bloodBank/bloodBank'),
+config = require('config'),
+sgMail = require('@sendgrid/mail'),
+SENDGRID_API_KEY = config.get('SENDGRID_API_KEY');
+sgMail.setApiKey(SENDGRID_API_KEY);
 
 
 //  @route /api/admin/bloodBankRequests
@@ -21,12 +25,15 @@ const getBloodBankRequest = async (req,res,next) => {
 }
 
 //  @route /api/admin/bloodBankRequests/:req_id
-// @desc DELETE accept blood bank request
+// @desc POST accept blood bank request
 // @access Private - admin access only
 const acceptBloodBankRequest = async (req,res,next) =>{
     let request, bloodBank, profile;
     try {
         request = await BloodBankRequest.findById(req.params.req_id);
+        if (!request) {
+            return res.status(400).json({errors:[{msg : "Request not found!"}]});
+        }
         const {bloodBankEmail, bloodBankName, bloodBankAddress, bloodBankPhone, bloodBankRegistrationNumber, location, bloodBankRegistrationDocument} = request;
         bloodBank = await BloodBank.findOne({email:bloodBankEmail});
         if (bloodBank) {
@@ -35,7 +42,7 @@ const acceptBloodBankRequest = async (req,res,next) =>{
         bloodBank = await new BloodBank({
             email:bloodBankEmail
         });
-        await bloodBank.save();
+        
         profile = await BloodBankProfile.findOne({bloodBankEmail});
         if (profile) {
             return res.status(400).json({errors:[{msg : "Blood Bank with this profile already exists!"}]});
@@ -50,10 +57,22 @@ const acceptBloodBankRequest = async (req,res,next) =>{
             location,
             bloodBankRegistrationDocument
         });
-     
-        await profile.save();
+        const msg = {
+            to: bloodBankEmail, // Change to your recipient
+            from: 'redplus112@gmail.com', // Change to your verified sender
+            subject: 'Request accepted',
+            text: 'Your registraion to Redplus is accepted. Kindly use below link to set-up your password and login to your account using emailID '+bloodBankEmail
+            // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+          }
+        const status = await sgMail.send(msg);
+        if (status) {
+            bloodBank.isBloodBank = true;
+            await bloodBank.save();
+            await profile.save();
         await request.delete();
         return res.status(200).json({msg:"Request accepted"});
+        }
+        
     } catch (err) {
         console.log(err);
         return res.status(500).send('Server error');
