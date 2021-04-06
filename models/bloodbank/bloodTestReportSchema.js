@@ -6,6 +6,10 @@ const bloodTestReport= mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'
     },
+    bloodbank:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Bloodbank'
+    },
     typeOfBag:{
         type : String,
         required: true

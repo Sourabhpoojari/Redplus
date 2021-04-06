@@ -18,13 +18,6 @@ const errors = validationResult(req);
     }
 
     try{
-        
-        
-        
-        const primary =  primarytestSchema.findOne({user : req.params.user_id});
-        if (!primary) {
-            return res.status(400).json({msg:"No data found!"});
-         }
         let data = new primarytestSchema ({
             weight,
             pulse,

@@ -5,6 +5,10 @@ const primarytestReport=({
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'
     },
+    bloodbank:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Bloodbank'
+    },
     weight : {
         type:Number,
         required:true
@@ -24,6 +28,10 @@ const primarytestReport=({
     tempreture :{
         type : Number,
         required : true
+    },
+    createdOn:{
+        type:Date,
+        default:Date.now()
     }
 });
 

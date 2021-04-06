@@ -42,17 +42,29 @@ function checkFileType(file, cb){
   }
 
 
-  router.put('/',isLogin,[auth,[check('name','Name is required').not().isEmpty(),
+router.post('/',isLogin,
+  check('name','Name is required').not().isEmpty(),
   check('fatherName','Father name is required').not().isEmpty(),
   check('email','Enter a valid Email address').isEmail(),
   check('address','Address is required').exists(),
   check('gender','Gender is required').exists(),
   check('dateOfBirth','Date Of Birth is required').exists().isDate(),
   check('aadhaar','Enter a valid number').isLength({min:12}),
-  check('bloodGroup','Blood Group is required').exists()]],upload.single('profileImage'),profileControllers.createProfile);
+  check('bloodGroup','Blood Group is required').exists(),upload.single('profileImage'),profileControllers.createProfile);
 
 
+router.get('/',isLogin,profileControllers.getProfile);
 
-
+router.put('/',isLogin,
+check('name','Name is required').not().isEmpty(),
+check('fatherName','Father name is required').not().isEmpty(),
+check('email','Enter a valid Email address').isEmail(),
+check('address','Address is required').exists(),
+check('gender','Gender is required').exists(),
+check('dateOfBirth','Date Of Birth is required').exists().isDate(),
+check('aadhaar','Enter a valid number').isLength({min:12}),
+check('bloodGroup','Blood Group is required').exists(),
+profileControllers.editProfile
+);
 
 module.exports = router;
