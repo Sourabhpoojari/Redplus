@@ -13,7 +13,11 @@ check('bloodBankRegistrationNumber','Enter a valid Registration number'),
 check('bloodBankPhone','Enter a valid phone number!').isLength({min:13,max:13}).isMobilePhone(),
 bloodBankController.signUp);
 
-
+router.put('/signUp',
+check('email','Please enter a valid email address').isEmail(),
+check('password','password is required').exists(),
+bloodBankController.setPassword
+);
 
 
 module.exports = router;
