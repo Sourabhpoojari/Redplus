@@ -19,12 +19,12 @@ const errors = validationResult(req);
 
     try{
         
-        const profile =  Profile.findOne({user : req.params.user_id}).select('user');
-        if (!profile) {
-           return res.status(400).json({msg:"Profile not found!"});
-        }
-        const primary =  primarytestSchema.findOne({user : req.params.user_id}).select('user');
-
+        
+        
+        const primary =  primarytestSchema.findOne({user : req.params.user_id});
+        if (!primary) {
+            return res.status(400).json({msg:"No data found!"});
+         }
         let data = new primarytestSchema ({
             weight,
             pulse,
@@ -32,11 +32,8 @@ const errors = validationResult(req);
             bp,
             tempreture
         });
-        if(profile == primary){
+        
          data.save();
-        }
-
-
        return  res.json(data);
 
 

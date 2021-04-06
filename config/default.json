@@ -6,5 +6,6 @@
     "TWILIO_SID" : "VA3e31cf72c7fdbc427c95bc581983cc0a",
     "jwtSecret" : "trdt7wadyh7i6adtvt7a6uthg",
     "CLOUDINARY_API_KEY":"225796958684434",
-    "CLOUDINARY_SECRET":"hqB_ho9nAhzfizNn3y-L1OjvDIE"
+    "CLOUDINARY_SECRET":"hqB_ho9nAhzfizNn3y-L1OjvDIE",
+    "SENDGRID_API_KEY":""
 }
