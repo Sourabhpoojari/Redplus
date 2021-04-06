@@ -9,7 +9,7 @@ config = require('config'),
 //  @route /api/bloodBank/signup
 // @desc  post blood bank signup request
 // @access Public
-const signUp = async (req,res,next) => {
+const signUpRequest = async (req,res,next) => {
     const {bloodBankName, bloodBankEmail, bloodBankAddress, bloodBankPhone, bloodBankRegistrationNumber, bloodBankLat, bloodBankLng, bloodBankRegistrationDocument} = req.body;
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -115,5 +115,5 @@ const logIn = async (req,res,next) =>{
     }
 };
 
-exports.signUp = signUp;
+exports.signUpRequest = signUpRequest;
 exports.setPassword = setPassword;
