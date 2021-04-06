@@ -19,5 +19,11 @@ check('password','password is required').exists(),
 bloodBankController.setPassword
 );
 
+router.post('/logIn',
+check('email','Please enter a valid email address').isEmail(),
+check('password','password is required').exists(),
+bloodBankController.logIn
+);
+
 
 module.exports = router;

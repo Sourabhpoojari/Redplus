@@ -75,7 +75,7 @@ const setPassword = async (req,res,next) =>{
 }
 
 //@route /api/bloodbank/logIn
-// @desc put bloodbank login
+// @desc post bloodbank login
 // @access Public
 const logIn = async (req,res,next) =>{
     const errors = validationResult(req);
@@ -86,7 +86,7 @@ const logIn = async (req,res,next) =>{
     let bloodbank
     try {
          bloodbank= await BloodBank.findOne({email});
-        if(!bloodbank){
+        if( !bloodbank || !bloodbank.password || !bloodbank.isBloodBank ){
             return res.status(400).json({errors:[{msg : "You need to register before login!"}]});
         }
         // check password
@@ -117,3 +117,4 @@ const logIn = async (req,res,next) =>{
 
 exports.signUpRequest = signUpRequest;
 exports.setPassword = setPassword;
+exports.logIn = logIn;
