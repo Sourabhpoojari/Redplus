@@ -190,9 +190,39 @@ const acceptHospitalRequest = async (req,res,next) =>{
 }
 
 
+//  @route /api/admin/hospitalRequests/:req_id
+// @desc DELETE reject hospital request
+// @access Private - admin access only
+const rejecthospitalRequest = async (req,res,next) =>{
+    let request;
+    try {
+        request = await HospitalRequest.findById(req.params.req_id);
+        if (!request) {
+            return res.status(400).json({errors:[{msg : "Request not found!"}]});
+        }
+        const msg = {
+            to: request.hospitalEmail, // Change to your recipient
+            from: 'redplus112@gmail.com', // Change to your verified sender
+            subject: 'Request Rejected',
+            text: 'Your registraion to Redplus is rejected.'
+            // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+          }
+        const status = await sgMail.send(msg);
+        if (status) {
+            await request.delete();
+        return res.status(200).json({msg:"Request rejected!"})
+        }
+        
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send('Server error');
+    }
+}
+
 
 exports.getBloodBankRequest = getBloodBankRequest;
 exports.acceptBloodBankRequest = acceptBloodBankRequest;
 exports.getHospitalRequest = getHospitalRequest;
 exports.acceptHospitalRequest = acceptHospitalRequest;
 exports.rejectBloodBankRequest = rejectBloodBankRequest;
+exports.rejecthospitalRequest = rejecthospitalRequest;

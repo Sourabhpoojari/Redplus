@@ -19,5 +19,10 @@ check('password','password is required').exists(),
 hospitalController.setPassword
 );
 
+router.post('/logIn',
+check('email','Please enter a valid email address').isEmail(),
+check('password','password is required').exists(),
+hospitalController.logIn
+);
 
 module.exports = router;

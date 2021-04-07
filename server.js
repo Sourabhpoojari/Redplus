@@ -22,7 +22,7 @@ app.use('/api/user/primarytest',require('./routes/user/primarytest-routes'))
 
 // admin routes
 app.use('/api/admin/',require('./routes/admin/admin-routes'));
-app.use('/api/admin/requests/',require('./routes/admin/request-routes'));
+app.use('/api/admin/requests',require('./routes/admin/request-routes'));
 
 
 // bloodBank routes

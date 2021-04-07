@@ -117,8 +117,4 @@ const logIn = async (req,res,next) =>{
 
 exports.signUpRequest = signUpRequest;
 exports.setPassword = setPassword;
-<<<<<<< HEAD
-exports.logIn=logIn;
-=======
 exports.logIn = logIn;
->>>>>>> a617d0bc6fc1a46ad592fa9b9d052d9fde42aca8
