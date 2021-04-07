@@ -1,6 +1,7 @@
 const router = require('express').Router(),
 {check} = require('express-validator'),
-bloodBankController = require('../../controllers/bloodBank-controllers/bloodBankController');
+bloodBankController = require('../../controllers/bloodBank-controllers/bloodBankController'),
+isBloodBank = require('../../middleware/bloodBankAuth');
 
 
 router.post('/signUpRequest',
@@ -25,5 +26,5 @@ check('password','password is required').exists(),
 bloodBankController.logIn
 );
 
-
+router.get('/profile',isBloodBank,bloodBankController.getProfile);
 module.exports = router;

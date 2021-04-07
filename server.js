@@ -25,6 +25,7 @@ app.use('/api/admin/requests/',require('./routes/admin/request-routes'));
 
 // bloodBank routes
 app.use('/api/bloodBank',require('./routes/bloodBank/bloodBank-routes'));
+app.use('/api/bloodBank/requests',require('./routes/bloodBank/request-routes'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT,()=>console.log(`Server started on port ${PORT}`)); 
