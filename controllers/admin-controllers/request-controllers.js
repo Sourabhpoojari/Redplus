@@ -67,14 +67,17 @@ const acceptBloodBankRequest = async (req,res,next) =>{
             text: 'Your registraion to Redplus is accepted. Kindly use below link to set-up your password and login to your account using emailID '+bloodBankEmail
             // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
           }
-        const status = await sgMail.send(msg);
-        if (status) {
+         sgMail.send(msg).then(async () => {
             bloodBank.isBloodBank = true;
             await bloodBank.save();
             await profile.save();
-        await request.delete();
-        return res.status(200).json({msg:"Request accepted"});
-        }
+            await request.delete();
+            return res.status(200).json({msg:"Request accepted"});
+          })
+          .catch((err) => {
+            console.error(err);
+            return res.status(500).send('Send grid error!');
+          })
         
     } catch (err) {
         console.log(err);
