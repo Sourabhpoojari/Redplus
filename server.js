@@ -27,6 +27,7 @@ app.use('/api/admin/requests',require('./routes/admin/request-routes'));
 
 // bloodBank routes
 app.use('/api/bloodBank',require('./routes/bloodBank/bloodBank-routes'));
+app.use('/api/bloodBank/requests',require('./routes/bloodBank/request-routes'));
 
 //hospital routes
 app.use('/api/hospital',require('./routes/hospital/hospital-routes'));
