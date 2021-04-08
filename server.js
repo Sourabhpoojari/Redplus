@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use('/api/user/',require('./routes/user/user-routes'));
 app.use('/api/user/profile',require('./routes/user/profile-routes'));
 app.use('/api/user/health',require('./routes/user/health-routes'));
-app.use('/api/user/primarytest',require('./routes/user/primarytest-routes'))
+app.use('/api/user/primarytest',require('./routes/bloodbank/primarytest-routes'))
 
 // admin routes
 app.use('/api/admin/',require('./routes/admin/admin-routes'));
