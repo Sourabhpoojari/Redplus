@@ -45,9 +45,7 @@ const createProfile = async (req,res,next)  => {
     let errors = validationResult(req);
     errors = errors.array();
 
-    if(name == "null"){
-
-    }
+    
     if (bName || relation || bPhone) {
         if (!bPhone || bPhone.length !== 13) {
             errors.push({

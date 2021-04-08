@@ -10,7 +10,7 @@ const primarytestReport=({
         ref:'Bloodbank'
     },
     weight : {
-        type:Number,
+        type : Number,
         required:true
     },
     pulse : {
@@ -23,9 +23,9 @@ const primarytestReport=({
     },
     bp :{
         type : Number,
-        required:true
+         required : true
     },
-    tempreture :{
+    temp :{
         type : Number,
         required : true
     },
@@ -35,4 +35,4 @@ const primarytestReport=({
     }
 });
 
-module.exports = mongoose.model('primarytestr eport',primarytestReport);
+module.exports = mongoose.model('PrimaryTest',primarytestReport);
