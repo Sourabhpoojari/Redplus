@@ -3,7 +3,7 @@ const router= require('express').Router(),
     {check}= require('express-validator');
     auth = require('../../middleware/bloodBankAuth');
 
-router.post('/:user_id',auth,
+router.post('/primaryTest/:user_id',auth,
         check('weight','Enter a valid weight').exists(),
         check('pulse','Enter a valid pulse').exists(),
         check('hb','Enter a valid hb').exists(),
