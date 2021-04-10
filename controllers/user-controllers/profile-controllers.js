@@ -20,7 +20,7 @@ cloudinary.config({
 
 const getProfile = async (req,res,next)=>{
     try {
-        const profile = await Profile.find({user : req.user.id}).populate('user',['phone']);
+        const profile = await Profile.findOne({user : req.user.id}).populate('user',['phone']);
         if (!profile) {
            return res.status(400).json({msg:"Profile not found!"});
         }

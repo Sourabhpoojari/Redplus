@@ -1,4 +1,3 @@
-const { findById } = require('../../models/user/healthInfoSchema');
 const Health = require('../../models/user/healthInfoSchema'),
     Profile = require('../../models/user/profileSchema'),
     Donation = require('../../models/user/donationSchema'),
@@ -87,7 +86,7 @@ const addHealthInfo = async (req,res,next) => {
 // @access Private
 const getDonation = async (req,res,next) => {
     try {
-        let previousDonation = await Donation.findById({user:req.user.id}).sort('-donaterOn');
+        let previousDonation = await Donation.findById({user:req.user.id}).sort('-donatedOn');
         previousDonation = previousDonation[0];
         if (previousDonation) {
             return res.status(201).json({previousDonation});

@@ -22,7 +22,7 @@ const bloodTestReport= mongoose.Schema({
         type : String,
         required: true
     },
-    bgroup :{
+    bGroup :{
         type : String,
         required : true
     },
@@ -58,7 +58,7 @@ const bloodTestReport= mongoose.Schema({
         type: Number,
         required : true
     },
-    bglucose:{
+    glucose:{
         type: Number,
         required: true
     },
