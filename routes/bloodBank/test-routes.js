@@ -1,7 +1,7 @@
 const { isDate } = require('moment');
 
 const router= require('express').Router(),
-    Test  = require('../../controllers/bloodbank-Controllers/test-controllers'),
+    Test  = require('../../controllers/bloodbank-Controllers/testControllers'),
     {check}= require('express-validator'),
     auth = require('../../middleware/bloodBankAuth');
 
