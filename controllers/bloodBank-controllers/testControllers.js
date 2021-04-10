@@ -2,6 +2,7 @@ const { json } = require('body-parser'),
      primarytestSchema = require('../../models/user/primarytestSchema'),
      bloodTestReport = require('../../models/user/bloodTestReportSchema'),
       Profile=require('../../models/user/profileSchema'),
+      Donation = require('../../models/user/donationSchema'),
       {validationResult}  = require('express-validator');
 
 
@@ -17,12 +18,12 @@ const primarytest = async (req,res,next) => {
     if(!errors.isEmpty()){
         return res.status(400).json({errors:errors.array()});
     } 
-    //console.log(req.user.id);
+
     const {gender} = await Profile.findOne({user:req.params.user_id}).select('gender');
     if (!gender) {
         return res.status(422).send('Donor not found!');
     }
-    //console.log(gender);
+
     if(gender == "male")
         if(weight < 50)
             return res.status(422).send('Weight must be greater than 50'); 
@@ -56,7 +57,11 @@ const primarytest = async (req,res,next) => {
         }
         primary = new primarytestSchema(data);
          await primary.save();
-       return  res.status(200).send('You can donate blood');
+        donation = new Donation({
+            bloodBank:req.bloodBank.id,
+            user:req.params.user_id
+        });
+       return  res.status(200).json({msg:'You can donate blood'});
 
 
     }

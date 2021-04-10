@@ -33,7 +33,7 @@ const bloodTestReport= mongoose.Schema({
     },
     expdate:{
         type: Date,
-        required : true
+       // required : true
     },
     rbcCount:{
         type: Number,

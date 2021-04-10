@@ -27,6 +27,24 @@ const getBloodBankRequest = async (req,res,next) => {
     }
 }
 
+
+//  @route /api/admin/bloodBank/:id
+// @desc  get blood Bank info
+// @access Private - admin access only
+const getBloodBankById = async (req,res,next) =>{
+    let bloodBank;
+    try {
+        bloodBank = await BloodBankRequest.findById(req.params.id);
+        if (!bloodBank) {
+            return res.status(400).json({errors:[{msg : "Request not found!"}]});
+        }
+        return res.status(200).json(bloodBank);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send('Server error');
+    }
+}
+
 //  @route /api/admin/bloodBankRequests/:req_id
 // @desc POST accept blood bank request
 // @access Private - admin access only
@@ -40,7 +58,7 @@ const acceptBloodBankRequest = async (req,res,next) =>{
         const {bloodBankEmail, bloodBankName, bloodBankAddress, bloodBankPhone, bloodBankRegistrationNumber, location, bloodBankRegistrationDocument} = request;
         bloodBank = await BloodBank.findOne({email:bloodBankEmail});
         if (bloodBank) {
-            return res.status(400).json({errors:[{msg : "Blood Bank with this email already exists!"}]});
+            return res.status(302).json({errors:[{msg : "Blood Bank with this email already exists!"}]});
         }
         bloodBank = await new BloodBank({
             email:bloodBankEmail
@@ -48,7 +66,7 @@ const acceptBloodBankRequest = async (req,res,next) =>{
         
         profile = await BloodBankProfile.findOne({bloodBankEmail});
         if (profile) {
-            return res.status(400).json({errors:[{msg : "Blood Bank with this profile already exists!"}]});
+            return res.status(302).json({errors:[{msg : "Blood Bank with this profile already exists!"}]});
         }
         profile = await new BloodBankProfile({
             bloodBank:bloodBank.id,
@@ -132,7 +150,22 @@ const getHospitalRequest = async (req,res,next) => {
 }
 
 
-
+//  @route /api/admin/hospitalRequests/:id
+// @desc  get hospital request info by id
+// @access Private - admin access only
+const getHospitalById = async (req,res,next) =>{
+    let hospital;
+    try {
+        hospital = await HospitalRequest.findById(req.params.id);
+        if (!hospital) {
+            return res.status(404).json({errors:[{msg : "Request not found!"}]});
+        }
+        return res.status(200).json(hospital);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send('Server error');
+    }
+}
 
 //  @route /api/admin/hospitalRequests/:req_id
 // @desc POST accept hospital request
@@ -226,3 +259,5 @@ exports.getHospitalRequest = getHospitalRequest;
 exports.acceptHospitalRequest = acceptHospitalRequest;
 exports.rejectBloodBankRequest = rejectBloodBankRequest;
 exports.rejecthospitalRequest = rejecthospitalRequest;
+exports.getBloodBankById = getBloodBankById;
+exports.getHospitalById = getHospitalById;
