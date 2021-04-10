@@ -20,7 +20,7 @@ const getBloodBankRequest = async (req,res,next) => {
         if (!requests) {
             return res.status(404).send("No request found!");
         }
-        return res.status(302).json(requests);
+        return res.status(200).json(requests);
     } catch (err) {
         console.log(err);
         return res.status(500).send('Server error');
@@ -38,7 +38,7 @@ const getBloodBankById = async (req,res,next) =>{
         if (!bloodBank) {
             return res.status(400).json({errors:[{msg : "Request not found!"}]});
         }
-        return res.status(302).json(bloodBank);
+        return res.status(200).json(bloodBank);
     } catch (err) {
         console.log(err);
         return res.status(500).send('Server error');
@@ -142,7 +142,7 @@ const getHospitalRequest = async (req,res,next) => {
         if (!requests) {
             return res.status(404).send("No request found!");
         }
-        return res.status(302).json(requests);
+        return res.status(200).json(requests);
     } catch (err) {
         console.log(err);
         return res.status(500).send('Server error');
@@ -160,7 +160,7 @@ const getHospitalById = async (req,res,next) =>{
         if (!hospital) {
             return res.status(404).json({errors:[{msg : "Request not found!"}]});
         }
-        return res.status(302).json(hospital);
+        return res.status(200).json(hospital);
     } catch (err) {
         console.log(err);
         return res.status(500).send('Server error');
