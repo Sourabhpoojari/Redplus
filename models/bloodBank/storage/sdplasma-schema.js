@@ -13,6 +13,12 @@ const sdplasmaSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    batch:{
+        type:String
+    },
+    segment:{
+        type:String
+    },
     createdOn:{
         type:Date,
         default:Date.now()
