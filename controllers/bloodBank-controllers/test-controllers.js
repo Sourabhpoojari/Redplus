@@ -1,5 +1,6 @@
 const { json } = require('body-parser'),
-     primarytestSchema = require('../../models/user/primarytestSchema');
+     primarytestSchema = require('../../models/user/primarytestSchema'),
+     bloodTestReport = require('../../models/user/bloodTestReportSchema'),
       Profile=require('../../models/user/profileSchema'),
       {validationResult}  = require('express-validator');
 
@@ -9,7 +10,7 @@ const { json } = require('body-parser'),
 // @access Private
 
 const primarytest = async (req,res,next) => {
-    let {weight,pulse,hb,bp,temp} = req.body;
+    let {weight,pulse,hb,bp,temp,bagnumber} = req.body;
 
     //console.log(weight);
     const errors = validationResult(req);
@@ -50,7 +51,8 @@ const primarytest = async (req,res,next) => {
             pulse,
             hb,
             bp,
-            temp
+            temp,
+            bagnumber
         }
         primary = new primarytestSchema(data);
          await primary.save();
@@ -63,4 +65,47 @@ const primarytest = async (req,res,next) => {
         res.status(500).send('Server error');
     }
 }
+
+//  @route /api/bloodbank/bloodTestReport/
+// @desc post bloodtest Report
+// @access Private
+
+const bloodtestreport = async(req,res,next)=>{
+    let {typeOfBag,quantity,bgroup,batch,segNumber,expdate,rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,anyDiseases} = req.body;
+
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors:errors.array()});
+    }
+    try{
+        //const test=bloodTestReport.findOne('');
+        let data={
+            user:req.params.user_id,
+            bloodbank:req.bloodBank.id,
+            typeOfBag,
+            quantity,
+            bgroup,
+            batch,
+            segNumber,
+            expdate,
+            rbcCount,
+            wbcCount,
+            plateCount,
+            hemoglobinCount,
+            hematocrit,
+            bglucose,
+            anyDiseases
+    }
+    testreport = new bloodTestReport(data);
+    await testreport.save();
+  return  res.status(200).send('Test Report is Generated');
+
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send('Server error');
+    }
+}
+
+exports.bloodtestreport = bloodtestreport;
 exports.primarytest = primarytest;

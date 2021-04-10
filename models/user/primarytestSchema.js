@@ -29,6 +29,10 @@ const primarytestReport=({
         type : Number,
         required : true
     },
+    bagnumber :{
+        type : String,
+        required : true
+    },
     createdOn:{
         type:Date,
         default:Date.now()
