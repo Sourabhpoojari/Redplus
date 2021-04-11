@@ -3,7 +3,8 @@ bcrypt = require('bcryptjs'),
 Hospital = require('../../models/hospital/hospital/hospital'),
 jwt = require('jsonwebtoken'),
 config = require('config'),
-{validationResult} = require('express-validator');
+{validationResult} = require('express-validator'),
+HospitalProfile = require('../../models/hospital/hospital/profile');
 
 
 //  @route /api/hospital/signup request
@@ -117,7 +118,31 @@ const logIn = async (req,res,next) =>{
     }
 };
 
+
+
+//@route /api/hospital/profile
+// @desc get hospital profile
+// @access Private hospital access only
+const getProfile = async (req,res,next)=>{
+    try {
+        const profile = await HospitalProfile.findOne({hospital : req.hospital.id});
+        if (!profile) {
+           return res.status(400).json({msg:"Profile not found!"});
+        }
+        else{
+        
+        res.json(profile);}
+    } catch (err) {
+        console.error(err.message);
+        if(err.kind == 'ObjectId'){
+            return res.status(400).json({msg:"Profile not found!"});
+        }
+        res.status(500).send("Server error");
+    }
+};
+
+
 exports.signUpRequest = signUpRequest;
 exports.setPassword = setPassword;
 exports.logIn=logIn;
-    
+exports.getProfile=getProfile;

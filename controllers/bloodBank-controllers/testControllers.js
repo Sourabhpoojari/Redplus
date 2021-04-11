@@ -1,4 +1,6 @@
-const primarytestSchema = require('../../models/user/primarytestSchema');
+const { json } = require('body-parser'),
+     primarytestSchema = require('../../models/user/primarytestSchema'),
+     bloodTestReport = require('../../models/user/bloodTestReportSchema'),
       Profile=require('../../models/user/profileSchema'),
       Donation = require('../../models/user/donationSchema'),
       {validationResult}  = require('express-validator');
@@ -9,8 +11,9 @@ const primarytestSchema = require('../../models/user/primarytestSchema');
 // @access Private
 
 const primarytest = async (req,res,next) => {
-    let {weight,pulse,hb,bp,temp} = req.body;
-    
+    let {weight,pulse,hb,bp,temp,bagnumber} = req.body;
+
+    //console.log(weight);
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({errors:errors.array()});

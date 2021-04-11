@@ -1,6 +1,7 @@
 const router = require('express').Router(),
 {check} = require('express-validator'),
-hospitalController = require('../../controllers/hospital-controllers/hospital-controllers');
+hospitalController = require('../../controllers/hospital-controllers/hospital-controllers'),
+isHospital = require('../../middleware/hospitalAuth');
 
 
 router.post('/signUpRequest',
@@ -25,4 +26,6 @@ check('password','password is required').exists(),
 hospitalController.logIn
 );
 
+
+router.get('/profile',isHospital,hospitalController.getProfile);
 module.exports = router;

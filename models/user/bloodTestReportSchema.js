@@ -1,4 +1,4 @@
-const mongoose = require('mongooose');
+const mongoose = require('mongoose');
 
 const bloodTestReport= mongoose.Schema({
     
@@ -18,11 +18,8 @@ const bloodTestReport= mongoose.Schema({
         type:Number,
         required : true
     },
-    bagNumber:{
-        type : String,
-        required: true
-    },
-    bGroup :{
+
+    bgroup :{
         type : String,
         required : true
     },
@@ -31,12 +28,12 @@ const bloodTestReport= mongoose.Schema({
         required : true
     },
     segNumber:{
-        type: String,
+        type: Number,
         required : true
     },
     expdate:{
         type: Date,
-        required : true
+       // required : true
     },
     rbcCount:{
         type: Number,
@@ -58,7 +55,7 @@ const bloodTestReport= mongoose.Schema({
         type: Number,
         required : true
     },
-    glucose:{
+    bglucose:{
         type: Number,
         required: true
     },
@@ -66,7 +63,11 @@ const bloodTestReport= mongoose.Schema({
         {
             type:String
         }
-    ]
+    ],
+    createdOn:{
+        type:Date,
+        default:Date.now()
+    }
 });
 
 module.exports= mongoose.model('BloodTestReport',bloodTestReport);
