@@ -30,6 +30,7 @@ const signUpRequest = async (req,res,next) => {
             request.location.coordinates = [
                 bloodBankLat,bloodBankLng
             ];
+            request.location.type = "Point";
         }
         await request.save();
         return res.status(200).json(request);

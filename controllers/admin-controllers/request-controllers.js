@@ -7,6 +7,7 @@ Hospital = require('../../models/hospital/hospital/hospital'),
 config = require('config'),
 sgMail = require('@sendgrid/mail'),
 SENDGRID_API_KEY = config.get('SENDGRID_API_KEY');
+
 sgMail.setApiKey(SENDGRID_API_KEY);
 
 
@@ -210,12 +211,11 @@ const acceptHospitalRequest = async (req,res,next) =>{
         const status = await sgMail.send(msg);
         if (status) {
             hospital.isHospital = true;
-            await hospital.save();
+            await hospital.save();-
             await profile.save();
         await request.delete();
         return res.status(200).json({msg:"Request accepted"});
-        }
-        
+        }    
     } catch (err) {
         console.log(err);
         return res.status(500).send('Server error');

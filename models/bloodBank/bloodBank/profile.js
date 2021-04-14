@@ -29,8 +29,9 @@ const profileSchema = mongoose.Schema({
     },
     location: {
       type: {
-        type: String, // Don't do `{ location: { type: String } }`
-        enum: ['Point']// 'location.type' must be 'Point'
+        type: "String",
+        default:"Point" // Don't do `{ location: { type: String } }`
+        // 'location.type' must be 'Point'
         // required: true
       },
       // type:Point,
@@ -47,5 +48,6 @@ const profileSchema = mongoose.Schema({
         default:Date.now()
     }
 });
+profileSchema.index({ location: "2dsphere" });
 
-module.exports  = mongoose.model('BloodBankProfile',profileSchema);
+module.exports  = mongoose.models.BloodBankProfile || mongoose.model('BloodBankProfile',profileSchema);
