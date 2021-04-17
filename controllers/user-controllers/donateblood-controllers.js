@@ -34,10 +34,10 @@ const bloodbankinfo = async (req,res,next) => {
         }
     }
 
-//  @route /api/admin/bloodBank/:id
-// @desc  get blood Bank info
-// @access Private - admin access only
-const getBloodBankById = async (req,res,next) =>{
+//  @route /api/auth/bloodBank/:id
+// @desc  get blood Bank profile info
+// @access Private - authorized user access only
+ const getBloodBankById = async (req,res,next) =>{
     let bloodBank;
     try {
         bloodBank = await BloodBank.findById(req.params.id);
@@ -51,5 +51,6 @@ const getBloodBankById = async (req,res,next) =>{
     }
 }
 
-exports.getBloodBankById=getBloodBankById;
+
 exports.bloodbankinfo= bloodbankinfo;
+exports.getBloodBankById = getBloodBankById;
