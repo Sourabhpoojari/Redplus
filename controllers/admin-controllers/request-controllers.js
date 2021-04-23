@@ -5,6 +5,7 @@ BloodBank = require('../../models/bloodBank/bloodBank/bloodBank'),
 HospitalRequest = require('../../models/admin/requests/hospitalRequestSchema'),
 Hospitalprofile = require('../../models/hospital//hospital/profile'),
 Hospital = require('../../models/hospital/hospital/hospital'),
+OrganizeCamp = require('../../models/user/organizecampSchema'),
 config = require('config'),
 sgMail = require('@sendgrid/mail'),
 SENDGRID_API_KEY = config.get('SENDGRID_API_KEY');

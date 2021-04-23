@@ -19,7 +19,7 @@ const campSRequest = async(req,res,next) =>{
                 return res.status(400).json({errors:[{msg : "Already request sent!"}]});
             }
             request = await new campSheduleRequest({
-                campAddress, campName, campSchedule, capacity, community, blooorganizerContactNumber,organizerName,referenceId,sponserOrganization
+                campAddress, campName, campSchedule, capacity, community, organizerContactNumber,organizerName,referenceId,sponserOrganization
             });
             if (campLat && campLng) {
                 request.location.coordinates = [

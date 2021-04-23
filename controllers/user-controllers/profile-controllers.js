@@ -199,6 +199,8 @@ const editProfile = async (req,res,next) =>{
     }
 }
 
+
+
 exports.createProfile = createProfile;
 exports.getProfile = getProfile;
 exports.editProfile  = editProfile;
