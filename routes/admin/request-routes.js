@@ -11,6 +11,11 @@ router.delete('/bloodBankRequests/:req_id',isAdmin,requestController.rejectBlood
 router.delete('/hospitalRequests/:req_id',isAdmin,requestController.rejecthospitalRequest);
 router.get('/bloodBankRequests/:id',isAdmin,requestController.getBloodBankById);
 router.get('/hospitalRequests/:id',isAdmin,requestController.getHospitalById);
+router.get('/campShedulwRequests',isAdmin,requestController.getCampSheduleRequest);
+router.get('/campShedulwRequests/:id',isAdmin,requestController.getCampSheduleId);
+router.post('/campShedulwRequests/:req_id',isAdmin,requestController.acceptCampSheduleRequest);
+router.delete('/campShedulwRequests/:req_id',isAdmin,requestController.rejectcampsheduleRequest);
+
 
 
 module.exports = router;
