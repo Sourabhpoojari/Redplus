@@ -1,13 +1,13 @@
 const  {validationResult} = require('express-validator'),
 campSheduleRequest = require('../../models/admin/requests/campsheduleReuestSchema'),
-Profile = require('../../models/user/profileSchema');
+Profile = require('../../models/bloodbank/bloodBank/profile');
 //campShema = require('../../models/user/organizecampSchema');
 
-//  @route /api/user/campshedule
+//  @route /api/bloodbank/campshedule
 // @desc  post campshedule request
 // @access private
 
-const campSRequest = async(req,res,next) =>{
+const campRequest = async(req,res,next) =>{
         const {campAddress,campName,campSchedule,capacity,community,referenceId,sponserOrganization,poster,campLat,campLng}=req.body;
         const errors = validationResult(req);
         if(!errors.isEmpty()){
@@ -17,7 +17,7 @@ const campSRequest = async(req,res,next) =>{
         try {
            
             request = await new campSheduleRequest({
-                user:req.user.id,
+               bloodBank : req.bloodBank.id,
                 campAddress, campName, campSchedule, capacity, community,poster,referenceId,sponserOrganization
             });
             if (campLat && campLng) {
@@ -27,7 +27,8 @@ const campSRequest = async(req,res,next) =>{
                 request.location.type = "Point";
             }
             let profile;
-            profile = await Profile.find({user:req.user.id});
+           
+             profile = await Profile.find({bloodBank : req.bloodBank.id});
             if(!profile){
                 return res.status(400).json({msg:"Please update your profile"});
             }
@@ -41,4 +42,4 @@ const campSRequest = async(req,res,next) =>{
 }
 
 
-exports.campSRequest = campSRequest;
+exports.campRequest = campRequest;

@@ -5,16 +5,12 @@ BloodBank = require('../../models/bloodBank/bloodBank/bloodBank'),
 HospitalRequest = require('../../models/admin/requests/hospitalRequestSchema'),
 Hospitalprofile = require('../../models/hospital//hospital/profile'),
 Hospital = require('../../models/hospital/hospital/hospital'),
-OrganizeCamp = require('../../models/user/organizecampSchema'),
+OrganizeCamp = require('../../models/camp/organizecampSchema'),
 config = require('config'),
 sgMail = require('@sendgrid/mail'),
 SENDGRID_API_KEY = config.get('SENDGRID_API_KEY');
 
-sgMail.setApiKey(SENDGRID_API_KEY),
-accountSid = config.get('TWILIO_ACCOUNT_SID1'),
-authToken = config.get('TWILIO_AUTH_TOKEN'),
-client = require('twilio')(accountSid, authToken),
-sid = config.get('TWILIO_SID');
+sgMail.setApiKey(SENDGRID_API_KEY);
 
 
 
@@ -280,7 +276,7 @@ const getCampSheduleRequest = async (req,res,next) => {
 //  @route /api/admin/campshedule/:id
 // @desc  get campshedule info
 // @access Private - admin access only
-const getCampSheduleId = async (req,res,next) =>{
+const getCampSheduleById = async (req,res,next) =>{
     let camp;
     try {
         camp = await campSheduleRequest.findById(req.params.id);
@@ -299,49 +295,33 @@ const getCampSheduleId = async (req,res,next) =>{
 // @desc POST accept camp shedule request
 // @access Private - admin access only
 const acceptCampSheduleRequest = async (req,res,next) =>{
-    let request,camp,organize;
+    let request,organize;
     try {
         request = await campSheduleRequest.findById(req.params.req_id);
         if (!request) {
             return res.status(400).json({errors:[{msg : "Request not found!"}]});
         }
-        const {campAddress,campName,campSchedule,capacity,community,organizerContactNumber,organizerName,referenceId,sponserOrganization, location} = request;
+        const {campAddress,campName,campSchedule,capacity,community,referenceId,poster,sponserOrganization, location} = request;
         
         
-        camp = await OrganizeCamp.findOne({organizerContactNumber});
-        if (camp) {
-            return res.status(302).json({errors:[{msg : " already camp exists!"}]});
-        }
         organize = await new OrganizeCamp({
             campAddress,
             campName,
             campSchedule,
             capacity,
             community,
-            organizerContactNumber,
-            organizerName,
             referenceId,
+            poster,
             sponserOrganization,
             location
         });
         
           
-client.messages
-  .create({
-     body: 'Your Camp shedule is Accepted..',
-     from: '+15017122661',
-     to: organizerContactNumber
-   })
-  .then(async () => {
-    
+
     await organize.save();
     await request.delete();
     return res.status(200).json({msg:"Request accepted"});
-  })
-          .catch((err) => {
-            console.error(err);
-            return res.status(500).send('msg not sent!');
-          })
+  
         
     } catch (err) {
         console.log(err);
@@ -359,14 +339,6 @@ const rejectcampsheduleRequest = async (req,res,next) =>{
         if (!request) {
             return res.status(400).json({errors:[{msg : "Request not found!"}]});
         }
-        
-        client.messages
-    .create({
-    body: 'Your Camp shedule is Accepted..',
-    from: '+15017122661',
-    to: request.organizerContactNumber
-        })
-        
         await request.delete();
         return res.status(200).json({msg:"Request rejected!"})
         
@@ -387,6 +359,6 @@ exports.rejecthospitalRequest = rejecthospitalRequest;
 exports.getBloodBankById = getBloodBankById;
 exports.getHospitalById = getHospitalById;
 exports.getCampSheduleRequest=getCampSheduleRequest;
-exports.getCampSheduleId=getCampSheduleId;
+exports.getCampSheduleById=getCampSheduleById;
 exports.acceptCampSheduleRequest=acceptCampSheduleRequest;
 exports.rejectcampsheduleRequest=rejectcampsheduleRequest;
