@@ -6,7 +6,7 @@ campSheduleRequest = require('../../models/admin/requests/campsheduleReuestSchem
 // @desc  post campshedule request
 // @access private
 
-const campSRequest = async(req,res,next) =>{
+const campRequest = async (req,res,next) =>{
         const {campAddress,campName,campSchedule,capacity,community,organizerContactNumber,organizerName,referenceId,sponserOrganization,campLat,campLng}=req.body;
         const errors = validationResult(req);
         if(!errors.isEmpty()){
@@ -37,4 +37,4 @@ const campSRequest = async(req,res,next) =>{
 }
 
 
-exports.campSRequest = campSRequest;
+exports.campRequest = campRequest;

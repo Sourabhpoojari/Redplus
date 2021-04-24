@@ -60,4 +60,4 @@ const campSchema = mongoose.Schema({
 });
 campSchema.index({ location: "2dsphere" });
 
-module.exports  = mongoose.models.OrganizeCamp || mongoose.model('OrganizeCamp',campSchema);
+module.exports  =  mongoose.model('OrganizeCamp',campSchema);

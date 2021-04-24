@@ -7,7 +7,7 @@ const BloodBank = require('../../models/bloodbank/bloodBank/profile'),
 
 
 const bloodbankinfo = async (req,res,next) => {
-    let {lat,lang} = req.body;
+    const {lat,lang} = req.body;
 
     // const errors = validationResult(req);
     // if(!errors.isEmpty()){

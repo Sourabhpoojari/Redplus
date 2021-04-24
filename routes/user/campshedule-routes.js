@@ -17,6 +17,6 @@ check('sponserOrganization','Enter a sponserOrganization').not(),
 // check('campLat','Lattitude value is required').isEmpty(),
 // check('campLng','Longitude value is required!').isEmpty(),
 
-campOrganizeController.campSRequest);
+campOrganizeController.campRequest);
 
 module.exports = router;

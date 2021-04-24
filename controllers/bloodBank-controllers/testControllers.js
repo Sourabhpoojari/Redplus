@@ -1,5 +1,4 @@
-const { json } = require('body-parser'),
-     primarytestSchema = require('../../models/user/primarytestSchema'),
+const  primarytestSchema = require('../../models/user/primarytestSchema'),
      bloodTestReport = require('../../models/user/bloodTestReportSchema'),
       Profile=require('../../models/user/profileSchema'),
       Donation = require('../../models/user/donationSchema'),
@@ -11,7 +10,7 @@ const { json } = require('body-parser'),
 // @access Private
 
 const primarytest = async (req,res,next) => {
-    let {weight,pulse,hb,bp,temp,bagnumber} = req.body;
+    let {weight,pulse,hb,bp,temp} = req.body;
 
     //console.log(weight);
     const errors = validationResult(req);
@@ -76,8 +75,12 @@ const primarytest = async (req,res,next) => {
 // @desc post bloodtest Report
 // @access Private
 
+//  @route /api/bloodbank/bloodTestReport/
+// @desc post bloodtest Report
+// @access Private
+
 const bloodtestreport = async(req,res,next)=>{
-    let {typeOfBag,quantity,bgroup,batch,segNumber,expdate,rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,anyDiseases} = req.body;
+    const {typeOfBag,quantity,bgroup,batch,segNumber,expdate,rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,anyDiseases} = req.body;
 
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -85,7 +88,7 @@ const bloodtestreport = async(req,res,next)=>{
     }
     try{
         //const test=bloodTestReport.findOne('');
-        let data={
+        const data={
             user:req.params.user_id,
             bloodbank:req.bloodBank.id,
             typeOfBag,
