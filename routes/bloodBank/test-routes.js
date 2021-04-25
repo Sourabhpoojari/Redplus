@@ -1,5 +1,5 @@
 const router= require('express').Router(),
-    Test  = require("../../controllers/bloodbank-Controllers/testControllers"),
+    testControllers  = require("../../controllers/bloodbank-Controllers/testControllers"),
     {check}= require('express-validator'),
     auth = require('../../middleware/bloodBankAuth');
    // { isDate } = require('moment');
@@ -11,7 +11,7 @@ const router= require('express').Router(),
             check('bp','Enter a valid bp').exists(),
             check('tempreture','Enter a valid tempreture').isEmpty(),
             check('bagnumber','Enter a valid bagnumber').exists().isLength({min:6}),
-    Test.primarytest);
+            testControllers.primarytest);
     
     router.post('/bloodtestReport/:user_id',auth,
     check('typeOfBag','Enter a valid type of bag').exists(),
@@ -28,8 +28,11 @@ const router= require('express').Router(),
     check('hematocrit','Enter a valid hematocrit count').exists(),
     check('bglucose','Enter a valid blood bglucose count ').exists(),
     check('anyDiseases','Choose any disease').exists(),
-    Test.bloodtestreport);
+    testControllers.bloodtestreport);
     
+
+
+    router.post('/bagNumber/:user_id',auth,check('bagNumber','Bag Number is required!').exists(),testControllers.postBagNumber);
     
     module.exports = router;
     

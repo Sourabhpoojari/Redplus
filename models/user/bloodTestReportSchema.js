@@ -10,54 +10,38 @@ const bloodTestReport= mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Bloodbank'
     },
-    typeOfBag:{
-        type : String,
-        required: true
+    bagNumber:{
+        type:String,
+        required:true
     },
-    quantity:{
-        type:Number,
-        required : true
-    },
-
     bgroup :{
-        type : String,
-        required : true
+        type : String
     },
     batch:{
-        type: String,
-        required : true
+        type: String
     },
     segNumber:{
         type: Number,
-        required : true
-    },
-    expdate:{
-        type: Date,
-       // required : true
+    
     },
     rbcCount:{
-        type: Number,
-        required:true
+        type: Number
     },
     wbcCount:{
-        type: Number,
-        required :true
+        type: Number
+
     },
     plateCount:{
-        type : Number,
-        required : true
+        type : Number
     },
     hemoglobinCount:{
-        type : Number,
-        required : true
+        type : Number
     },
     hematocrit:{
-        type: Number,
-        required : true
+        type: Number
     },
     bglucose:{
-        type: Number,
-        required: true
+        type: Number
     },
     anyDiseases :[
         {

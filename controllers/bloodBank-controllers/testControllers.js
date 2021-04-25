@@ -1,11 +1,11 @@
 const  primarytestSchema = require('../../models/user/primarytestSchema'),
-     bloodTestReport = require('../../models/user/bloodTestReportSchema'),
+     BloodTestReport = require('../../models/user/bloodTestReportSchema'),
       Profile=require('../../models/user/profileSchema'),
       Donation = require('../../models/user/donationSchema'),
       {validationResult}  = require('express-validator');
 
 
-//  @route /api/user/primarytest/:user_id
+//  @route /api/bloodbank/test/primarytest/:user_id
 // @desc post primarytest info
 // @access Private
 
@@ -43,7 +43,7 @@ const primarytest = async (req,res,next) => {
     
     if(temp > 99.5)
         return res.status(422).send('tempreture must be less than 99.5'); 
-    let donation;
+  
     try{
         let data ={
             user:req.params.user_id,
@@ -57,7 +57,7 @@ const primarytest = async (req,res,next) => {
         }
         primary = new primarytestSchema(data);
          await primary.save();
-        donation = new Donation({
+      let  donation = new Donation({
             bloodBank:req.bloodBank.id,
             user:req.params.user_id
         });
@@ -71,9 +71,36 @@ const primarytest = async (req,res,next) => {
     }
 }
 
-//  @route /api/bloodbank/bloodTestReport/
-// @desc post bloodtest Report
-// @access Private
+//  @route/api/bloodbank/test/bagNumber/:user_id
+// @desc post bagnumber 
+// @access Private - blood bank access only
+const postBagNumber = async (req,res,next) =>{
+    const {bagNumber} = req.body;
+    let report;
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(400).json({errors:errors.array()});
+    } 
+    try {
+        report = await BloodTestReport.findOne({bagNumber:bagNumber});
+        if (report) {
+            return res.status(302).json({errors:[{msg : "Bag number already exists!"}]});
+        }
+        report = await new BloodTestReport({
+            user:req.params.user_id,
+            bloodBank:req.bloodBank.id,
+            bagNumber
+        });
+        await report.save();
+        return  res.status(200).json({report});
+        
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error'); 
+    }
+}
+
+
 
 //  @route /api/bloodbank/bloodTestReport/
 // @desc post bloodtest Report
@@ -87,7 +114,6 @@ const bloodtestreport = async(req,res,next)=>{
         return res.status(400).json({errors:errors.array()});
     }
     try{
-        //const test=bloodTestReport.findOne('');
         const data={
             user:req.params.user_id,
             bloodbank:req.bloodBank.id,
@@ -118,3 +144,4 @@ const bloodtestreport = async(req,res,next)=>{
 
 exports.bloodtestreport = bloodtestreport;
 exports.primarytest = primarytest;
+exports.postBagNumber = postBagNumber;
