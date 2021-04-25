@@ -17,7 +17,15 @@ const wholeSchema = mongoose.Schema({
         type:String
     },
     segment:{
+        type:String,
+        unique:true
+    },
+    duration:{
         type:String
+
+    },
+    ticket:{
+        type:String 
     },
     createdOn:{
         type:Date,

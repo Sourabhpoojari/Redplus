@@ -17,7 +17,8 @@ const sagmSchema = mongoose.Schema({
         type:String
     },
     segment:{
-        type:String
+        type:String,
+        unique:true
     },
     createdOn:{
         type:Date,
@@ -25,4 +26,4 @@ const sagmSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('sagm',sagmSchema);
+module.exports = mongoose.model('SAGM',sagmSchema);

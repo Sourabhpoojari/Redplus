@@ -17,13 +17,6 @@ const bloodTestReport= mongoose.Schema({
     bgroup :{
         type : String
     },
-    batch:{
-        type: String
-    },
-    segNumber:{
-        type: Number,
-    
-    },
     rbcCount:{
         type: Number
     },
@@ -43,7 +36,10 @@ const bloodTestReport= mongoose.Schema({
     bglucose:{
         type: Number
     },
-    anyDiseases :[
+    bp:{
+        type:Number
+    },
+    diseases :[
         {
             type:String
         }

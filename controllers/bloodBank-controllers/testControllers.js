@@ -1,15 +1,28 @@
+const plateletSchema = require('../../models/bloodBank/storage/platelet-schema');
 const  primarytestSchema = require('../../models/user/primarytestSchema'),
      BloodTestReport = require('../../models/user/bloodTestReportSchema'),
       Profile=require('../../models/user/profileSchema'),
       Donation = require('../../models/user/donationSchema'),
-      {validationResult}  = require('express-validator');
-
+      {validationResult}  = require('express-validator'),
+      jwt = require('jsonwebtoken'),
+      config = require('config'),
+      WHOLE = require('../../models/bloodBank/storage/whole-schema'),
+      CRYOPRI = require('../../models/bloodBank/storage/cryo-schema'),
+      FFP =require('../../models/bloodBank/storage/ffp-schema'),
+      PLASMA = require('../../models/bloodBank/storage/plasma-schema'),
+      PLATELET = require('../../models/bloodBank/storage/platelet-schema'),
+      RBC = require('../../models/bloodBank/storage/rbc-schema'),
+      SAGM = require('../../models/bloodBank/storage/sagm-schema'),
+      SDPLASMA = require('../../models/bloodBank/storage/sdplasma-schema') ,
+      SDPLATE = require('../../models/bloodBank/storage/sdplate-schema'),
+      WBC = require('../../models/bloodBank/storage/wbc-schema'),
+      moment = require('moment');
 
 //  @route /api/bloodbank/test/primarytest/:user_id
 // @desc post primarytest info
 // @access Private
 
-const primarytest = async (req,res,next) => {
+const primaryTest = async (req,res,next) => {
     let {weight,pulse,hb,bp,temp} = req.body;
 
     //console.log(weight);
@@ -102,34 +115,93 @@ const postBagNumber = async (req,res,next) =>{
 
 
 
-//  @route /api/bloodbank/bloodTestReport/
+//  @route /api/bloodbank/test/bloodTestReport/:bagNumber
 // @desc post bloodtest Report
 // @access Private
 
-const bloodtestreport = async(req,res,next)=>{
-    const {typeOfBag,quantity,bgroup,batch,segNumber,expdate,rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,anyDiseases} = req.body;
+const bloodTestReport = async (req,res,next)=>{
+    const {bgroup,batch,segNumber,components,rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,bp,diseases} = req.body;
+
+    const bagNumber = req.params.bagNumber;
 
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({errors:errors.array()});
     }
+    let report;
     try{
+        report = await BloodTestReport.findOne({bagNumber});
+        if (!report) {
+            return res.status(302).json({errors:[{msg : "Bag number do not exist!"}]});
+        }
+        if (report.bloodBank != req.bloodBank.id) {
+            return res.status(302).json({errors:[{msg : "OOPS Invalid Bag Number!"}]});
+        }
+        if (!components) {
+            return res.status(302).json({errors:[{msg : "Compont is required!"}]});
+        }
+        components.forEach(component => {
+            if (component == "WholeBlood") {
+                whole(report,bgroup,batch,segNumber);
+            }
+            if (component === 'Platelet') {
+                platelet(report,bgroup,batch,segNumber);
+            }
+        });
+
+
+       const whole = async (report,bgroup,batch,segNumber)=>{
+            let component;
+            try {
+                component = await WHOLE.findOne({batch,segment:segNumber});
+                if (component) {
+                    return res.status(302).json({errors:[{msg : "Component with this Segment Number already exist!"}]});
+                }
+                component = await new WHOLE({
+                    bankID:req.bloodBank.id,
+                    donor : report.user,
+                    group:bgroup,
+                    batch,
+                    segment:segNumber
+                });
+
+                // moment
+                component.duration = moment.duration(35,'days');
+                // assign expiry ticket
+                component.ticket =  jwt.sign(
+                    {
+                        wholeBlood : {
+                            id : component.id
+                        }
+                    },
+                    config.get('STOCKSECRET'),
+                    {
+                        expiresIn:'35d'
+                    }
+                );
+                await component.save();
+
+            } catch (err) {
+                console.error(err);
+                return res.status(500).send('Server error');
+            }
+       }
+
+       const platelet = async (report,bgroup,batch,segNumbe) =>{
+
+       }
         const data={
-            user:req.params.user_id,
-            bloodbank:req.bloodBank.id,
-            typeOfBag,
-            quantity,
             bgroup,
             batch,
             segNumber,
-            expdate,
             rbcCount,
             wbcCount,
             plateCount,
             hemoglobinCount,
             hematocrit,
             bglucose,
-            anyDiseases
+            bp,
+            diseases
     }
     testreport = new bloodTestReport(data);
     await testreport.save();
@@ -138,10 +210,10 @@ const bloodtestreport = async(req,res,next)=>{
     }
     catch (err) {
         console.error(err);
-        res.status(500).send('Server error');
+        return res.status(500).send('Server error');
     }
 }
 
-exports.bloodtestreport = bloodtestreport;
-exports.primarytest = primarytest;
+exports.bloodTestReport = bloodTestReport;
+exports.primaryTest = primaryTest;
 exports.postBagNumber = postBagNumber;

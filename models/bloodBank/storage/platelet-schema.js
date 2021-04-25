@@ -14,7 +14,8 @@ const plateletSchema = mongoose.Schema({
         type:String
     },
     segment:{
-        type:String
+        type:String,
+        unique:true
     },
     group:{
         type:String,
