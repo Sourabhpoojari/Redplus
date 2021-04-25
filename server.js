@@ -20,7 +20,7 @@ app.use('/api/user/profile',require('./routes/user/profile-routes'));
 app.use('/api/user/health',require('./routes/user/health-routes'));
 //app.use('/api/bloodbank/test',require('./routes/bloodbank/test-routes'));
 app.use('/api/user',require('./routes/user/donateblood-routes'));
-app.use('/api/user/camp',require('./routes/user/campshedule-routes'));
+app.use('/api/user/usercamp',require('./routes/user/organizeCamp-routes'));
 
 // admin routes
 app.use('/api/admin/',require('./routes/admin/admin-routes'));
@@ -31,7 +31,7 @@ app.use('/api/admin/requests',require('./routes/admin/request-routes'));
 app.use('/api/bloodBank',require('./routes/bloodBank/bloodBank-routes'));
 app.use('/api/bloodBank/requests',require('./routes/bloodBank/request-routes'));
 app.use('/api/bloodBank/test',require('./routes/bloodbank/test-routes'));
-
+app.use('/api/bloodbank/bloodcamp',require('./routes/bloodbank/organizeCamp-routes'));
 //hospital routes
 app.use('/api/hospital',require('./routes/hospital/hospital-routes'));
 

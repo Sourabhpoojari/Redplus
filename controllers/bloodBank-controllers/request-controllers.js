@@ -20,13 +20,13 @@ const getDonorRequests = async (req,res,next) =>{
 }
 
 
-//  @route /api/bloodbank/:id
+//  @route /api/user/:id
 // @desc  get user info
-// @access Private - bloodbank access only
+// @access Public
 const getDonorById = async (req,res,next) =>{
     let donor;
     try {
-        donor = await DonorRequest.findById(req.params.id);
+        donor = await Profile.findById(req.params.id);
         if (!donor) {
             return res.status(400).json({errors:[{msg : "Request not found!"}]});
         }

@@ -1,7 +1,14 @@
 const mongoose = require('mongoose');
 
 const campsheduleRequestSchema = mongoose.Schema({
-    
+    donor:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User'
+    },
+    bloodbank:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'BloodBank'
+    },
     campAddress:{
         type:String,
         required:true
@@ -12,36 +19,22 @@ const campsheduleRequestSchema = mongoose.Schema({
     },
     campSchedule:{
         type:Date,
-        default:Date.now()
     },
     capacity:{
         type:Number,
-        required:true
     },
     community:{
         type:String,
-        required:true,
-    },
-    organizerContactNumber:{
-        type:String,
-        required:true,
-        unique:true
-    },
-    organizerName:{
-        type:String,
-        required:true
     },
     referenceId:{
         type:String,
-        required:true
     },
     sponserOrganization:{
         type:String,
-        required:true
     },
-    //poster:{
-      //  type:String
-    //},
+    poster:{
+      type:String
+    },
     location: {
       type: {
         type: "String",

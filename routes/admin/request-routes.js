@@ -12,7 +12,7 @@ router.delete('/hospitalRequests/:req_id',isAdmin,requestController.rejecthospit
 router.get('/bloodBankRequests/:id',isAdmin,requestController.getBloodBankById);
 router.get('/hospitalRequests/:id',isAdmin,requestController.getHospitalById);
 router.get('/campShedulwRequests',isAdmin,requestController.getCampSheduleRequest);
-router.get('/campShedulwRequests/:id',isAdmin,requestController.getCampSheduleId);
+router.get('/campShedulwRequests/:id',isAdmin,requestController.getCampSheduleById);
 router.post('/campShedulwRequests/:req_id',isAdmin,requestController.acceptCampSheduleRequest);
 router.delete('/campShedulwRequests/:req_id',isAdmin,requestController.rejectcampsheduleRequest);
 

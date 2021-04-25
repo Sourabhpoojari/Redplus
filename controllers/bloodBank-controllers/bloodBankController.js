@@ -138,7 +138,26 @@ const getProfile = async (req,res,next)=>{
     }
 };
 
+//  @route /api/user/:id
+// @desc  get blood Bank profile info
+// @access Private - authorized user access only
+const getBloodBankById = async (req,res,next) =>{
+    let bloodBank;
+    try {
+        bloodBank = await BloodBankProfile.findById(req.params.id);
+        if (!bloodBank) {
+            return res.status(400).json({errors:[{msg : "profile not found!"}]});
+        }
+        return res.status(200).json(bloodBank);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send('Server error');
+    }
+}
+
+
 exports.signUpRequest = signUpRequest;
 exports.setPassword = setPassword;
 exports.logIn = logIn;
 exports.getProfile = getProfile;
+exports.getBloodBankById = getBloodBankById;
