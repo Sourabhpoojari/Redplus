@@ -22,7 +22,6 @@ const bloodTestReport= mongoose.Schema({
     },
     wbcCount:{
         type: Number
-
     },
     plateCount:{
         type : Number

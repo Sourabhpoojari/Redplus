@@ -7,8 +7,9 @@ const BloodBank = require('../../models/bloodbank/bloodBank/profile'),
 // @desc get bloodBank list based on currrent location
 // @access Private
 const donateBloodInfo = async (req,res,next) => {
-      const {lat, lang} = req.body;
-
+      let {lat, lang} = req.body;
+      lat = parseFloat(lat);
+      lang = parseFloat(lang);
      const errors = validationResult(req);
      if(!errors.isEmpty()){
        return res.status(400).json({errors:errors.array()});

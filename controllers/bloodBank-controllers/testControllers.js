@@ -1,4 +1,3 @@
-const plateletSchema = require('../../models/bloodBank/storage/platelet-schema');
 const  primarytestSchema = require('../../models/user/primarytestSchema'),
      BloodTestReport = require('../../models/user/bloodTestReportSchema'),
       Profile=require('../../models/user/profileSchema'),
@@ -16,7 +15,8 @@ const  primarytestSchema = require('../../models/user/primarytestSchema'),
       SDPLASMA = require('../../models/bloodBank/storage/sdplasma-schema') ,
       SDPLATE = require('../../models/bloodBank/storage/sdplate-schema'),
       WBC = require('../../models/bloodBank/storage/wbc-schema'),
-      moment = require('moment');
+      moment = require('moment'),
+      Inventory = require('../../models/bloodBank/inventory/inventorySchema');
 
 //  @route /api/bloodbank/test/primarytest/:user_id
 // @desc post primarytest info
@@ -114,6 +114,81 @@ const postBagNumber = async (req,res,next) =>{
 }
 
 
+// component functions
+const whole = async (req,res,report,bgroup,batch,segNumber)=>{
+    let component, inventory;
+    try {
+        component = await WHOLE.findOne({batch,segment:segNumber});
+        if (component) {
+            return res.status(302).json({errors:[{msg : "Component with this Segment Number already exist!"}]});
+        }
+        component = await new WHOLE({
+            bankID:req.bloodBank.id,
+            donor : report.user,
+            group:bgroup,
+            batch,
+            segment:segNumber
+        });
+
+        // moment
+        component.duration = moment.duration(35,'days');
+        // assign expiry ticket
+        component.ticket =  jwt.sign(
+            {
+                wholeBlood : {
+                    id : component.id
+                }
+            },
+            config.get('STOCKSECRET'),
+            {
+                expiresIn:'35d'
+            }
+        );
+            // use blood-group functions to update
+            // if (bgroup == 'A+ve') {
+            //     aPos(req,res);
+            // }
+                // update inventory
+            inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
+            if (!inventory) {
+                // create inventory
+                inventory = new Inventory({
+                    bloodBankID:req.bloodBank.id  
+                });
+            }
+            if (bgroup == 'A+Ve') {
+                inventory.whole['A+Ve']+= 1 ;
+            }
+
+     
+            
+         
+        // credit points - use donation schema
+        await component.save();
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+    }
+}
+
+const platelet = async (report,bgroup,batch,segNumbe) =>{
+
+}
+
+// Update Inventory - bloodGroup functions
+// OOPS this didn't work well cannot determine component
+const aPos = async (req,res) => {
+       // update inventory
+       inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
+       if (!inventory) {
+           // create inventory
+           inventory = new Inventory({
+               bloodBankID:req.bloodBank.id  
+           });
+       }
+
+}
 
 //  @route /api/bloodbank/test/bloodTestReport/:bagNumber
 // @desc post bloodtest Report
@@ -130,66 +205,26 @@ const bloodTestReport = async (req,res,next)=>{
     }
     let report;
     try{
-        report = await BloodTestReport.findOne({bagNumber});
+        report = await BloodTestReport.findOne({bagNumber,bloodBank:req.bloodBank.id});
         if (!report) {
             return res.status(302).json({errors:[{msg : "Bag number do not exist!"}]});
         }
-        if (report.bloodBank != req.bloodBank.id) {
-            return res.status(302).json({errors:[{msg : "OOPS Invalid Bag Number!"}]});
-        }
+        // if (report.bloodBank != req.bloodBank.id) {
+        //     return res.status(302).json({errors:[{msg : "OOPS Invalid Bag Number!"}]});
+        // }
         if (!components) {
             return res.status(302).json({errors:[{msg : "Compont is required!"}]});
         }
         components.forEach(component => {
             if (component == "WholeBlood") {
-                whole(report,bgroup,batch,segNumber);
+                whole(req,res,report,bgroup,batch,segNumber);
             }
             if (component === 'Platelet') {
                 platelet(report,bgroup,batch,segNumber);
             }
         });
 
-
-       const whole = async (report,bgroup,batch,segNumber)=>{
-            let component;
-            try {
-                component = await WHOLE.findOne({batch,segment:segNumber});
-                if (component) {
-                    return res.status(302).json({errors:[{msg : "Component with this Segment Number already exist!"}]});
-                }
-                component = await new WHOLE({
-                    bankID:req.bloodBank.id,
-                    donor : report.user,
-                    group:bgroup,
-                    batch,
-                    segment:segNumber
-                });
-
-                // moment
-                component.duration = moment.duration(35,'days');
-                // assign expiry ticket
-                component.ticket =  jwt.sign(
-                    {
-                        wholeBlood : {
-                            id : component.id
-                        }
-                    },
-                    config.get('STOCKSECRET'),
-                    {
-                        expiresIn:'35d'
-                    }
-                );
-                await component.save();
-
-            } catch (err) {
-                console.error(err);
-                return res.status(500).send('Server error');
-            }
-       }
-
-       const platelet = async (report,bgroup,batch,segNumbe) =>{
-
-       }
+  
         const data={
             bgroup,
             batch,
@@ -203,6 +238,7 @@ const bloodTestReport = async (req,res,next)=>{
             bp,
             diseases
     }
+    // blood group functions
     testreport = new bloodTestReport(data);
     await testreport.save();
   return  res.status(200).send('Test Report is Generated');
