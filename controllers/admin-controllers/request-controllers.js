@@ -164,6 +164,7 @@ const getHospitalById = async (req,res,next) =>{
         if (!hospital) {
             return res.status(404).json({errors:[{msg : "Request not found!"}]});
         }
+    
         return res.status(200).json(hospital);
     } catch (err) {
         console.log(err);

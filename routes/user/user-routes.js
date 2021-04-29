@@ -1,5 +1,7 @@
 const router = require('express').Router(),
     userControllers = require('../../controllers/user-controllers/user-controllers'),
+    bloodBankController=require('../../controllers/bloodbank-Controllers/bloodBankController'),
+    campController = require('../../controllers/camp-controllers/camp-controllers'),
     {check} = require('express-validator'),
     auth = require('../../middleware/userAuth');
 
@@ -16,5 +18,12 @@ router.post('/logIn',check('phone','Enter a valid phone number').isLength({min:1
 check('password','password is required').isLength({min:6}),
 userControllers.logIn);
 router.get('/',auth,userControllers.getUser);
+
+router.get('/bloodbankinfo/:id',auth,bloodBankController.getBloodBankById);
+
+router.get('/campinfo/:id',auth,campController.getCampById);
+ 
+router.post('/donorlocation',auth,userControllers.donorLocation);
+router.put('/updatelocation',auth,userControllers.updateLocation);
 
 module.exports = router;
