@@ -4,6 +4,7 @@ const Donor = require('../../models/user/donorlocationSchema'),
 Profile = require('../../models/user/userSchema'),
 {validationResult}  = require('express-validator'),
 config = require('config'),
+User = require('../../models/user/userSchema'),
 accountSid = config.get('TWILIO_ACCOUNT_SID1'),
 authToken = config.get('TWILIO_AUTH_TOKEN'),
 sid = config.get('TWILIO_SID'),
@@ -37,19 +38,24 @@ const flashRequest = async(req,res,next) =>{
           }
          ]);
          
-        console.log(donor);
+        donor.forEach( async (item) => {
+            const {phone} = await User.findById(item.user).select('phone');
+          // use phone number - here
+
+        });
         //const profile = await Profile.findById(donor.user).populate('user');
         //console.log(profile);
-        client.messages
-  .create({
-        to:+919632269899,
-        from: +16209797645,
-        body: "hello"
-  })
-  .then(message => {
-        console.log(message.sid);
-  })
-  .catch(err => console.error(err));
+  //       client.messages
+  // .create({
+  //       to:+919632269899,
+  //       from: +16209797645,
+  //       body: "hello"
+  // })
+  // .then(message => {
+  //       console.log(message.sid);
+  // })
+  // .catch(err => console.error(err));
+  return res.json(donor);
     }
         catch(err){
             console.log(err);
