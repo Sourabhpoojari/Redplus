@@ -228,39 +228,6 @@ const getDonorsById = async(req,res,next) =>{
     }
 }
 
-
-//  @route /api/user/donorlocation
-// @desc put update user location
-// @access Private to user
-
-const donorLocation = async(req,res,next) =>{
-    let {lat,lang,ll} = req.body;
-    // lat= parseFloat(lat);
-    // lang = parseFloat(lang);
-    let donorLoc;
-    try{  
-        donorLoc = new DonorLocation({user:req.user.id});
-        if (lat && lang) {
-            donorLoc.location.coordinates = [
-                lat,lang
-            ];
-            donorLoc.location.type = "Point";
-        }
-        let duser;
-           
-             duser = await User.find({user : req.user.id});
-            if(!duser){
-                return res.status(400).json({msg:"No user profile found"});
-            }
-        await donorLoc.save();
-        return res.status(200).json(donorLoc);
-    }
-    catch(err){
-        console.error(err.message);
-        res.status(500).send("Server error");
-    }
-}
-
 //  @route /api/user/updatelocation
 // @desc put update user location
 // @access Private to user
@@ -306,4 +273,3 @@ exports.getUser = getUser;
 exports.getDonors=getDonors;
 exports.getDonorsById= getDonorsById;
 exports.updateLocation=updateLocation;
-exports.donorLocation=donorLocation;

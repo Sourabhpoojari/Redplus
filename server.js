@@ -32,6 +32,7 @@ app.use('/api/bloodBank',require('./routes/bloodBank/bloodBank-routes'));
 app.use('/api/bloodBank/requests',require('./routes/bloodBank/request-routes'));
 app.use('/api/bloodBank/test',require('./routes/bloodbank/test-routes'));
 app.use('/api/bloodbank/bloodcamp',require('./routes/bloodbank/organizeCamp-routes'));
+app.use('/api/bloodbank/flashrequest',require('./routes/bloodbank/flashrequest-routes'));
 //hospital routes
 app.use('/api/hospital',require('./routes/hospital/hospital-routes'));
 

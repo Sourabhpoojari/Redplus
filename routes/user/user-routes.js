@@ -23,7 +23,5 @@ router.get('/bloodbankinfo/:id',auth,bloodBankController.getBloodBankById);
 
 router.get('/campinfo/:id',auth,campController.getCampById);
  
-router.post('/donorlocation',auth,userControllers.donorLocation);
 router.put('/updatelocation',auth,userControllers.updateLocation);
-
 module.exports = router;
