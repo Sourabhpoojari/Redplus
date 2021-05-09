@@ -45,7 +45,7 @@ const inventorySchema = mongoose.Schema({
         "O+Ve":{type:Number,default:0},
         "O-Ve":{type:Number,default:0}
     },
-    platelate:{
+    platelet:{
         "A+Ve":{type:Number,default:0},
         "A-Ve":{type:Number,default:0},
         "AB+Ve":{type:Number,default:0},

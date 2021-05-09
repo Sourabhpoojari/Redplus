@@ -65,15 +65,16 @@ const primaryTest = async (req,res,next) => {
             pulse,
             hb,
             bp,
-            temp,
-            bagnumber
+            temp
         }
         primary = new primarytestSchema(data);
          await primary.save();
-      let  donation = new Donation({
+      const  donation = new Donation({
             bloodBank:req.bloodBank.id,
-            user:req.params.user_id
+            user:req.params.user_id,
+            primaryTest:primary.id
         });
+        await  donation.save();
        return  res.status(200).json({msg:'You can donate blood'});
 
 
@@ -155,23 +156,23 @@ const whole = async (req,res,report,bgroup,batch,segNumber, credits)=>{
             }
             // credit points -  add blood group credits
             if (bgroup == 'A+Ve') {
-                credits+= 50;
+                credits+= 55;
                 inventory.whole['A+Ve']+= 1 ;
             }
             if (bgroup == 'A-Ve') {
-                credits+= 80;
+                credits+= 90;
                 inventory.whole['A-Ve']+= 1 ;
             }
             if (bgroup == 'B+Ve') {
-                credits+=80;
+                credits+=45;
                 inventory.whole['B+Ve']+= 1 ;
             }
             if (bgroup == 'B-Ve') {
-                credits+= 90;
+                credits+= 85;
                 inventory.whole['B-Ve']+= 1 ;
             }
             if (bgroup == 'AB+Ve') {
-                credits+= 90;
+                credits+= 70;
                 inventory.whole['A+Ve']+= 1 ;
             }
             if (bgroup == 'AB-Ve') {
@@ -183,7 +184,7 @@ const whole = async (req,res,report,bgroup,batch,segNumber, credits)=>{
                 inventory.whole['O+Ve']+= 1 ;
             }
             if (bgroup == 'O-Ve') {
-                credits+= 70;
+                credits+= 85;
                 inventory.whole['O-Ve']+= 1 ;
             }
         
@@ -197,41 +198,789 @@ const whole = async (req,res,report,bgroup,batch,segNumber, credits)=>{
     }
 }
 
-const platelet = async (report,bgroup,batch,segNumbe) =>{
+const platelet = async (req,res,report,bgroup,batch,segNumber, credits) =>{
+    let component, inventory;
+    try {
+        component = await PLATELET.findOne({batch,segment:segNumber});
+        if (component) {
+            return res.status(302).json({errors:[{msg : "Component with this Segment Number already exist!"}]});
+        }
+        component = await new PLATELET({
+            bankID:req.bloodBank.id,
+            donor : report.user,
+            group:bgroup,
+            batch,
+            segment:segNumber
+        });
 
+        // moment
+        component.duration = moment.duration(5,'days');
+        // assign expiry ticket
+        component.ticket =  jwt.sign(
+            {
+                platelet : {
+                    id : component.id
+                }
+            },
+            config.get('STOCKSECRET'),
+            {
+                expiresIn:'5d'
+            }
+        );
+                // update inventory
+            inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
+            if (!inventory) {
+                // create inventory
+                inventory = new Inventory({
+                    bloodBankID:req.bloodBank.id  
+                });
+            }
+            // credit points -  add blood group credits
+            if (bgroup == 'A+Ve') {
+                credits+= 50;
+                inventory.platelet['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'A-Ve') {
+                credits+= 90;
+                inventory.platelet['A-Ve']+= 1 ;
+            }
+            if (bgroup == 'B+Ve') {
+                credits+=45;
+                inventory.platelet['B+Ve']+= 1 ;
+            }
+            if (bgroup == 'B-Ve') {
+                credits+= 85;
+                inventory.platelet['B-Ve']+= 1 ;
+            }
+            if (bgroup == 'AB+Ve') {
+                credits+= 70;
+                inventory.platelet['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'AB-Ve') {
+                credits+= 100;
+                inventory.platelet['AB+Ve']+= 1 ;
+            }
+            if (bgroup == 'O+Ve') {
+                credits+= 40;
+                inventory.platelet['O+Ve']+= 1 ;
+            }
+            if (bgroup == 'O-Ve') {
+                credits+= 85;
+                inventory.platelet['O-Ve']+= 1 ;
+            }
+        
+        await inventory.save();
+        await component.save();
+        return credits;
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+    }
 }
 
+const wbc = async (req,res,report,bgroup,batch,segNumber,credits) => {
+    let component, inventory;
+    try {
+        component = await WBC.findOne({batch,segment:segNumber});
+        if (component) {
+            return res.status(302).json({errors:[{msg : "Component with this Segment Number already exist!"}]});
+        }
+        component = await new WBC({
+            bankID:req.bloodBank.id,
+            donor : report.user,
+            group:bgroup,
+            batch,
+            segment:segNumber
+        });
+
+        // moment
+        component.duration = moment.duration(42,'days');
+        // assign expiry ticket
+        component.ticket =  jwt.sign(
+            {
+                wbc : {
+                    id : component.id
+                }
+            },
+            config.get('STOCKSECRET'),
+            {
+                expiresIn:'42d'
+            }
+        );
+                // update inventory
+            inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
+            if (!inventory) {
+                // create inventory
+                inventory = new Inventory({
+                    bloodBankID:req.bloodBank.id  
+                });
+            }
+            // credit points -  add blood group credits
+            if (bgroup == 'A+Ve') {
+                credits+= 50;
+                inventory.wbc['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'A-Ve') {
+                credits+= 90;
+                inventory.wbc['A-Ve']+= 1 ;
+            }
+            if (bgroup == 'B+Ve') {
+                credits+=45;
+                inventory.wbc['B+Ve']+= 1 ;
+            }
+            if (bgroup == 'B-Ve') {
+                credits+= 85;
+                inventory.wbc['B-Ve']+= 1 ;
+            }
+            if (bgroup == 'AB+Ve') {
+                credits+= 70;
+                inventory.wbc['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'AB-Ve') {
+                credits+= 100;
+                inventory.wbc['AB+Ve']+= 1 ;
+            }
+            if (bgroup == 'O+Ve') {
+                credits+= 40;
+                inventory.wbc['O+Ve']+= 1 ;
+            }
+            if (bgroup == 'O-Ve') {
+                credits+= 85;
+                inventory.wbc['O-Ve']+= 1 ;
+            }
+        
+        await inventory.save();
+        await component.save();
+        return credits;
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+    }
+}
+
+const plasma = async (req,res,report,bgroup,batch,segNumber,credits) => {
+    let component, inventory;
+    try {
+        component = await PLASMA.findOne({batch,segment:segNumber});
+        if (component) {
+            return res.status(302).json({errors:[{msg : "Component with this Segment Number already exist!"}]});
+        }
+        component = await new PLASMA({
+            bankID:req.bloodBank.id,
+            donor : report.user,
+            group:bgroup,
+            batch,
+            segment:segNumber
+        });
+
+        // moment
+        component.duration = moment.duration(1,'year');
+        // assign expiry ticket
+        component.ticket =  jwt.sign(
+            {
+                plasma : {
+                    id : component.id
+                }
+            },
+            config.get('STOCKSECRET'),
+            {
+                expiresIn:'1y'
+            }
+        );
+                // update inventory
+            inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
+            if (!inventory) {
+                // create inventory
+                inventory = new Inventory({
+                    bloodBankID:req.bloodBank.id  
+                });
+            }
+            // credit points -  add blood group credits
+            if (bgroup == 'A+Ve') {
+                credits+= 50;
+                inventory.plasma['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'A-Ve') {
+                credits+= 90;
+                inventory.plasma['A-Ve']+= 1 ;
+            }
+            if (bgroup == 'B+Ve') {
+                credits+=45;
+                inventory.plasma['B+Ve']+= 1 ;
+            }
+            if (bgroup == 'B-Ve') {
+                credits+= 85;
+                inventory.plasma['B-Ve']+= 1 ;
+            }
+            if (bgroup == 'AB+Ve') {
+                credits+= 70;
+                inventory.plasma['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'AB-Ve') {
+                credits+= 100;
+                inventory.plasma['AB+Ve']+= 1 ;
+            }
+            if (bgroup == 'O+Ve') {
+                credits+= 40;
+                inventory.plasma['O+Ve']+= 1 ;
+            }
+            if (bgroup == 'O-Ve') {
+                credits+= 85;
+                inventory.plasma['O-Ve']+= 1 ;
+            }
+        
+        await inventory.save();
+        await component.save();
+        return credits;
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+    }
+}
+
+const prbc = async (req,res,report,bgroup,batch,segNumber,credits) =>{
+    let component, inventory;
+    try {
+        component = await RBC.findOne({batch,segment:segNumber});
+        if (component) {
+            return res.status(302).json({errors:[{msg : "Component with this Segment Number already exist!"}]});
+        }
+        component = await new RBC({
+            bankID:req.bloodBank.id,
+            donor : report.user,
+            group:bgroup,
+            batch,
+            segment:segNumber
+        });
+
+        // moment
+        component.duration = moment.duration(42,'days');
+        // assign expiry ticket
+        component.ticket =  jwt.sign(
+            {
+                rbc : {
+                    id : component.id
+                }
+            },
+            config.get('STOCKSECRET'),
+            {
+                expiresIn:'42d'
+            }
+        );
+                // update inventory
+            inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
+            if (!inventory) {
+                // create inventory
+                inventory = new Inventory({
+                    bloodBankID:req.bloodBank.id  
+                });
+            }
+            // credit points -  add blood group credits
+            if (bgroup == 'A+Ve') {
+                credits+= 50;
+                inventory.rbc['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'A-Ve') {
+                credits+= 90;
+                inventory.rbc['A-Ve']+= 1 ;
+            }
+            if (bgroup == 'B+Ve') {
+                credits+=45;
+                inventory.rbc['B+Ve']+= 1 ;
+            }
+            if (bgroup == 'B-Ve') {
+                credits+= 85;
+                inventory.rbc['B-Ve']+= 1 ;
+            }
+            if (bgroup == 'AB+Ve') {
+                credits+= 70;
+                inventory.rbc['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'AB-Ve') {
+                credits+= 100;
+                inventory.rbc['AB+Ve']+= 1 ;
+            }
+            if (bgroup == 'O+Ve') {
+                credits+= 40;
+                inventory.rbc['O+Ve']+= 1 ;
+            }
+            if (bgroup == 'O-Ve') {
+                credits+= 85;
+                inventory.rbc['O-Ve']+= 1 ;
+            }
+        
+        await inventory.save();
+        await component.save();
+        return credits;
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+    }
+}
+
+const ffp = async (req,res,report,bgroup,batch,segNumber,credits) => {
+    let component, inventory;
+    try {
+        component = await FFP.findOne({batch,segment:segNumber});
+        if (component) {
+            return res.status(302).json({errors:[{msg : "Component with this Segment Number already exist!"}]});
+        }
+        component = await new FFP({
+            bankID:req.bloodBank.id,
+            donor : report.user,
+            group:bgroup,
+            batch,
+            segment:segNumber
+        });
+
+        // moment
+        component.duration = moment.duration(1,'year');
+        // assign expiry ticket
+        component.ticket =  jwt.sign(
+            {
+                ffp : {
+                    id : component.id
+                }
+            },
+            config.get('STOCKSECRET'),
+            {
+                expiresIn:'1y'
+            }
+        );
+                // update inventory
+            inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
+            if (!inventory) {
+                // create inventory
+                inventory = new Inventory({
+                    bloodBankID:req.bloodBank.id  
+                });
+            }
+            // credit points -  add blood group credits
+            if (bgroup == 'A+Ve') {
+                credits+= 50;
+                inventory.ffp['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'A-Ve') {
+                credits+= 90;
+                inventory.ffp['A-Ve']+= 1 ;
+            }
+            if (bgroup == 'B+Ve') {
+                credits+=45;
+                inventory.ffp['B+Ve']+= 1 ;
+            }
+            if (bgroup == 'B-Ve') {
+                credits+= 85;
+                inventory.ffp['B-Ve']+= 1 ;
+            }
+            if (bgroup == 'AB+Ve') {
+                credits+= 70;
+                inventory.ffp['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'AB-Ve') {
+                credits+= 100;
+                inventory.ffp['AB+Ve']+= 1 ;
+            }
+            if (bgroup == 'O+Ve') {
+                credits+= 40;
+                inventory.ffp['O+Ve']+= 1 ;
+            }
+            if (bgroup == 'O-Ve') {
+                credits+= 85;
+                inventory.ffp['O-Ve']+= 1 ;
+            }
+        
+        await inventory.save();
+        await component.save();
+        return credits;
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+    }
+}
+
+const cryo = async (req,res,report,bgroup,batch,segNumber,credits) =>{
+    let component, inventory;
+    try {
+        component = await CRYOPRI.findOne({batch,segment:segNumber});
+        if (component) {
+            return res.status(302).json({errors:[{msg : "Component with this Segment Number already exist!"}]});
+        }
+        component = await new CRYOPRI({
+            bankID:req.bloodBank.id,
+            donor : report.user,
+            group:bgroup,
+            batch,
+            segment:segNumber
+        });
+
+        // moment
+        component.duration = moment.duration(1,'year');
+        // assign expiry ticket
+        component.ticket =  jwt.sign(
+            {
+                cryo : {
+                    id : component.id
+                }
+            },
+            config.get('STOCKSECRET'),
+            {
+                expiresIn:'1y'
+            }
+        );
+                // update inventory
+            inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
+            if (!inventory) {
+                // create inventory
+                inventory = new Inventory({
+                    bloodBankID:req.bloodBank.id  
+                });
+            }
+            // credit points -  add blood group credits
+            if (bgroup == 'A+Ve') {
+                credits+= 50;
+                inventory.cryo['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'A-Ve') {
+                credits+= 90;
+                inventory.cryo['A-Ve']+= 1 ;
+            }
+            if (bgroup == 'B+Ve') {
+                credits+=45;
+                inventory.cryo['B+Ve']+= 1 ;
+            }
+            if (bgroup == 'B-Ve') {
+                credits+= 85;
+                inventory.cryo['B-Ve']+= 1 ;
+            }
+            if (bgroup == 'AB+Ve') {
+                credits+= 70;
+                inventory.cryo['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'AB-Ve') {
+                credits+= 100;
+                inventory.cryo['AB+Ve']+= 1 ;
+            }
+            if (bgroup == 'O+Ve') {
+                credits+= 40;
+                inventory.cryo['O+Ve']+= 1 ;
+            }
+            if (bgroup == 'O-Ve') {
+                credits+= 85;
+                inventory.cryo['O-Ve']+= 1 ;
+            }
+        
+        await inventory.save();
+        await component.save();
+        return credits;
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+    }
+}
+
+const sprbc = async (req,res,report,bgroup,batch,segNumber,credits) =>{
+    let component, inventory;
+    try {
+        component = await SAGM.findOne({batch,segment:segNumber});
+        if (component) {
+            return res.status(302).json({errors:[{msg : "Component with this Segment Number already exist!"}]});
+        }
+        component = await new SAGM({
+            bankID:req.bloodBank.id,
+            donor : report.user,
+            group:bgroup,
+            batch,
+            segment:segNumber
+        });
+
+        // moment
+        component.duration = moment.duration(1,'year');
+        // assign expiry ticket
+        component.ticket =  jwt.sign(
+            {
+                sagm : {
+                    id : component.id
+                }
+            },
+            config.get('STOCKSECRET'),
+            {
+                expiresIn:'1y'
+            }
+        );
+                // update inventory
+            inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
+            if (!inventory) {
+                // create inventory
+                inventory = new Inventory({
+                    bloodBankID:req.bloodBank.id  
+                });
+            }
+            // credit points -  add blood group credits
+            if (bgroup == 'A+Ve') {
+                credits+= 50;
+                inventory.sagm['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'A-Ve') {
+                credits+= 90;
+                inventory.sagm['A-Ve']+= 1 ;
+            }
+            if (bgroup == 'B+Ve') {
+                credits+=45;
+                inventory.sagm['B+Ve']+= 1 ;
+            }
+            if (bgroup == 'B-Ve') {
+                credits+= 85;
+                inventory.sagm['B-Ve']+= 1 ;
+            }
+            if (bgroup == 'AB+Ve') {
+                credits+= 70;
+                inventory.sagm['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'AB-Ve') {
+                credits+= 100;
+                inventory.sagm['AB+Ve']+= 1 ;
+            }
+            if (bgroup == 'O+Ve') {
+                credits+= 40;
+                inventory.sagm['O+Ve']+= 1 ;
+            }
+            if (bgroup == 'O-Ve') {
+                credits+= 85;
+                inventory.sagm['O-Ve']+= 1 ;
+            }
+        
+        await inventory.save();
+        await component.save();
+        return credits;
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+    }
+}
+
+const sdplate = async (req,res,report,bgroup,batch,segNumber,credits) =>{
+    let component, inventory;
+    try {
+        component = await SDPLATE.findOne({batch,segment:segNumber});
+        if (component) {
+            return res.status(302).json({errors:[{msg : "Component with this Segment Number already exist!"}]});
+        }
+        component = await new SDPLATE({
+            bankID:req.bloodBank.id,
+            donor : report.user,
+            group:bgroup,
+            batch,
+            segment:segNumber
+        });
+
+        // moment
+        component.duration = moment.duration(5,'days');
+        // assign expiry ticket
+        component.ticket =  jwt.sign(
+            {
+                sdplate : {
+                    id : component.id
+                }
+            },
+            config.get('STOCKSECRET'),
+            {
+                expiresIn:'5d'
+            }
+        );
+                // update inventory
+            inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
+            if (!inventory) {
+                // create inventory
+                inventory = new Inventory({
+                    bloodBankID:req.bloodBank.id  
+                });
+            }
+            // credit points -  add blood group credits
+            if (bgroup == 'A+Ve') {
+                credits+= 50;
+                inventory.sdplate['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'A-Ve') {
+                credits+= 90;
+                inventory.sdplate['A-Ve']+= 1 ;
+            }
+            if (bgroup == 'B+Ve') {
+                credits+=45;
+                inventory.sdplate['B+Ve']+= 1 ;
+            }
+            if (bgroup == 'B-Ve') {
+                credits+= 85;
+                inventory.sdplate['B-Ve']+= 1 ;
+            }
+            if (bgroup == 'AB+Ve') {
+                credits+= 70;
+                inventory.sdplate['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'AB-Ve') {
+                credits+= 100;
+                inventory.sdplate['AB+Ve']+= 1 ;
+            }
+            if (bgroup == 'O+Ve') {
+                credits+= 40;
+                inventory.sdplate['O+Ve']+= 1 ;
+            }
+            if (bgroup == 'O-Ve') {
+                credits+= 85;
+                inventory.sdplate['O-Ve']+= 1 ;
+            }
+        
+        await inventory.save();
+        await component.save();
+        return credits;
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+    }  
+}
+
+const sdplasma = async (req,res,report,bgroup,batch,segNumber,credits) =>{
+    let component, inventory;
+    try {
+        component = await SDPLASMA.findOne({batch,segment:segNumber});
+        if (component) {
+            return res.status(302).json({errors:[{msg : "Component with this Segment Number already exist!"}]});
+        }
+        component = await new SDPLASMA({
+            bankID:req.bloodBank.id,
+            donor : report.user,
+            group:bgroup,
+            batch,
+            segment:segNumber
+        });
+
+        // moment
+        component.duration = moment.duration(1,'year');
+        // assign expiry ticket
+        component.ticket =  jwt.sign(
+            {
+                sdplasma : {
+                    id : component.id
+                }
+            },
+            config.get('STOCKSECRET'),
+            {
+                expiresIn:'1y'
+            }
+        );
+                // update inventory
+            inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
+            if (!inventory) {
+                // create inventory
+                inventory = new Inventory({
+                    bloodBankID:req.bloodBank.id  
+                });
+            }
+            // credit points -  add blood group credits
+            if (bgroup == 'A+Ve') {
+                credits+= 50;
+                inventory.sdplasma['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'A-Ve') {
+                credits+= 90;
+                inventory.sdplasma['A-Ve']+= 1 ;
+            }
+            if (bgroup == 'B+Ve') {
+                credits+=45;
+                inventory.sdplasma['B+Ve']+= 1 ;
+            }
+            if (bgroup == 'B-Ve') {
+                credits+= 85;
+                inventory.sdplasma['B-Ve']+= 1 ;
+            }
+            if (bgroup == 'AB+Ve') {
+                credits+= 70;
+                inventory.sdplasma['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'AB-Ve') {
+                credits+= 100;
+                inventory.sdplasma['AB+Ve']+= 1 ;
+            }
+            if (bgroup == 'O+Ve') {
+                credits+= 40;
+                inventory.sdplasma['O+Ve']+= 1 ;
+            }
+            if (bgroup == 'O-Ve') {
+                credits+= 85;
+                inventory.sdplasma['O-Ve']+= 1 ;
+            }
+        
+        await inventory.save();
+        await component.save();
+        return credits;
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+    } 
+}
 // ###################
 // Get test Credits
 // ###################
-const testCredit = async (rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,bp,gender,credits) => {
+const testCredit = async (rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,diastolic,systrolic,gender,credits) => {
     try {
-        
+        if (gender == "male") {
+            if (4.7<rbcCount<6.1 ) {
+                credits+=25;
+            }
+            if (4.5<wbcCount<11) {
+                credits+=25;
+            }
+            if (13.5<hemoglobinCount<17.5 ) {
+                credits+=25;
+            }
+            if (41<hematocrit<50) {
+                credits+=25;
+            }      
+        }
+        if (gender == 'female') {
+            if (4.2<rbcCount<5.4) {
+                credits+=25;
+            }
+            if (4.5<wbcCount<11) {
+                credits+=25;
+            }
+            if (12<hemoglobinCount<15.5) {
+                credits+=25;
+            }
+            if (36<hematocrit<48) {
+                credits+=25;
+            }
+        }
+        if (150000<plateCount<450000) {
+            credits+=25;
+        }
+        if (bglucose == 140) {
+            credits+=25;
+        }
+        if (diastolic == 80 && systrolic == 120) {
+            credits+=25;
+        }
+        return credits;
+
     } catch (err) {
         console.error(err.message);
     }
 }
-
-// Update Inventory - bloodGroup functions
-// OOPS this didn't work well cannot determine component
-// const aPos = async (req,res) => {
-//        // update inventory
-//        inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
-//        if (!inventory) {
-//            // create inventory
-//            inventory = new Inventory({
-//                bloodBankID:req.bloodBank.id  
-//            });
-//        }
-
-// }
 
 //  @route /api/bloodbank/test/bloodTestReport/:bagNumber
 // @desc post bloodtest Report
 // @access Private
 
 const testReportAndCredits = async (req,res,next)=>{
-    let {bgroup,batch,segNumber,components,rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,bp,diseases} = req.body;
+    let {bgroup,batch,segNumber,components,rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,systrolic,diastolic,diseases} = req.body;
     rbcCount = parseFloat(rbcCount);
     wbcCount = parseFloat(wbcCount);
     plateCount = parseFloat(plateCount);
@@ -258,60 +1007,98 @@ const testReportAndCredits = async (req,res,next)=>{
         if (!components) {
             return res.status(302).json({errors:[{msg : "Component is required!"}]});
         }
+        // ################
         // credit points  - component credits and get blood group credits
+        //  ###############
         // update inventory and add storage stock
         components.forEach(component => {
             if (component == "WholeBlood") {
-                credits = 18;
+                credits = 20;
                 credits =   whole(req,res,report,bgroup,batch,segNumber,credits);
             }
             if (component === 'Platelet') {
-                credits = 18;
-                credits =  platelet(report,bgroup,batch,segNumber,credits);
+                credits = 20;
+                credits =  platelet(req,res,report,bgroup,batch,segNumber,credits);
+            }
+            if (component === 'WBC') {
+                credits = 20;
+                credits =  wbc(req,res,report,bgroup,batch,segNumber,credits);
+            }
+            if (component === 'Plasma') {
+                credits = 20;
+                credits =  plasma(req,res,report,bgroup,batch,segNumber,credits);
+            }
+            if (component === 'PRBC') {
+                credits = 20;
+                credits =  prbc(req,res,report,bgroup,batch,segNumber,credits);
+            }
+            if (component === 'FFP') {
+                credits = 20;
+                credits =  ffp(req,res,report,bgroup,batch,segNumber,credits);
+            }
+            if (component === 'Cryoprecipitate') {
+                credits = 20;
+                credits =  cryo(req,res,report,bgroup,batch,segNumber,credits);
+            }
+            if (component === 'SPRBC') {
+                credits = 20;
+                credits =  sprbc(req,res,report,bgroup,batch,segNumber,credits);
+            }
+            if (component === 'SDPlatelet') {
+                credits = 20;
+                credits =  sdplate(req,res,report,bgroup,batch,segNumber,credits);
+            }
+            if (component === 'SDPlasma') {
+                credits = 20;
+                credits =  sdplasma(req,res,report,bgroup,batch,segNumber,credits);
             }
         });
         //  ##################
         // credit points- test results
         // ###################
         const {gender} = await Profile.findOne({user:report.user}).select('gender');
-        credits = testCredit(rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,bp,gender,credits);
+        credits = testCredit(rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,diastolic,systrolic,gender,credits);
         // RBC count result
-  
-
-
-
-
         if (!diseases && diseases.length == 0) {
             credits+= 25;
         }
+        // get latest donationSchema
+        const donationArray = await Donation.find({user:report.user, bloodBank:req.bloodBank.id}).sort('-donatedOn'),
+        donation = donationArray[0];
+        donation.credits = credits;
         // add expiry for credits 
+        donation.expiryTicket =  jwt.sign(
+            {
+                credit : {
+                    id : donation.id
+                }
+            },
+            config.get('CREDITSECRET'),
+            {
+                expiresIn:'180d'
+            }
+        );
+        // add duration
+        donation.creditDuration =  moment.duration(180,'days');
 
+    // ###########
+    // save Test report
+    // ###########
+    report.bgroup = bgroup;
+    report.rbcCount = rbcCount;
+    report.wbcCount = wbcCount;
+    report.plateCount = plateCount;
+    report.hemoglobinCount = hemoglobinCount;
+    report.hematocrit = hematocrit;
+    report.bglucose = bglucose;
+    report.bp.systrolic = systrolic;
+    report.bp.diastolic = diastolic;
+    report.diseases = diseases;
+    await report.save();
+    donation.report = report.id;
+    await donation.save();
 
-
-
-
-
-
-
-
-  
-        const data={
-            bgroup,
-            batch,
-            segNumber,
-            rbcCount,
-            wbcCount,
-            plateCount,
-            hemoglobinCount,
-            hematocrit,
-            bglucose,
-            bp,
-            diseases
-    }
-    // blood group functions
-    testreport = new bloodTestReport(data);
-    await testreport.save();
-  return  res.status(200).send('Test Report is Generated');
+  return  res.status(200).json(report);
 
     }
     catch (err) {

@@ -36,7 +36,8 @@ const bloodTestReport= mongoose.Schema({
         type: Number
     },
     bp:{
-        type:Number
+        systrolic :{type:Number},
+        diastolic:{type:Number}
     },
     diseases :[
         {
