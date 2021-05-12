@@ -10,12 +10,9 @@ const router= require('express').Router(),
             check('hb','Enter a valid hb').exists(),
             check('bp','Enter a valid bp').exists(),
             check('tempreture','Enter a valid tempreture').isEmpty(),
-            check('bagnumber','Enter a valid bagnumber').exists().isLength({min:6}),
             testControllers.primaryTest);
     
-    router.post('/bloodtestReport/:user_id',auth,
-    check('typeOfBag','Enter a valid type of bag').exists(),
-    check('quantity','Enter a valid quantity').exists(),
+    router.post('/bloodtestReport/:bagNumber',auth,
     check('bgroup','Enter a valid blood group').exists(),
     check('batch','Enter a valid batch').exists(),
     check('segNumber','Enter a valid segment').exists(),
@@ -25,7 +22,8 @@ const router= require('express').Router(),
     check('hemoglobinCount','Enter a valid hemoglobin Count').exists(),
     check('hematocrit','Enter a valid hematocrit count').exists(),
     check('bglucose','Enter a valid blood bglucose count ').exists(),
-    check('anyDiseases','Choose any disease').exists(),
+    check('systrolic','Systrolic value is required!'),
+    check('diastolic','Diastolic value is required!'),
     testControllers.testReportAndCredits);
     
 

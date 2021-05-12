@@ -6,9 +6,9 @@ const bloodTestReport= mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'
     },
-    bloodbank:{
+    bloodBank:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Bloodbank'
+        ref:'BloodBank'
     },
     bagNumber:{
         type:String,
@@ -36,7 +36,8 @@ const bloodTestReport= mongoose.Schema({
         type: Number
     },
     bp:{
-        type:Number
+        systrolic :{type:Number},
+        diastolic:{type:Number}
     },
     diseases :[
         {

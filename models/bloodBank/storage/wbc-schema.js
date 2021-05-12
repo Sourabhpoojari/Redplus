@@ -20,6 +20,16 @@ const wbcSchema = mongoose.Schema({
         type:String,
         unique:true
     },
+    duration:{
+        type:String
+    },
+    ticket:{
+        type:String 
+    },
+    bagNumber:{
+        type:String,
+        unique:true
+    },
     createdOn:{
         type:Date,
         default:Date.now()
