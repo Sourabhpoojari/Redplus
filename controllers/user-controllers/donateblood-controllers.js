@@ -40,7 +40,7 @@ const donateBloodInfo = async (req,res,next) => {
                    coordinates: [ lat , lang]
                  },
                  distanceField: "distance",
-                 maxDistance:30000,
+                 maxDistance:100000,
                  spherical: true
               }
             }
