@@ -113,9 +113,10 @@ const postBagNumber = async (req,res,next) =>{
     }
 }
 
-
-// component functions
-const whole = async (req,res,report,bgroup,batch,segNumber)=>{
+// ###################
+// Component functions
+// ###################
+const whole = async (req,res,report,bgroup,batch,segNumber, credits)=>{
     let component, inventory;
     try {
         component = await WHOLE.findOne({batch,segment:segNumber});
@@ -144,10 +145,6 @@ const whole = async (req,res,report,bgroup,batch,segNumber)=>{
                 expiresIn:'35d'
             }
         );
-            // use blood-group functions to update
-            // if (bgroup == 'A+ve') {
-            //     aPos(req,res);
-            // }
                 // update inventory
             inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
             if (!inventory) {
@@ -156,15 +153,43 @@ const whole = async (req,res,report,bgroup,batch,segNumber)=>{
                     bloodBankID:req.bloodBank.id  
                 });
             }
+            // credit points -  add blood group credits
             if (bgroup == 'A+Ve') {
+                credits+= 50;
                 inventory.whole['A+Ve']+= 1 ;
             }
-
-     
-            
-         
-        // credit points - use donation schema
+            if (bgroup == 'A-Ve') {
+                credits+= 80;
+                inventory.whole['A-Ve']+= 1 ;
+            }
+            if (bgroup == 'B+Ve') {
+                credits+=80;
+                inventory.whole['B+Ve']+= 1 ;
+            }
+            if (bgroup == 'B-Ve') {
+                credits+= 90;
+                inventory.whole['B-Ve']+= 1 ;
+            }
+            if (bgroup == 'AB+Ve') {
+                credits+= 90;
+                inventory.whole['A+Ve']+= 1 ;
+            }
+            if (bgroup == 'AB-Ve') {
+                credits+= 100;
+                inventory.whole['AB+Ve']+= 1 ;
+            }
+            if (bgroup == 'O+Ve') {
+                credits+= 40;
+                inventory.whole['O+Ve']+= 1 ;
+            }
+            if (bgroup == 'O-Ve') {
+                credits+= 70;
+                inventory.whole['O-Ve']+= 1 ;
+            }
+        
+        await inventory.save();
         await component.save();
+        return credits;
 
     } catch (err) {
         console.error(err);
@@ -176,34 +201,52 @@ const platelet = async (report,bgroup,batch,segNumbe) =>{
 
 }
 
+// ###################
+// Get test Credits
+// ###################
+const testCredit = async (rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,bp,gender,credits) => {
+    try {
+        
+    } catch (err) {
+        console.error(err.message);
+    }
+}
+
 // Update Inventory - bloodGroup functions
 // OOPS this didn't work well cannot determine component
-const aPos = async (req,res) => {
-       // update inventory
-       inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
-       if (!inventory) {
-           // create inventory
-           inventory = new Inventory({
-               bloodBankID:req.bloodBank.id  
-           });
-       }
+// const aPos = async (req,res) => {
+//        // update inventory
+//        inventory = await Inventory.findOne({bloodBankID:req.bloodBank.id});
+//        if (!inventory) {
+//            // create inventory
+//            inventory = new Inventory({
+//                bloodBankID:req.bloodBank.id  
+//            });
+//        }
 
-}
+// }
 
 //  @route /api/bloodbank/test/bloodTestReport/:bagNumber
 // @desc post bloodtest Report
 // @access Private
 
-const bloodTestReport = async (req,res,next)=>{
-    const {bgroup,batch,segNumber,components,rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,bp,diseases} = req.body;
-
+const testReportAndCredits = async (req,res,next)=>{
+    let {bgroup,batch,segNumber,components,rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,bp,diseases} = req.body;
+    rbcCount = parseFloat(rbcCount);
+    wbcCount = parseFloat(wbcCount);
+    plateCount = parseFloat(plateCount);
+    hemoglobinCount = parseFloat(hemoglobinCount);
+    hematocrit = parseFloat(hematocrit);
+    bglucose = parseFloat(bglucose);
+    bp = parseFloat(bp);
     const bagNumber = req.params.bagNumber;
 
+    // Error validations
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({errors:errors.array()});
     }
-    let report;
+    let report,credits=0;
     try{
         report = await BloodTestReport.findOne({bagNumber,bloodBank:req.bloodBank.id});
         if (!report) {
@@ -213,16 +256,43 @@ const bloodTestReport = async (req,res,next)=>{
         //     return res.status(302).json({errors:[{msg : "OOPS Invalid Bag Number!"}]});
         // }
         if (!components) {
-            return res.status(302).json({errors:[{msg : "Compont is required!"}]});
+            return res.status(302).json({errors:[{msg : "Component is required!"}]});
         }
+        // credit points  - component credits and get blood group credits
+        // update inventory and add storage stock
         components.forEach(component => {
             if (component == "WholeBlood") {
-                whole(req,res,report,bgroup,batch,segNumber);
+                credits = 18;
+                credits =   whole(req,res,report,bgroup,batch,segNumber,credits);
             }
             if (component === 'Platelet') {
-                platelet(report,bgroup,batch,segNumber);
+                credits = 18;
+                credits =  platelet(report,bgroup,batch,segNumber,credits);
             }
         });
+        //  ##################
+        // credit points- test results
+        // ###################
+        const {gender} = await Profile.findOne({user:report.user}).select('gender');
+        credits = testCredit(rbcCount,wbcCount,plateCount,hemoglobinCount,hematocrit,bglucose,bp,gender,credits);
+        // RBC count result
+  
+
+
+
+
+        if (!diseases && diseases.length == 0) {
+            credits+= 25;
+        }
+        // add expiry for credits 
+
+
+
+
+
+
+
+
 
   
         const data={
@@ -250,6 +320,6 @@ const bloodTestReport = async (req,res,next)=>{
     }
 }
 
-exports.bloodTestReport = bloodTestReport;
+exports.testReportAndCredits = testReportAndCredits;
 exports.primaryTest = primaryTest;
 exports.postBagNumber = postBagNumber;

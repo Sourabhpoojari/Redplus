@@ -26,7 +26,7 @@ const router= require('express').Router(),
     check('hematocrit','Enter a valid hematocrit count').exists(),
     check('bglucose','Enter a valid blood bglucose count ').exists(),
     check('anyDiseases','Choose any disease').exists(),
-    testControllers.bloodTestReport);
+    testControllers.testReportAndCredits);
     
 
 
