@@ -6,9 +6,9 @@ const bloodTestReport= mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'
     },
-    bloodbank:{
+    bloodBank:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Bloodbank'
+        ref:'BloodBank'
     },
     bagNumber:{
         type:String,
