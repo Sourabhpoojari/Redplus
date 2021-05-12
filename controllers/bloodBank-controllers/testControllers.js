@@ -189,11 +189,11 @@ const whole = async (
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.whole['A+Ve'] += 1;
+			inventory.whole['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.whole['AB+Ve'] += 1;
+			inventory.whole['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
@@ -284,11 +284,11 @@ const platelet = async (
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.platelet['A+Ve'] += 1;
+			inventory.platelet['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.platelet['AB+Ve'] += 1;
+			inventory.platelet['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
@@ -379,11 +379,11 @@ const wbc = async (
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.wbc['A+Ve'] += 1;
+			inventory.wbc['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.wbc['AB+Ve'] += 1;
+			inventory.wbc['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
@@ -474,11 +474,11 @@ const plasma = async (
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.plasma['A+Ve'] += 1;
+			inventory.plasma['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.plasma['AB+Ve'] += 1;
+			inventory.plasma['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
@@ -569,11 +569,11 @@ const prbc = async (
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.rbc['A+Ve'] += 1;
+			inventory.rbc['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.rbc['AB+Ve'] += 1;
+			inventory.rbc['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
@@ -664,11 +664,11 @@ const ffp = async (
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.ffp['A+Ve'] += 1;
+			inventory.ffp['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.ffp['AB+Ve'] += 1;
+			inventory.ffp['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
@@ -759,11 +759,11 @@ const cryo = async (
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.cryo['A+Ve'] += 1;
+			inventory.cryo['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.cryo['AB+Ve'] += 1;
+			inventory.cryo['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
@@ -854,11 +854,11 @@ const sprbc = async (
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.sagm['A+Ve'] += 1;
+			inventory.sagm['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.sagm['AB+Ve'] += 1;
+			inventory.sagm['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
@@ -949,11 +949,11 @@ const sdplate = async (
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.sdplate['A+Ve'] += 1;
+			inventory.sdplate['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.sdplate['AB+Ve'] += 1;
+			inventory.sdplate['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
@@ -1044,11 +1044,11 @@ const sdplasma = async (
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.sdplasma['A+Ve'] += 1;
+			inventory.sdplasma['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.sdplasma['AB+Ve'] += 1;
+			inventory.sdplasma['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
