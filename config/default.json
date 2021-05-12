@@ -7,5 +7,7 @@
     "jwtSecret" : "trdt7wadyh7i6adtvt7a6uthg",
     "CLOUDINARY_API_KEY":"225796958684434",
     "CLOUDINARY_SECRET":"hqB_ho9nAhzfizNn3y-L1OjvDIE",
-    "SENDGRID_API_KEY":"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"
+    "SENDGRID_API_KEY":"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",
+    "STOCKSECRET":"hey!this@is#none$of%your^business!!!",
+    "CREDITSECRET":"Damn you are luckyyy!!!"
 }

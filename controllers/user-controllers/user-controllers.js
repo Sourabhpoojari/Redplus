@@ -1,4 +1,7 @@
 const User = require('../../models/user/userSchema'),
+Profile = require('../../models/user/profileSchema'),
+Donation = require('../../models/user/donationSchema'),
+DonorLocation = require('../../models/user/donorlocationSchema'),
 config = require('config'),
 accountSid = config.get('TWILIO_ACCOUNT_SID1'),
 authToken = config.get('TWILIO_AUTH_TOKEN'),
@@ -100,6 +103,7 @@ const signUp = async (req,res,next) => {
         if (user.name != null) {
             return res.status(400).json({errors:[{msg : "User already"}]});
         }
+        
         user.name = name;
         // bcrypt password
         const salt = await bcrypt.genSalt(10);
@@ -159,7 +163,7 @@ const logIn = async (req,res,next) => {
             {expiresIn : 3600},
             (err,token)=>{
                 if(err) throw err;
-                 res.status(200).json({token});
+                 res.status(200).json({token:token});
             }
         );
     } catch (err) {
@@ -181,8 +185,91 @@ const getUser = async (req,res,next) =>{
     }
 }
 
+//  @route /api/bloodBank/getDonors
+// @desc get list of Donors
+// @access Private to bloodbank
+
+const getDonors = async (req,res,next) =>{
+    try{
+        const donor = await Profile.find();
+        if(!donor){
+                return res.status(400).json({msg:"No donor found!"});
+        }
+    
+         //console.log(await Profile.find().countDocuments());
+        return res.json(donor);
+    }
+    catch(err){
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
+
+//  @route /api/bloodbank/getDonors/:id
+// @desc get  of details of Donors
+// @access Private to bloodbank
+
+const getDonorsById = async(req,res,next) =>{
+    try{
+        let donorinfo = await Profile.findById(req.params.id);
+        if(!donorinfo){
+            return res.status(400).json({msg:"donor profile not found"});
+        }
+        const donationinfo = await Donation.findById(req.params.id);
+        // if(!donationinfo){
+        //     return res.status(200).json({donorinfo});
+        // }
+        
+        return res.status(200).json({donorinfo,donationinfo});
+    }
+    catch(err){
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
+
+//  @route /api/user/updatelocation
+// @desc put update user location
+// @access Private to user
+const updateLocation = async(req,res,next) =>{
+    let {lat,lang}= req.body;
+     lat = parseFloat(lat);
+     lang = parseFloat(lang);
+         
+        let donor={};
+        let user;
+        let userLoc;
+    try{
+        donor.user = req.user.id;
+        donor.location={};
+        donor.location.type='Point';
+        donor.location.coordinates=[];
+        donor.location.coordinates[0]=lat;
+        donor.location.coordinates[1]=lang;
+        user = await DonorLocation.findOne({user:req.user.id});
+        if (user) {
+             userLoc = await DonorLocation.findOneAndUpdate(
+                { user : req.user.id },
+                { $set: donor},
+                { new : true}
+               );
+               return res.status(200).json(userLoc); 
+        }
+        userLoc = new DonorLocation(donor);
+        await userLoc.save();
+        return res.status(200).json(userLoc); 
+    }
+    catch(err){
+        console.error(err.message);
+        res.status(500).send("Server error");
+    } 
+}
+
 exports.getPhone = getPhone;
 exports.verifyOtp = verifyOtp;
 exports.signUp = signUp;
 exports.logIn = logIn;
 exports.getUser = getUser;
+exports.getDonors=getDonors;
+exports.getDonorsById= getDonorsById;
+exports.updateLocation=updateLocation;

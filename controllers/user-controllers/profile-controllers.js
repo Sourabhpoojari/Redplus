@@ -5,6 +5,7 @@ const Profile = require('../../models/user/profileSchema'),
     {validationResult} = require('express-validator'),
     CLOUDINARY_API_KEY = config.get('CLOUDINARY_API_KEY'),
     CLOUDINARY_SECRET = config.get('CLOUDINARY_SECRET');
+    User = require('../../models/user/userSchema');
 
 // set-up cloudinary
 cloudinary.config({
@@ -19,7 +20,7 @@ cloudinary.config({
 
 const getProfile = async (req,res,next)=>{
     try {
-        const profile = await Profile.find({user : req.user.id}).populate('user',['phone']);
+        const profile = await Profile.findOne({user : req.user.id}).populate('user',['phone']);
         if (!profile) {
            return res.status(400).json({msg:"Profile not found!"});
         }
@@ -43,6 +44,8 @@ const createProfile = async (req,res,next)  => {
     const {  name, fatherName, email, address, gender, dateOfBirth, aadhaar, bloodGroup, bName, relation, bPhone } = req.body;
     let errors = validationResult(req);
     errors = errors.array();
+
+    
     if (bName || relation || bPhone) {
         if (!bPhone || bPhone.length !== 13) {
             errors.push({
@@ -73,6 +76,7 @@ const createProfile = async (req,res,next)  => {
     if(errors.length !== 0){
         return res.status(422).json({errors:errors});
     }
+    
     if (!validator.isValidNumber(aadhaar) ) {
         return res.status(422).send("Invalid aadhar number");
     }
@@ -194,6 +198,8 @@ const editProfile = async (req,res,next) =>{
         return res.status(500).send('Server error');
     }
 }
+
+
 
 exports.createProfile = createProfile;
 exports.getProfile = getProfile;

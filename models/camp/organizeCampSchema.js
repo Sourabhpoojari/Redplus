@@ -1,31 +1,39 @@
 const mongoose = require('mongoose');
 
-const profileSchema = mongoose.Schema({
+const campSchema = mongoose.Schema({
+    donor:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User'
+    },
     bloodBank:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'BloodBank'
     },
-    bloodBankName:{
+    campAddress:{
         type:String,
         required:true
     },
-    bloodBankEmail:{
-        type:String,
-        required:true,
-        unique:true
-    },
-    bloodBankAddress:{
+    campName:{
         type:String,
         required:true
     },
-    bloodBankPhone:{
-        type:String,
-        required:true,
-        unique:true
+    campSchedule:{
+        type:Date,
     },
-    bloodBankRegistrationNumber:{
+    capacity:{
+        type:Number,
+    },
+    community:{
         type:String,
-        required:true
+    },
+    referenceId:{
+        type:String,
+    },
+    sponserOrganization:{
+        type:String,
+    },
+    poster:{
+      type:String
     },
     location: {
       type: {
@@ -39,15 +47,10 @@ const profileSchema = mongoose.Schema({
         type: [Number],
         required: true
       }
-    },
-    bloodBankRegistrationDocument:{
-        type:String
-    },
-    profileCreatedAt:{
-        type:Date,
-        default:Date.now()
     }
+    
+    
 });
-profileSchema.index({ location: "2dsphere" });
+campSchema.index({ location: "2dsphere" });
 
-module.exports  = mongoose.models.BloodBankProfile || mongoose.model('BloodBankProfile',profileSchema);
+module.exports  =  mongoose.model('OrganizeCamp',campSchema);

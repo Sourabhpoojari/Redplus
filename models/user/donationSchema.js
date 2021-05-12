@@ -9,6 +9,12 @@ const donationSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
+    creditDuration:{
+        type:String
+    },
+    expiryTicket:{
+        type:String
+    },
     bloodBank :{
         type:mongoose.Schema.Types.ObjectId,
         ref:'BloodBank'
@@ -20,6 +26,14 @@ const donationSchema = new mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'
+    },
+    primaryTest : {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'PrimaryTest'
+    },
+    report:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'BloodTestReport'
     }
 });
 

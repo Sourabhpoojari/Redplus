@@ -3,7 +3,8 @@ bcrypt = require('bcryptjs'),
 BloodBank = require('../../models/bloodBank/bloodBank/bloodBank'),
 jwt = require('jsonwebtoken'),
 config = require('config'),
-{validationResult} = require('express-validator');
+{validationResult} = require('express-validator'),
+BloodBankProfile = require('../../models/bloodBank/bloodBank/profile');
 
 
 //  @route /api/bloodBank/signup
@@ -29,6 +30,7 @@ const signUpRequest = async (req,res,next) => {
             request.location.coordinates = [
                 bloodBankLat,bloodBankLng
             ];
+            request.location.type = "Point";
         }
         await request.save();
         return res.status(200).json(request);
@@ -83,21 +85,21 @@ const logIn = async (req,res,next) =>{
         return res.status(400).json({errors:errors.array()});
     }
     const {email,password} = req.body;
-    let bloodbank
+    let bloodBank;
     try {
-         bloodbank= await BloodBank.findOne({email});
-        if( !bloodbank || !bloodbank.password || !bloodbank.isBloodBank ){
+        bloodBank= await BloodBank.findOne({email});
+        if( !bloodBank || !bloodBank.password || !bloodBank.isBloodBank ){
             return res.status(400).json({errors:[{msg : "You need to register before login!"}]});
         }
         // check password
-        const match =await bcrypt.compare(password,bloodbank.password);
+        const match =await bcrypt.compare(password,bloodBank.password);
         if(!match){
             return res.status(400).json({errors:[{msg : "invalid credentials"}]});
         }
         // setting jwt
         const payload = {
-            bloodbank: {
-                id : bloodbank.id
+            bloodBank: {
+                id : bloodBank.id
             }
         };
         jwt.sign(
@@ -115,6 +117,48 @@ const logIn = async (req,res,next) =>{
     }
 };
 
+//@route /api/bloodbank/profile
+// @desc get bloodBank profile
+// @access Private bloodBank access only
+const getProfile = async (req,res,next)=>{
+    try {
+        const profile = await BloodBankProfile.findOne();
+        //console.log(profile);
+        if (!profile) {
+           return res.status(400).json({msg:"Profile not found!"});
+        }
+        else{
+        
+        res.json(profile);}
+    } catch (err) {
+        console.error(err.message);
+        if(err.kind == 'ObjectId'){
+            return res.status(400).json({msg:"Profile not found!"});
+        }
+        res.status(500).send("Server error");
+    }
+};
+
+//  @route /api/user/:id
+// @desc  get blood Bank profile info
+// @access Private - authorized user access only
+const getBloodBankById = async (req,res,next) =>{
+    let bloodBank;
+    try {
+        bloodBank = await BloodBankProfile.findById(req.params.id);
+        if (!bloodBank) {
+            return res.status(400).json({errors:[{msg : "profile not found!"}]});
+        }
+        return res.status(200).json(bloodBank);
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send('Server error');
+    }
+}
+
+
 exports.signUpRequest = signUpRequest;
 exports.setPassword = setPassword;
 exports.logIn = logIn;
+exports.getProfile = getProfile;
+exports.getBloodBankById = getBloodBankById;
