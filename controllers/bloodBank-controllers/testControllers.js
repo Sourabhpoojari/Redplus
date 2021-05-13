@@ -122,7 +122,6 @@ const whole = async (
 	req,
 	report,
 	bgroup,
-	batch,
 	segNumber,
 	credits,
 	bagNumber
@@ -130,12 +129,8 @@ const whole = async (
 	let component, inventory;
 	try {
 		if (
-			(await WHOLE.findOne({ bankID: req.bloodBank.id, bagNumber })) ||
-			(await WHOLE.findOne({
-				bankID: req.bloodBank.id,
-				batch,
-				segment: segNumber,
-			}))
+			(await WHOLE.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			
 		) {
 			return -1;
 		}
@@ -143,7 +138,6 @@ const whole = async (
 			bankID: req.bloodBank.id,
 			donor: report.user,
 			group: bgroup,
-			batch,
 			bagNumber,
 			segment: segNumber,
 		});
@@ -217,7 +211,6 @@ const platelet = async (
 	req,
 	report,
 	bgroup,
-	batch,
 	segNumber,
 	credits,
 	bagNumber
@@ -225,12 +218,7 @@ const platelet = async (
 	let component, inventory;
 	try {
 		if (
-			(await PLATELET.findOne({ bankID: req.bloodBank.id, bagNumber })) ||
-			(await PLATELET.findOne({
-				bankID: req.bloodBank.id,
-				batch,
-				segment: segNumber,
-			}))
+			(await PLATELET.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
 		) {
 			return -1;
 		}
@@ -238,7 +226,6 @@ const platelet = async (
 			bankID: req.bloodBank.id,
 			donor: report.user,
 			group: bgroup,
-			batch,
 			bagNumber,
 			segment: segNumber,
 		});
@@ -312,7 +299,6 @@ const wbc = async (
 	req,
 	report,
 	bgroup,
-	batch,
 	segNumber,
 	credits,
 	bagNumber
@@ -320,12 +306,7 @@ const wbc = async (
 	let component, inventory;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber })) ||
-			(await WBC.findOne({
-				bankID: req.bloodBank.id,
-				batch,
-				segment: segNumber,
-			}))
+			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
 		) {
 			return -1;
 		}
@@ -333,7 +314,6 @@ const wbc = async (
 			bankID: req.bloodBank.id,
 			donor: report.user,
 			group: bgroup,
-			batch,
 			bagNumber,
 			segment: segNumber,
 		});
@@ -407,7 +387,6 @@ const plasma = async (
 	req,
 	report,
 	bgroup,
-	batch,
 	segNumber,
 	credits,
 	bagNumber
@@ -415,12 +394,7 @@ const plasma = async (
 	let component, inventory;
 	try {
 		if (
-			(await PLASMA.findOne({ bankID: req.bloodBank.id, bagNumber })) ||
-			(await PLASMA.findOne({
-				bankID: req.bloodBank.id,
-				batch,
-				segment: segNumber,
-			}))
+			(await PLASMA.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber, })) 
 		) {
 			return -1;
 		}
@@ -428,7 +402,6 @@ const plasma = async (
 			bankID: req.bloodBank.id,
 			donor: report.user,
 			group: bgroup,
-			batch,
 			bagNumber,
 			segment: segNumber,
 		});
@@ -502,7 +475,6 @@ const prbc = async (
 	req,
 	report,
 	bgroup,
-	batch,
 	segNumber,
 	credits,
 	bagNumber
@@ -510,12 +482,7 @@ const prbc = async (
 	let component, inventory;
 	try {
 		if (
-			(await RBC.findOne({ bankID: req.bloodBank.id, bagNumber })) ||
-			(await RBC.findOne({
-				bankID: req.bloodBank.id,
-				batch,
-				segment: segNumber,
-			}))
+			(await RBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber})) 
 		) {
 			return -1;
 		}
@@ -523,7 +490,6 @@ const prbc = async (
 			bankID: req.bloodBank.id,
 			donor: report.user,
 			group: bgroup,
-			batch,
 			bagNumber,
 			segment: segNumber,
 		});
@@ -597,7 +563,6 @@ const ffp = async (
 	req,
 	report,
 	bgroup,
-	batch,
 	segNumber,
 	credits,
 	bagNumber
@@ -605,12 +570,7 @@ const ffp = async (
 	let component, inventory;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber })) ||
-			(await WBC.findOne({
-				bankID: req.bloodBank.id,
-				batch,
-				segment: segNumber,
-			}))
+			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber, }))
 		) {
 			return -1;
 		}
@@ -618,7 +578,6 @@ const ffp = async (
 			bankID: req.bloodBank.id,
 			donor: report.user,
 			group: bgroup,
-			batch,
 			bagNumber,
 			segment: segNumber,
 		});
@@ -692,7 +651,6 @@ const cryo = async (
 	req,
 	report,
 	bgroup,
-	batch,
 	segNumber,
 	credits,
 	bagNumber
@@ -700,12 +658,7 @@ const cryo = async (
 	let component, inventory;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber })) ||
-			(await WBC.findOne({
-				bankID: req.bloodBank.id,
-				batch,
-				segment: segNumber,
-			}))
+			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
 		) {
 			return -1;
 		}
@@ -713,7 +666,6 @@ const cryo = async (
 			bankID: req.bloodBank.id,
 			donor: report.user,
 			group: bgroup,
-			batch,
 			bagNumber,
 			segment: segNumber,
 		});
@@ -787,7 +739,6 @@ const sprbc = async (
 	req,
 	report,
 	bgroup,
-	batch,
 	segNumber,
 	credits,
 	bagNumber
@@ -795,12 +746,7 @@ const sprbc = async (
 	let component, inventory;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber })) ||
-			(await WBC.findOne({
-				bankID: req.bloodBank.id,
-				batch,
-				segment: segNumber,
-			}))
+			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
 		) {
 			return -1;
 		}
@@ -808,7 +754,6 @@ const sprbc = async (
 			bankID: req.bloodBank.id,
 			donor: report.user,
 			group: bgroup,
-			batch,
 			segment: segNumber,
 			bagNumber,
 		});
@@ -882,7 +827,6 @@ const sdplate = async (
 	req,
 	report,
 	bgroup,
-	batch,
 	segNumber,
 	credits,
 	bagNumber
@@ -890,12 +834,7 @@ const sdplate = async (
 	let component, inventory;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber })) ||
-			(await WBC.findOne({
-				bankID: req.bloodBank.id,
-				batch,
-				segment: segNumber,
-			}))
+			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
 		) {
 			return -1;
 		}
@@ -903,7 +842,6 @@ const sdplate = async (
 			bankID: req.bloodBank.id,
 			donor: report.user,
 			group: bgroup,
-			batch,
 			segment: segNumber,
 			bagNumber,
 		});
@@ -977,7 +915,6 @@ const sdplasma = async (
 	req,
 	report,
 	bgroup,
-	batch,
 	segNumber,
 	credits,
 	bagNumber
@@ -985,12 +922,7 @@ const sdplasma = async (
 	let component, inventory;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber })) ||
-			(await WBC.findOne({
-				bankID: req.bloodBank.id,
-				batch,
-				segment: segNumber,
-			}))
+			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
 		) {
 			return -1;
 		}
@@ -998,7 +930,6 @@ const sdplasma = async (
 			bankID: req.bloodBank.id,
 			donor: report.user,
 			group: bgroup,
-			batch,
 			bagNumber,
 			segment: segNumber,
 		});
@@ -1132,7 +1063,6 @@ const testCredit = async (
 const testReportAndCredits = async (req, res, next) => {
 	let {
 		bgroup,
-		batch,
 		segNumber,
 		components,
 		rbcCount,
@@ -1249,7 +1179,6 @@ const testReportAndCredits = async (req, res, next) => {
 				req,
 				report,
 				bgroup,
-				batch,
 				segNumber,
 				credits,
 				bagNumber
@@ -1273,7 +1202,6 @@ const testReportAndCredits = async (req, res, next) => {
 				req,
 				report,
 				bgroup,
-				batch,
 				segNumber,
 				credits,
 				bagNumber
@@ -1297,7 +1225,6 @@ const testReportAndCredits = async (req, res, next) => {
 				req,
 				report,
 				bgroup,
-				batch,
 				segNumber,
 				credits,
 				bagNumber
@@ -1321,7 +1248,6 @@ const testReportAndCredits = async (req, res, next) => {
 				req,
 				report,
 				bgroup,
-				batch,
 				segNumber,
 				credits,
 				bagNumber
@@ -1345,7 +1271,6 @@ const testReportAndCredits = async (req, res, next) => {
 				req,
 				report,
 				bgroup,
-				batch,
 				segNumber,
 				credits,
 				bagNumber
@@ -1369,7 +1294,6 @@ const testReportAndCredits = async (req, res, next) => {
 				req,
 				report,
 				bgroup,
-				batch,
 				segNumber,
 				credits,
 				bagNumber
@@ -1393,7 +1317,6 @@ const testReportAndCredits = async (req, res, next) => {
 				req,
 				report,
 				bgroup,
-				batch,
 				segNumber,
 				credits,
 				bagNumber
@@ -1417,7 +1340,6 @@ const testReportAndCredits = async (req, res, next) => {
 				req,
 				report,
 				bgroup,
-				batch,
 				segNumber,
 				credits,
 				bagNumber
@@ -1441,7 +1363,6 @@ const testReportAndCredits = async (req, res, next) => {
 				req,
 				report,
 				bgroup,
-				batch,
 				segNumber,
 				credits,
 				bagNumber
@@ -1465,7 +1386,6 @@ const testReportAndCredits = async (req, res, next) => {
 				req,
 				report,
 				bgroup,
-				batch,
 				segNumber,
 				credits,
 				bagNumber

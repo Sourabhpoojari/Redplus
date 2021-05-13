@@ -14,7 +14,6 @@ const router= require('express').Router(),
     
     router.post('/bloodtestReport/:bagNumber',auth,
     check('bgroup','Enter a valid blood group').exists(),
-    check('batch','Enter a valid batch').exists(),
     check('segNumber','Enter a valid segment').exists(),
     check('rbcCount','Enter a valid rbc Count').exists(),
     check('wbcCount','Enter a valid wbc Count ').exists(),

@@ -9,9 +9,6 @@ const cryopriSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
 	},
-	batch: {
-		type: String,
-	},
 	segment: {
 		type: String,
 		unique: true,
