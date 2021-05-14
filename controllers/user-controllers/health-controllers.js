@@ -1,3 +1,4 @@
+const bloodBank = require('../../models/bloodBank/bloodBank/bloodBank');
 const Health = require('../../models/user/healthInfoSchema'),
     Profile = require('../../models/user/profileSchema'),
     Donation = require('../../models/user/donationSchema'),
@@ -13,6 +14,8 @@ const addHealthInfo = async (req,res,next) => {
     let {isDonated, date,  lastMeal, history, disease, consumptions, result, isPregnant, abortion, child, periods} = req.body;
     let request;
     try {
+        let profile= await Profile.findOne({user:req.user.id});
+        if(profile){
         const gender = await Profile.findOne({user:req.user.id}).select('gender');
         if (gender == 'Male'&& isPregnant ) {
             return res.status(422).send('You cannot be pregnant');   
@@ -74,11 +77,12 @@ const addHealthInfo = async (req,res,next) => {
     });
     await request.save();
     return res.status(201).json(data);
-        
+}
     } catch (err) {
         console.error(err.message);
         return res.status(500).send("Server error!");
     }
+    
 }
 
 //  @route /api/user/health/:user_id
