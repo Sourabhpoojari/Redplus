@@ -1,5 +1,3 @@
-
-
 const Donor = require('../../models/user/donorlocationSchema'),
 Profile = require('../../models/user/userSchema'),
 {validationResult}  = require('express-validator'),
@@ -10,9 +8,9 @@ sid = config.get('TWILIO_SID'),
 client = require('twilio')(accountSid, authToken);
 // var TeleSignSDK = require('telesignsdk');
 
-//   const customerId = "2C04EC32-53E4-4292-B976-B41694C54365";
-//   const apiKey = "KZ6qHz1gH+GW79OMoD21PtjLNyJWFZumyySokIVZofOOmwKAKucsu/SftREqg2TN2ka95e5eBrZkDwD1iO0tLg==";
-//   const rest_endpoint = "https://rest-api.telesign.com";
+	//   const customerId = "2C04EC32-53E4-4292-B976-B41694C54365";
+	//   const apiKey = "KZ6qHz1gH+GW79OMoD21PtjLNyJWFZumyySokIVZofOOmwKAKucsu/SftREqg2TN2ka95e5eBrZkDwD1iO0tLg==";
+	//   const rest_endpoint = "https://rest-api.telesign.com";
 
 //  Vonage = require('@vonage/server-sdk')
 
@@ -47,22 +45,6 @@ const flashRequest = async(req,res,next) =>{
             }
           }
          ]);
-         var request = require("request");
-         var options = { method: 'GET',
-         url: 'https://api.authkey.io/request',
-         qs: 
-         { authkey: '41535f088c8c9e19',
-         sms: 'Hello, This is test message from Authkey.io',
-         mobile: '6361139380',
-         country_code: '+91',
-         sender: 'SENDERID' },
-         };
-         
-         request(options, function (error, response, body) {
-         if (error) throw new Error(error);
-         
-         console.log(body);
-         });
          
   //       var messagebird = require('messagebird')('W1KuTg575l5Q1QDZIxII1kI7T');
 

@@ -1,6 +1,7 @@
 const DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
 Profile = require('../../models/user/profileSchema');
-
+User = require('../../models/user/userSchema');
+Health = require('../../models/user/healthInfoSchema');
 
 //  @route /api/bloodBank/requests/donorRequests
 // @desc get Donor requests
@@ -8,7 +9,7 @@ Profile = require('../../models/user/profileSchema');
 const getDonorRequests = async (req,res,next) =>{
     let request;
     try {
-        request = await DonorRequest.find().populate('User',['name','phone','profileImage']);
+        request = await DonorRequest.find().populate('donor',['name','phone','profileImage']);
         if (!request) {
             return res.status(404).json({errors:[{msg : "No requests found!"}]});
         }
@@ -26,7 +27,7 @@ const getDonorRequests = async (req,res,next) =>{
 const getDonorById = async (req,res,next) =>{
     let donor;
     try {
-        donor = await Profile.findById(req.params.id);
+        donor = await Profile.findOne({user:req.params.id});
         if (!donor) {
             return res.status(400).json({errors:[{msg : "Profile not found!"}]});
         }
@@ -40,12 +41,13 @@ const getDonorById = async (req,res,next) =>{
 //  @route /api/bloodbank/request/acceptdonationrequest/:req_id
 // @desc POST accept donation shedule request
 // @access Private - bloodbank access only
-const acceptdonationRequest = async (req,res,next) =>{
+const acceptdonorRequest = async (req,res,next) =>{
     let request;
     try {
-        request = await DonorRequest.findById(req.params.req_id);
+        //console.log({user:req.params.id.user});
+        request = await DonorRequest.findOne({user:req.params.id.user});
         if (!request) {
-            return res.status(400).json({errors:[{msg : "Request not found!"}]});
+            return res.status(400).json({errors:[{msg : "Donation Request not found!"}]});
         }
         
     await request.delete();
@@ -63,12 +65,18 @@ const acceptdonationRequest = async (req,res,next) =>{
 // @access Private - admin access only
 const rejectDonorRequest = async (req,res,next) =>{
     let request;
+    let phone;
     try {
-        request = await DonorRequest.findById(req.params.req_id);
+        //phone= await User.findOne({user:req.params.id.user});
+        //console.log(phone.phone);
+        request = await DonorRequest.findOne({user:req.params.id.user});
+        health = await Health.findOne({user:req.params.id});
+        
         if (!request) {
-            return res.status(400).json({errors:[{msg : "Profile not found!"}]});
+            return res.status(400).json({errors:[{msg : "Donation request not found!"}]});
         }
         await request.delete();
+        await health.delete();
         return res.status(200).json({msg:"Request rejected!"})
         
         
@@ -80,3 +88,5 @@ const rejectDonorRequest = async (req,res,next) =>{
 
 exports.getDonorRequests = getDonorRequests;
 exports.getDonorById = getDonorById;
+exports.acceptdonorRequest = acceptdonorRequest;
+exports.rejectDonorRequest = rejectDonorRequest;

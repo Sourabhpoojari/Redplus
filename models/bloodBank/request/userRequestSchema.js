@@ -5,10 +5,11 @@ const userRequestSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref:'User'
     },
-    requestedAt :{
+    createdOn :{
         type:Date,
         default:Date.now()
     }
+
 });
 
 module.exports = mongoose.model('DonorRequest',userRequestSchema);

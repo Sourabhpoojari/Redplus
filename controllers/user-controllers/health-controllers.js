@@ -1,11 +1,9 @@
 const bloodBank = require('../../models/bloodBank/bloodBank/bloodBank');
 const Health = require('../../models/user/healthInfoSchema'),
-    Profile = require('../../models/user/profileSchema'),
-    Donation = require('../../models/user/donationSchema'),
-    DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
-    moment = require('moment');
-
-
+	Profile = require('../../models/user/profileSchema'),
+	Donation = require('../../models/user/donationSchema'),
+	DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
+	moment = require('moment');
 
 //  @route /api/user/health
 // @desc post health info
@@ -72,9 +70,12 @@ const addHealthInfo = async (req,res,next) => {
         if (current <= date) {
             return res.status(422).send("You cannot donate blood");
         }
+    
     request = await new DonorRequest({
-        donor:req.user.id
+        donor:req.user.id,
+        
     });
+
     await request.save();
     return res.status(201).json(data);
 }
@@ -88,18 +89,20 @@ const addHealthInfo = async (req,res,next) => {
 //  @route /api/user/health/:user_id
 // @desc get latest donation info
 // @access Private
-const getDonation = async (req,res,next) => {
-    try {
-        let previousDonation = await Donation.findById({user:req.user.id}).sort('-donatedOn');
-        previousDonation = previousDonation[0];
-        if (previousDonation) {
-            return res.status(201).json({previousDonation});
-        }
-    } catch (err) {
-        console.error(err.message);
-        return res.status(500).send("Server error!");
-    }
-}
+const getDonation = async (req, res, next) => {
+	try {
+		let previousDonation = await Donation.findById({ user: req.user.id }).sort(
+			'-donatedOn'
+		);
+		previousDonation = previousDonation[0];
+		if (previousDonation) {
+			return res.status(201).json({ previousDonation });
+		}
+	} catch (err) {
+		console.error(err.message);
+		return res.status(500).send('Server error!');
+	}
+};
 
 exports.getDonation = getDonation;
 exports.addHealthInfo = addHealthInfo;
