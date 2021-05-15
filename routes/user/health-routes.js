@@ -3,7 +3,7 @@ const router = require('express').Router(),
     auth = require('../../middleware/userAuth');
 
 
-router.post('/',auth,healthController.addHealthInfo);
+router.post('/:id',auth,healthController.addHealthInfo);
 router.get('/',auth,healthController.getDonation);
 
 
