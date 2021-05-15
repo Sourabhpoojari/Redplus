@@ -118,19 +118,15 @@ const postBagNumber = async (req, res, next) => {
 // ###################
 // Component functions
 // ###################
-const whole = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
+const whole = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component, inventory;
 	try {
 		if (
-			(await WHOLE.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
-			
+			await WHOLE.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -207,18 +203,15 @@ const whole = async (
 	}
 };
 
-const platelet = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
+const platelet = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component, inventory;
 	try {
 		if (
-			(await PLATELET.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			await PLATELET.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -295,18 +288,15 @@ const platelet = async (
 	}
 };
 
-const wbc = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
+const wbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component, inventory;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			await WBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -383,18 +373,15 @@ const wbc = async (
 	}
 };
 
-const plasma = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
+const plasma = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component, inventory;
 	try {
 		if (
-			(await PLASMA.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber, })) 
+			await PLASMA.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -471,18 +458,15 @@ const plasma = async (
 	}
 };
 
-const prbc = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
+const prbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component, inventory;
 	try {
 		if (
-			(await RBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber})) 
+			await RBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -559,18 +543,15 @@ const prbc = async (
 	}
 };
 
-const ffp = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
+const ffp = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component, inventory;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber, }))
+			await WBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -647,18 +628,15 @@ const ffp = async (
 	}
 };
 
-const cryo = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
+const cryo = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component, inventory;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			await WBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -735,18 +713,15 @@ const cryo = async (
 	}
 };
 
-const sprbc = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
+const sprbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component, inventory;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			await WBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -823,18 +798,15 @@ const sprbc = async (
 	}
 };
 
-const sdplate = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
+const sdplate = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component, inventory;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			await WBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -911,18 +883,15 @@ const sdplate = async (
 	}
 };
 
-const sdplasma = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
+const sdplasma = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component, inventory;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			await WBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -1057,7 +1026,7 @@ const testCredit = async (
 	}
 };
 
-//  @route /api/bloodbank/test/bloodTestReport/:bagNumber
+//  @route /api/bloodbank/test/bloodTestReport/:user_id
 // @desc post bloodtest Report
 // @access Private
 const testReportAndCredits = async (req, res, next) => {
@@ -1082,7 +1051,7 @@ const testReportAndCredits = async (req, res, next) => {
 	hematocrit = parseFloat(hematocrit);
 	bglucose = parseFloat(bglucose);
 	// bp = parseFloat(bp);
-	const bagNumber = req.params.bagNumber;
+	// const bagNumber = req.params.bagNumber;
 
 	// #############
 	// DEFINE COMPONENT STATUS FLAG
@@ -1109,7 +1078,7 @@ const testReportAndCredits = async (req, res, next) => {
 	try {
 		// credits=0;
 		report = await BloodTestReport.findOne({
-			bagNumber: bagNumber,
+			user: req.params.user_id,
 			bloodBank: req.bloodBank.id,
 		});
 		if (!report) {
@@ -1120,6 +1089,7 @@ const testReportAndCredits = async (req, res, next) => {
 		// if (report.bloodBank != req.bloodBank.id) {
 		//     return res.status(302).json({errors:[{msg : "OOPS Invalid Bag Number!"}]});
 		// }
+		const bagNumber = report.bagNumber;
 		if (!components) {
 			return res
 				.status(302)
@@ -1175,20 +1145,12 @@ const testReportAndCredits = async (req, res, next) => {
 		// ###################
 		if (WBC_STATUS == 1) {
 			WBC_STATUS = 0;
-			credits = await wbc(
-				req,
-				report,
-				bgroup,
-				segNumber,
-				credits,
-				bagNumber
-			);
+			credits = await wbc(req, report, bgroup, segNumber, credits, bagNumber);
 			if (credits == -1) {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1198,20 +1160,12 @@ const testReportAndCredits = async (req, res, next) => {
 		}
 		if (WHOLEBLOOD_STATUS == 1) {
 			WHOLEBLOOD_STATUS = 0;
-			credits = await whole(
-				req,
-				report,
-				bgroup,
-				segNumber,
-				credits,
-				bagNumber
-			);
+			credits = await whole(req, report, bgroup, segNumber, credits, bagNumber);
 			if (credits == -1) {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1233,8 +1187,7 @@ const testReportAndCredits = async (req, res, next) => {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1256,8 +1209,7 @@ const testReportAndCredits = async (req, res, next) => {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1267,20 +1219,12 @@ const testReportAndCredits = async (req, res, next) => {
 		}
 		if (PRBC_STATUS == 1) {
 			PRBC_STATUS = 0;
-			credits = await prbc(
-				req,
-				report,
-				bgroup,
-				segNumber,
-				credits,
-				bagNumber
-			);
+			credits = await prbc(req, report, bgroup, segNumber, credits, bagNumber);
 			if (credits == -1) {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1290,20 +1234,12 @@ const testReportAndCredits = async (req, res, next) => {
 		}
 		if (FFP_STATUS == 1) {
 			FFP_STATUS = 0;
-			credits = await ffp(
-				req,
-				report,
-				bgroup,
-				segNumber,
-				credits,
-				bagNumber
-			);
+			credits = await ffp(req, report, bgroup, segNumber, credits, bagNumber);
 			if (credits == -1) {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1313,20 +1249,12 @@ const testReportAndCredits = async (req, res, next) => {
 		}
 		if (CRYO_STATUS == 1) {
 			CRYO_STATUS = 0;
-			credits = await cryo(
-				req,
-				report,
-				bgroup,
-				segNumber,
-				credits,
-				bagNumber
-			);
+			credits = await cryo(req, report, bgroup, segNumber, credits, bagNumber);
 			if (credits == -1) {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1336,20 +1264,12 @@ const testReportAndCredits = async (req, res, next) => {
 		}
 		if (SPRBC_STATUS == 1) {
 			SPRBC_STATUS = 0;
-			credits = await sprbc(
-				req,
-				report,
-				bgroup,
-				segNumber,
-				credits,
-				bagNumber
-			);
+			credits = await sprbc(req, report, bgroup, segNumber, credits, bagNumber);
 			if (credits == -1) {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1371,8 +1291,7 @@ const testReportAndCredits = async (req, res, next) => {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1394,8 +1313,7 @@ const testReportAndCredits = async (req, res, next) => {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});

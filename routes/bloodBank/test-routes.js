@@ -17,7 +17,7 @@ router.post(
 );
 
 router.post(
-	'/bloodtestReport/:bagNumber',
+	'/bloodtestReport/:user_id',
 	auth,
 	updateInventory,
 	check('bgroup', 'Enter a valid blood group').exists(),
