@@ -1,3 +1,4 @@
+const { request } = require('express');
 const primarytestSchema = require('../../models/user/primarytestSchema'),
 	BloodTestReport = require('../../models/user/bloodTestReportSchema'),
 	Profile = require('../../models/user/profileSchema'),
@@ -16,7 +17,9 @@ const primarytestSchema = require('../../models/user/primarytestSchema'),
 	SDPLATE = require('../../models/bloodBank/storage/sdplate-schema'),
 	WBC = require('../../models/bloodBank/storage/wbc-schema'),
 	moment = require('moment'),
-	Inventory = require('../../models/bloodBank/inventory/inventorySchema');
+	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
+	DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
+	TestReport = require('../../models/user/bloodTestReportSchema');
 
 //  @route /api/bloodbank/test/primarytest/:user_id
 // @desc post primarytest info
@@ -26,6 +29,7 @@ const primaryTest = async (req, res, next) => {
 	let { weight, pulse, hb, bp, temp } = req.body;
 
 	//console.log(weight);
+	let request;
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
@@ -34,6 +38,9 @@ const primaryTest = async (req, res, next) => {
 	const { gender } = await Profile.findOne({ user: req.params.user_id }).select(
 		'gender'
 	);
+
+	// request = await DonorRequest.findOne({ user: req.params.user});
+	// console.log(request);
 	if (!gender) {
 		return res.status(422).send('Donor not found!');
 	}
@@ -89,12 +96,14 @@ const primaryTest = async (req, res, next) => {
 // @access Private - blood bank access only
 const postBagNumber = async (req, res, next) => {
 	const { bagNumber } = req.body;
-	let report;
+	let report,request;
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
 	}
 	try {
+		request = await DonorRequest.findOne({ user: req.params.user});
+		
 		report = await BloodTestReport.findOne({ bagNumber: bagNumber });
 		if (report) {
 			return res
@@ -108,6 +117,7 @@ const postBagNumber = async (req, res, next) => {
 			bagNumber,
 		});
 		await report.save();
+		await request.delete();
 		return res.status(200).json({ report });
 	} catch (err) {
 		console.error(err);
@@ -115,6 +125,25 @@ const postBagNumber = async (req, res, next) => {
 	}
 };
 
+//  @route/api/bloodbank/test/bagNumbers
+// @desc get bagnumber
+// @access Private - blood bank access only
+const getDonorBagNumber = async(req,res,next) =>{
+    try{
+        let report = await TestReport.find().populate('user',['name','phone','profileImage']);
+		console.log(report);
+        if(!report){
+            return res.status(400).json({msg:"report not found"});
+        }
+        
+        
+        return res.status(200).json(report);
+    }
+    catch(err){
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
+}
 // ###################
 // Component functions
 // ###################
@@ -1474,3 +1503,4 @@ const testReportAndCredits = async (req, res, next) => {
 exports.testReportAndCredits = testReportAndCredits;
 exports.primaryTest = primaryTest;
 exports.postBagNumber = postBagNumber;
+exports.getDonorBagNumber=getDonorBagNumber;

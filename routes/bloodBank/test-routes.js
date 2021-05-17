@@ -40,4 +40,6 @@ router.post(
 	testControllers.postBagNumber
 );
 
+router.get('/bagNumbers',auth,testControllers.getDonorBagNumber);
+
 module.exports = router;

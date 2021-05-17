@@ -3,13 +3,13 @@ Profile = require('../../models/user/profileSchema');
 User = require('../../models/user/userSchema');
 Health = require('../../models/user/healthInfoSchema');
 
-//  @route /api/bloodBank/requests/donorRequests
+//  @route /api/bloodBank/requests/donorRequestso
 // @desc get Donor requests
 // @access Private - blood bank access only
 const getDonorRequests = async (req,res,next) =>{
     let request;
     try {
-        request = await DonorRequest.find().populate('donor',['name','phone','profileImage']);
+        request = await DonorRequest.find().populate('user',['name','phone','profileImage']);
         if (!request) {
             return res.status(404).json({errors:[{msg : "No requests found!"}]});
         }
@@ -25,9 +25,10 @@ const getDonorRequests = async (req,res,next) =>{
 // @desc  get user info
 // @access bloodbank
 const getDonorById = async (req,res,next) =>{
-    let donor;
+    let donor,user;
     try {
-        donor = await Profile.findOne({user:req.params.id});
+        donor = await  Profile.findOne({user:req.params.id}).populate('user',['phone']);
+        
         if (!donor) {
             return res.status(400).json({errors:[{msg : "Profile not found!"}]});
         }
@@ -50,7 +51,6 @@ const acceptdonorRequest = async (req,res,next) =>{
             return res.status(400).json({errors:[{msg : "Donation Request not found!"}]});
         }
         
-    await request.delete();
     return res.status(200).json({msg:"Request accepted"});
   
         
