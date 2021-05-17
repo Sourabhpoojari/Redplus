@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 // routes
 app.use('/api/user', require('./routes/user/user-routes'));
 app.use('/api/user/profile', require('./routes/user/profile-routes'));
-app.use('/api/user/health', require('./routes/user/health-routes'));
+app.use('/api/user', require('./routes/user/health-routes'));
 //app.use('/api/bloodbank/test',require('./routes/bloodbank/test-routes'));
 app.use('/api/user', require('./routes/user/donateblood-routes'));
 app.use('/api/user/usercamp', require('./routes/user/organizeCamp-routes'));

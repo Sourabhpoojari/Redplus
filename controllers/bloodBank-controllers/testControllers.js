@@ -1,4 +1,3 @@
-const { request } = require('express');
 const primarytestSchema = require('../../models/user/primarytestSchema'),
 	BloodTestReport = require('../../models/user/bloodTestReportSchema'),
 	Profile = require('../../models/user/profileSchema'),
@@ -17,6 +16,7 @@ const primarytestSchema = require('../../models/user/primarytestSchema'),
 	SDPLATE = require('../../models/bloodBank/storage/sdplate-schema'),
 	WBC = require('../../models/bloodBank/storage/wbc-schema'),
 	moment = require('moment'),
+	User = require('../../models/user/userSchema'),
 	DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
 	TestReport = require('../../models/user/bloodTestReportSchema');
 
@@ -97,7 +97,7 @@ const postBagNumber = async (req, res, next) => {
 		return res.status(400).json({ errors: errors.array() });
 	}
 	try {
-		request = await DonorRequest.findOne({ user: req.params.user });
+		request = await DonorRequest.findOne({ user: req.params.user_id });
 
 		report = await BloodTestReport.findOne({ bagNumber: bagNumber });
 		if (report) {
@@ -113,6 +113,19 @@ const postBagNumber = async (req, res, next) => {
 		});
 		await report.save();
 		await request.delete();
+		let user = await User.findById(req.params.user_id);
+		user.donorTicket = jwt.sign(
+			{
+				donor: {
+					id: req.params.user_id,
+				},
+			},
+			config.get('DONOR_TICKET'),
+			{
+				expiresIn: '180d',
+			}
+		);
+		await user.save();
 		return res.status(200).json({ report });
 	} catch (err) {
 		console.error(err);
