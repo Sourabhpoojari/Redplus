@@ -135,7 +135,7 @@ const whole = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 			donor: report.user,
 			group: bgroup,
 			bagNumber,
-			segment: segNumber,
+			segment: segNumber
 		});
 
 		// moment

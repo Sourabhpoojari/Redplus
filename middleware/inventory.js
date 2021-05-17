@@ -12,12 +12,15 @@ const Inventory = require('../models/bloodBank/inventory/inventorySchema'),
 	jwt = require('jsonwebtoken'),
 	config = require('config');
 module.exports = async (req, res, next) => {
+	await next();
 	const bankID = req.bloodBank.id;
 
 	try {
 		let inventory = await Inventory.findOne({ bloodBankID: req.bloodBank.id });
 		if (!inventory) {
-			next();
+			inventory = new Inventory({
+				bloodBankID: req.bloodBank.id,
+			});
 		}
 		// ########
 		// CRYO
@@ -770,7 +773,7 @@ module.exports = async (req, res, next) => {
 		});
 		inventory.whole['O-Ve'] = count;
 		await inventory.save();
-		next();
+		console.log('Inventory Updated!');
 	} catch (err) {
 		console.error(err);
 		res.status(500).json({ msg: 'Inventory Update Failed!' });

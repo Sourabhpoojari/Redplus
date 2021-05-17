@@ -1,89 +1,91 @@
 const Donor = require('../../models/user/donorlocationSchema'),
-	Profile = require('../../models/user/userSchema'),
-	{ validationResult } = require('express-validator'),
-	config = require('config');
-(accountSid = config.get('TWILIO_ACCOUNT_SID1')),
-	(authToken = config.get('TWILIO_AUTH_TOKEN')),
-	(sid = config.get('TWILIO_SID')),
-	(client = require('twilio')(accountSid, authToken)),
-	// var TeleSignSDK = require('telesignsdk');
+Profile = require('../../models/user/userSchema'),
+{validationResult}  = require('express-validator'),
+config = require('config');
+accountSid = config.get('TWILIO_ACCOUNT_SID1'),
+authToken = config.get('TWILIO_AUTH_TOKEN'),
+sid = config.get('TWILIO_SID'),
+client = require('twilio')(accountSid, authToken);
+// var TeleSignSDK = require('telesignsdk');
 
 	//   const customerId = "2C04EC32-53E4-4292-B976-B41694C54365";
 	//   const apiKey = "KZ6qHz1gH+GW79OMoD21PtjLNyJWFZumyySokIVZofOOmwKAKucsu/SftREqg2TN2ka95e5eBrZkDwD1iO0tLg==";
 	//   const rest_endpoint = "https://rest-api.telesign.com";
 
-	(Vonage = require('@vonage/server-sdk'));
+//  Vonage = require('@vonage/server-sdk')
 
-const vonage = new Vonage({
-	apiKey: '4e41a3b5',
-	apiSecret: 'rxVqwTo0OH6lnKjo',
-});
+// const vonage = new Vonage({
+//   apiKey: "4e41a3b5",
+//   apiSecret: "rxVqwTo0OH6lnKjo"
+// });
 
 //  @route /api/bloodbank/flashrequest
 // @desc request for donor for blood
 // @access Private
 
-const flashRequest = async (req, res, next) => {
-	let { lat, lang } = req.body;
-	lat = parseFloat(lat);
-	lang = parseFloat(lang);
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({ errors: errors.array() });
-	}
-	try {
-		let donor = await Donor.aggregate([
-			{
-				$geoNear: {
-					near: {
-						type: 'Point',
-						coordinates: [lat, lang],
-					},
-					distanceField: 'distance',
-					maxDistance: 300000,
-					spherical: true,
-				},
-			},
-		]);
+const flashRequest = async(req,res,next) =>{
+    let {lat, lang} = req.body;
+      lat = parseFloat(lat);
+      lang = parseFloat(lang);
+     const errors = validationResult(req);
+     if(!errors.isEmpty()){
+       return res.status(400).json({errors:errors.array()});
+     } 
+     try{
+        let donor = await  Donor.aggregate([
+          {
+            $geoNear: {
+               near: { 
+                 type: "Point",
+                 coordinates: [ lat , lang]
+               },
+               distanceField: "distance",
+               maxDistance:300000,
+               spherical: true
+            }
+          }
+         ]);
+         
+  //       var messagebird = require('messagebird')('W1KuTg575l5Q1QDZIxII1kI7T');
 
-		//       var messagebird = require('messagebird')('W1KuTg575l5Q1QDZIxII1kI7T');
+  //   var params = {
+  //     'originator': 'MessageBird',
+  //     'recipients': [
+  //       '+919741925186'
+  //   ],
+  //     'body': 'This is a test message'
+  //   };
 
-		//   var params = {
-		//     'originator': 'MessageBird',
-		//     'recipients': [
-		//       '+919741925186'
-		//   ],
-		//     'body': 'This is a test message'
-		//   };
+  //   messagebird.messages.create(params, function (err, response) {
+  //     if (err) {
+  //       return console.log(err);
+  //     }
+  //     console.log(response);
+  //   });
+  // }
+//   const from = "Vonage APIs"
+// const to = "919741925186"
+// const text = 'A text message sent using the Vonage SMS API'
 
-		//   messagebird.messages.create(params, function (err, response) {
-		//     if (err) {
-		//       return console.log(err);
-		//     }
-		//     console.log(response);
-		//   });
-		// }
-		const from = 'Vonage APIs';
-		const to = '919741925186';
-		const text = 'A text message sent using the Vonage SMS API';
+// vonage.message.sendSms(from, to, text, (err, responseData) => {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         if(responseData.messages[0]['status'] === "0") {
+//             console.log("Message sent successfully.");
+//         } else {
+//             console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+//         }
+//     }
+// });
+// console.log('sent');
+//      }
 
-		vonage.message.sendSms(from, to, text, (err, responseData) => {
-			if (err) {
-				console.log(err);
-			} else {
-				if (responseData.messages[0]['status'] === '0') {
-					console.log('Message sent successfully.');
-				} else {
-					console.log(
-						`Message failed with error: ${responseData.messages[0]['error-text']}`
-					);
-				}
-			}
-		});
-		console.log('sent');
-	} catch (err) {}
-};
+//   catch(err){
 
+//   }
+// }
+         
 //         console.log(donor);
 //         //const profile = await Profile.findById(donor.user).populate('user');
 //         //console.log(profile);
@@ -131,4 +133,9 @@ const flashRequest = async (req, res, next) => {
 //             return res.status(500).send('Server error');
 //         }
 
-exports.flashRequest = flashRequest;
+ }
+ catch(err){
+  console.log(err);
+ }
+}
+exports.flashRequest=flashRequest;
