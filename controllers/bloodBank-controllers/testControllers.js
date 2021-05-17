@@ -19,7 +19,7 @@ const primarytestSchema = require('../../models/user/primarytestSchema'),
 	moment = require('moment'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
 	DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
-	TestReport = require('../../models/user/bloodTestReportSchema');
+	PrimaryTestedDonor = require('../../models/bloodbank/request/primarytestedDonorsSchema');
 
 //  @route /api/bloodbank/test/primarytest/:user_id
 // @desc post primarytest info
@@ -96,7 +96,7 @@ const primaryTest = async (req, res, next) => {
 // @access Private - blood bank access only
 const postBagNumber = async (req, res, next) => {
 	const { bagNumber } = req.body;
-	let report,request;
+	let report,request,primarydonor;
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
@@ -105,6 +105,7 @@ const postBagNumber = async (req, res, next) => {
 		request = await DonorRequest.findOne({ user: req.params.user});
 		
 		report = await BloodTestReport.findOne({ bagNumber: bagNumber });
+		primarydonor = await PrimaryTestedDonor.find({ user: req.params.user});
 		if (report) {
 			return res
 				.status(302)
@@ -112,12 +113,20 @@ const postBagNumber = async (req, res, next) => {
 		}
 		// console.log(req.bloodBank.id);
 		report = await new BloodTestReport({
-			user: req.params.user_id,
+			user: req.params.user,
 			bloodBank: req.bloodBank.id,
 			bagNumber,
 		});
+
+		primarydonor = await new PrimaryTestedDonor({
+		user: req.params.user_id,
+		 	bloodbank: req.bloodBank.id,
+			bagNumber,
+		 });
+		
 		await report.save();
 		await request.delete();
+		await primarydonor.save();
 		return res.status(200).json({ report });
 	} catch (err) {
 		console.error(err);
@@ -130,8 +139,8 @@ const postBagNumber = async (req, res, next) => {
 // @access Private - blood bank access only
 const getDonorBagNumber = async(req,res,next) =>{
     try{
-        let report = await TestReport.find().populate('user',['name','phone','profileImage']);
-		console.log(report);
+        let report = await PrimaryTestedDonor.find().populate('user',['name','phone','profileImage']);
+		//console.log(report);
         if(!report){
             return res.status(400).json({msg:"report not found"});
         }
