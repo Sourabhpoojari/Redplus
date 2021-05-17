@@ -1,41 +1,51 @@
 const express = require('express'),
-        app = express(),
-     connectDB = require('./config/db'),
-     bodyParser = require('body-parser'),
-     cors = require('cors');
-
+	app = express(),
+	connectDB = require('./config/db'),
+	bodyParser = require('body-parser'),
+	cors = require('cors');
 
 // DB connection
 connectDB();
 
-
 // app.use()
 app.use(cors());
-app.use(bodyParser.urlencoded({extended : true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // routes
-app.use('/api/user',require('./routes/user/user-routes'));
-app.use('/api/user/profile',require('./routes/user/profile-routes'));
-app.use('/api/user/health',require('./routes/user/health-routes'));
+app.use('/api/user', require('./routes/user/user-routes'));
+app.use('/api/user/profile', require('./routes/user/profile-routes'));
+app.use('/api/user', require('./routes/user/health-routes'));
 //app.use('/api/bloodbank/test',require('./routes/bloodbank/test-routes'));
-app.use('/api/user',require('./routes/user/donateblood-routes'));
-app.use('/api/user/usercamp',require('./routes/user/organizeCamp-routes'));
-app.use('/api/user/testreport',require('./routes/user/testreport-routes'));
+app.use('/api/user', require('./routes/user/donateblood-routes'));
+app.use('/api/user/usercamp', require('./routes/user/organizeCamp-routes'));
+app.use('/api/user/testreport', require('./routes/user/testreport-routes'));
 
 // admin routes
-app.use('/api/admin/',require('./routes/admin/admin-routes'));
-app.use('/api/admin/requests',require('./routes/admin/request-routes'));
-
+app.use('/api/admin/', require('./routes/admin/admin-routes'));
+app.use('/api/admin/requests', require('./routes/admin/request-routes'));
 
 // bloodBank routes
-app.use('/api/bloodBank',require('./routes/bloodBank/bloodBank-routes'));
-app.use('/api/bloodBank/requests',require('./routes/bloodBank/request-routes'));
-app.use('/api/bloodBank/test',require('./routes/bloodbank/test-routes'));
-app.use('/api/bloodbank/bloodcamp',require('./routes/bloodbank/organizeCamp-routes'));
-app.use('/api/bloodbank/flashrequest',require('./routes/bloodbank/flashrequest-routes'));
+app.use('/api/bloodBank', require('./routes/bloodBank/bloodBank-routes'));
+app.use(
+	'/api/bloodBank/requests',
+	require('./routes/bloodBank/request-routes')
+);
+app.use('/api/bloodBank/test', require('./routes/bloodbank/test-routes'));
+app.use(
+	'/api/bloodbank/bloodcamp',
+	require('./routes/bloodbank/organizeCamp-routes')
+);
+app.use(
+	'/api/bloodbank/flashrequest',
+	require('./routes/bloodbank/flashrequest-routes')
+);
+app.use(
+	'/api/bloodBank/inventory',
+	require('./routes/bloodBank/inventory-routes')
+);
 //hospital routes
-app.use('/api/hospital',require('./routes/hospital/hospital-routes'));
+app.use('/api/hospital', require('./routes/hospital/hospital-routes'));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT,()=>console.log(`Server started on port ${PORT}`)); 
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

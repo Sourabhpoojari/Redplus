@@ -1,4 +1,3 @@
-const { request } = require('express');
 const primarytestSchema = require('../../models/user/primarytestSchema'),
 	BloodTestReport = require('../../models/user/bloodTestReportSchema'),
 	Profile = require('../../models/user/profileSchema'),
@@ -17,7 +16,7 @@ const primarytestSchema = require('../../models/user/primarytestSchema'),
 	SDPLATE = require('../../models/bloodBank/storage/sdplate-schema'),
 	WBC = require('../../models/bloodBank/storage/wbc-schema'),
 	moment = require('moment'),
-	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
+	User = require('../../models/user/userSchema'),
 	DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
 	PrimaryTestedDonor = require('../../models/bloodbank/request/primarytestedDonorsSchema');
 
@@ -28,8 +27,6 @@ const primarytestSchema = require('../../models/user/primarytestSchema'),
 const primaryTest = async (req, res, next) => {
 	let { weight, pulse, hb, bp, temp } = req.body;
 
-	//console.log(weight);
-	let request;
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
@@ -39,8 +36,6 @@ const primaryTest = async (req, res, next) => {
 		'gender'
 	);
 
-	// request = await DonorRequest.findOne({ user: req.params.user});
-	// console.log(request);
 	if (!gender) {
 		return res.status(422).send('Donor not found!');
 	}
@@ -102,8 +97,8 @@ const postBagNumber = async (req, res, next) => {
 		return res.status(400).json({ errors: errors.array() });
 	}
 	try {
-		request = await DonorRequest.findOne({ user: req.params.user});
-		
+		request = await DonorRequest.findOne({ user: req.params.user_id });
+
 		report = await BloodTestReport.findOne({ bagNumber: bagNumber });
 		primarydonor = await PrimaryTestedDonor.find({ user: req.params.user});
 		if (report) {
@@ -127,6 +122,19 @@ const postBagNumber = async (req, res, next) => {
 		await report.save();
 		await request.delete();
 		await primarydonor.save();
+		let user = await User.findById(req.params.user_id);
+		user.donorTicket = jwt.sign(
+			{
+				donor: {
+					id: req.params.user_id,
+				},
+			},
+			config.get('DONOR_TICKET'),
+			{
+				expiresIn: '180d',
+			}
+		);
+		await user.save();
 		return res.status(200).json({ report });
 	} catch (err) {
 		console.error(err);
@@ -153,22 +161,19 @@ const getDonorBagNumber = async(req,res,next) =>{
         res.status(500).send("Server error");
     }
 }
+
 // ###################
 // Component functions
 // ###################
-const whole = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
-	let component, inventory;
+const whole = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+	let component;
 	try {
 		if (
-			(await WHOLE.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
-			
+			await WHOLE.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -177,7 +182,7 @@ const whole = async (
 			donor: report.user,
 			group: bgroup,
 			bagNumber,
-			segment: segNumber
+			segment: segNumber,
 		});
 
 		// moment
@@ -194,49 +199,31 @@ const whole = async (
 				expiresIn: '35d',
 			}
 		);
-		// update inventory
-		inventory = await Inventory.findOne({ bloodBankID: req.bloodBank.id });
-		if (!inventory) {
-			// create inventory
-			inventory = new Inventory({
-				bloodBankID: req.bloodBank.id,
-			});
-		}
 		// credit points -  add blood group credits
 		if (bgroup == 'A+Ve') {
 			credits += 55;
-			inventory.whole['A+Ve'] += 1;
 		}
 		if (bgroup == 'A-Ve') {
 			credits += 90;
-			inventory.whole['A-Ve'] += 1;
 		}
 		if (bgroup == 'B+Ve') {
 			credits += 45;
-			inventory.whole['B+Ve'] += 1;
 		}
 		if (bgroup == 'B-Ve') {
 			credits += 85;
-			inventory.whole['B-Ve'] += 1;
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.whole['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.whole['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
-			inventory.whole['O+Ve'] += 1;
 		}
 		if (bgroup == 'O-Ve') {
 			credits += 85;
-			inventory.whole['O-Ve'] += 1;
 		}
-
-		await inventory.save();
 		await component.save();
 		return credits;
 	} catch (err) {
@@ -245,18 +232,15 @@ const whole = async (
 	}
 };
 
-const platelet = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
-	let component, inventory;
+const platelet = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+	let component;
 	try {
 		if (
-			(await PLATELET.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			await PLATELET.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -282,49 +266,31 @@ const platelet = async (
 				expiresIn: '5d',
 			}
 		);
-		// update inventory
-		inventory = await Inventory.findOne({ bloodBankID: req.bloodBank.id });
-		if (!inventory) {
-			// create inventory
-			inventory = new Inventory({
-				bloodBankID: req.bloodBank.id,
-			});
-		}
 		// credit points -  add blood group credits
 		if (bgroup == 'A+Ve') {
 			credits += 50;
-			inventory.platelet['A+Ve'] += 1;
 		}
 		if (bgroup == 'A-Ve') {
 			credits += 90;
-			inventory.platelet['A-Ve'] += 1;
 		}
 		if (bgroup == 'B+Ve') {
 			credits += 45;
-			inventory.platelet['B+Ve'] += 1;
 		}
 		if (bgroup == 'B-Ve') {
 			credits += 85;
-			inventory.platelet['B-Ve'] += 1;
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.platelet['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.platelet['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
-			inventory.platelet['O+Ve'] += 1;
 		}
 		if (bgroup == 'O-Ve') {
 			credits += 85;
-			inventory.platelet['O-Ve'] += 1;
 		}
-
-		await inventory.save();
 		await component.save();
 		return credits;
 	} catch (err) {
@@ -333,18 +299,15 @@ const platelet = async (
 	}
 };
 
-const wbc = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
-	let component, inventory;
+const wbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+	let component;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			await WBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -370,49 +333,31 @@ const wbc = async (
 				expiresIn: '42d',
 			}
 		);
-		// update inventory
-		inventory = await Inventory.findOne({ bloodBankID: req.bloodBank.id });
-		if (!inventory) {
-			// create inventory
-			inventory = new Inventory({
-				bloodBankID: req.bloodBank.id,
-			});
-		}
 		// credit points -  add blood group credits
 		if (bgroup == 'A+Ve') {
 			credits += 50;
-			inventory.wbc['A+Ve'] += 1;
 		}
 		if (bgroup == 'A-Ve') {
 			credits += 90;
-			inventory.wbc['A-Ve'] += 1;
 		}
 		if (bgroup == 'B+Ve') {
 			credits += 45;
-			inventory.wbc['B+Ve'] += 1;
 		}
 		if (bgroup == 'B-Ve') {
 			credits += 85;
-			inventory.wbc['B-Ve'] += 1;
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.wbc['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.wbc['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
-			inventory.wbc['O+Ve'] += 1;
 		}
 		if (bgroup == 'O-Ve') {
 			credits += 85;
-			inventory.wbc['O-Ve'] += 1;
 		}
-
-		await inventory.save();
 		await component.save();
 		return credits;
 	} catch (err) {
@@ -421,18 +366,15 @@ const wbc = async (
 	}
 };
 
-const plasma = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
-	let component, inventory;
+const plasma = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+	let component;
 	try {
 		if (
-			(await PLASMA.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber, })) 
+			await PLASMA.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -458,49 +400,31 @@ const plasma = async (
 				expiresIn: '1y',
 			}
 		);
-		// update inventory
-		inventory = await Inventory.findOne({ bloodBankID: req.bloodBank.id });
-		if (!inventory) {
-			// create inventory
-			inventory = new Inventory({
-				bloodBankID: req.bloodBank.id,
-			});
-		}
 		// credit points -  add blood group credits
 		if (bgroup == 'A+Ve') {
 			credits += 50;
-			inventory.plasma['A+Ve'] += 1;
 		}
 		if (bgroup == 'A-Ve') {
 			credits += 90;
-			inventory.plasma['A-Ve'] += 1;
 		}
 		if (bgroup == 'B+Ve') {
 			credits += 45;
-			inventory.plasma['B+Ve'] += 1;
 		}
 		if (bgroup == 'B-Ve') {
 			credits += 85;
-			inventory.plasma['B-Ve'] += 1;
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.plasma['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.plasma['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
-			inventory.plasma['O+Ve'] += 1;
 		}
 		if (bgroup == 'O-Ve') {
 			credits += 85;
-			inventory.plasma['O-Ve'] += 1;
 		}
-
-		await inventory.save();
 		await component.save();
 		return credits;
 	} catch (err) {
@@ -509,18 +433,15 @@ const plasma = async (
 	}
 };
 
-const prbc = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
-	let component, inventory;
+const prbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+	let component;
 	try {
 		if (
-			(await RBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber})) 
+			await RBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -546,49 +467,31 @@ const prbc = async (
 				expiresIn: '42d',
 			}
 		);
-		// update inventory
-		inventory = await Inventory.findOne({ bloodBankID: req.bloodBank.id });
-		if (!inventory) {
-			// create inventory
-			inventory = new Inventory({
-				bloodBankID: req.bloodBank.id,
-			});
-		}
 		// credit points -  add blood group credits
 		if (bgroup == 'A+Ve') {
 			credits += 50;
-			inventory.rbc['A+Ve'] += 1;
 		}
 		if (bgroup == 'A-Ve') {
 			credits += 90;
-			inventory.rbc['A-Ve'] += 1;
 		}
 		if (bgroup == 'B+Ve') {
 			credits += 45;
-			inventory.rbc['B+Ve'] += 1;
 		}
 		if (bgroup == 'B-Ve') {
 			credits += 85;
-			inventory.rbc['B-Ve'] += 1;
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.rbc['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.rbc['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
-			inventory.rbc['O+Ve'] += 1;
 		}
 		if (bgroup == 'O-Ve') {
 			credits += 85;
-			inventory.rbc['O-Ve'] += 1;
 		}
-
-		await inventory.save();
 		await component.save();
 		return credits;
 	} catch (err) {
@@ -597,18 +500,15 @@ const prbc = async (
 	}
 };
 
-const ffp = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
-	let component, inventory;
+const ffp = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+	let component;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber, }))
+			await WBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -634,49 +534,31 @@ const ffp = async (
 				expiresIn: '1y',
 			}
 		);
-		// update inventory
-		inventory = await Inventory.findOne({ bloodBankID: req.bloodBank.id });
-		if (!inventory) {
-			// create inventory
-			inventory = new Inventory({
-				bloodBankID: req.bloodBank.id,
-			});
-		}
 		// credit points -  add blood group credits
 		if (bgroup == 'A+Ve') {
 			credits += 50;
-			inventory.ffp['A+Ve'] += 1;
 		}
 		if (bgroup == 'A-Ve') {
 			credits += 90;
-			inventory.ffp['A-Ve'] += 1;
 		}
 		if (bgroup == 'B+Ve') {
 			credits += 45;
-			inventory.ffp['B+Ve'] += 1;
 		}
 		if (bgroup == 'B-Ve') {
 			credits += 85;
-			inventory.ffp['B-Ve'] += 1;
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.ffp['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.ffp['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
-			inventory.ffp['O+Ve'] += 1;
 		}
 		if (bgroup == 'O-Ve') {
 			credits += 85;
-			inventory.ffp['O-Ve'] += 1;
 		}
-
-		await inventory.save();
 		await component.save();
 		return credits;
 	} catch (err) {
@@ -685,18 +567,15 @@ const ffp = async (
 	}
 };
 
-const cryo = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
-	let component, inventory;
+const cryo = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+	let component;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			await WBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -722,49 +601,31 @@ const cryo = async (
 				expiresIn: '1y',
 			}
 		);
-		// update inventory
-		inventory = await Inventory.findOne({ bloodBankID: req.bloodBank.id });
-		if (!inventory) {
-			// create inventory
-			inventory = new Inventory({
-				bloodBankID: req.bloodBank.id,
-			});
-		}
 		// credit points -  add blood group credits
 		if (bgroup == 'A+Ve') {
 			credits += 50;
-			inventory.cryo['A+Ve'] += 1;
 		}
 		if (bgroup == 'A-Ve') {
 			credits += 90;
-			inventory.cryo['A-Ve'] += 1;
 		}
 		if (bgroup == 'B+Ve') {
 			credits += 45;
-			inventory.cryo['B+Ve'] += 1;
 		}
 		if (bgroup == 'B-Ve') {
 			credits += 85;
-			inventory.cryo['B-Ve'] += 1;
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.cryo['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.cryo['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
-			inventory.cryo['O+Ve'] += 1;
 		}
 		if (bgroup == 'O-Ve') {
 			credits += 85;
-			inventory.cryo['O-Ve'] += 1;
 		}
-
-		await inventory.save();
 		await component.save();
 		return credits;
 	} catch (err) {
@@ -773,18 +634,15 @@ const cryo = async (
 	}
 };
 
-const sprbc = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
-	let component, inventory;
+const sprbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+	let component;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			await WBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -810,49 +668,31 @@ const sprbc = async (
 				expiresIn: '1y',
 			}
 		);
-		// update inventory
-		inventory = await Inventory.findOne({ bloodBankID: req.bloodBank.id });
-		if (!inventory) {
-			// create inventory
-			inventory = new Inventory({
-				bloodBankID: req.bloodBank.id,
-			});
-		}
 		// credit points -  add blood group credits
 		if (bgroup == 'A+Ve') {
 			credits += 50;
-			inventory.sagm['A+Ve'] += 1;
 		}
 		if (bgroup == 'A-Ve') {
 			credits += 90;
-			inventory.sagm['A-Ve'] += 1;
 		}
 		if (bgroup == 'B+Ve') {
 			credits += 45;
-			inventory.sagm['B+Ve'] += 1;
 		}
 		if (bgroup == 'B-Ve') {
 			credits += 85;
-			inventory.sagm['B-Ve'] += 1;
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.sagm['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.sagm['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
-			inventory.sagm['O+Ve'] += 1;
 		}
 		if (bgroup == 'O-Ve') {
 			credits += 85;
-			inventory.sagm['O-Ve'] += 1;
 		}
-
-		await inventory.save();
 		await component.save();
 		return credits;
 	} catch (err) {
@@ -861,18 +701,15 @@ const sprbc = async (
 	}
 };
 
-const sdplate = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
-	let component, inventory;
+const sdplate = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+	let component;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			await WBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -898,49 +735,31 @@ const sdplate = async (
 				expiresIn: '5d',
 			}
 		);
-		// update inventory
-		inventory = await Inventory.findOne({ bloodBankID: req.bloodBank.id });
-		if (!inventory) {
-			// create inventory
-			inventory = new Inventory({
-				bloodBankID: req.bloodBank.id,
-			});
-		}
 		// credit points -  add blood group credits
 		if (bgroup == 'A+Ve') {
 			credits += 50;
-			inventory.sdplate['A+Ve'] += 1;
 		}
 		if (bgroup == 'A-Ve') {
 			credits += 90;
-			inventory.sdplate['A-Ve'] += 1;
 		}
 		if (bgroup == 'B+Ve') {
 			credits += 45;
-			inventory.sdplate['B+Ve'] += 1;
 		}
 		if (bgroup == 'B-Ve') {
 			credits += 85;
-			inventory.sdplate['B-Ve'] += 1;
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.sdplate['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.sdplate['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
-			inventory.sdplate['O+Ve'] += 1;
 		}
 		if (bgroup == 'O-Ve') {
 			credits += 85;
-			inventory.sdplate['O-Ve'] += 1;
 		}
-
-		await inventory.save();
 		await component.save();
 		return credits;
 	} catch (err) {
@@ -949,18 +768,15 @@ const sdplate = async (
 	}
 };
 
-const sdplasma = async (
-	req,
-	report,
-	bgroup,
-	segNumber,
-	credits,
-	bagNumber
-) => {
-	let component, inventory;
+const sdplasma = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+	let component;
 	try {
 		if (
-			(await WBC.findOne({ bankID: req.bloodBank.id, bagNumber,segment: segNumber })) 
+			await WBC.findOne({
+				bankID: req.bloodBank.id,
+				bagNumber,
+				segment: segNumber,
+			})
 		) {
 			return -1;
 		}
@@ -986,49 +802,31 @@ const sdplasma = async (
 				expiresIn: '1y',
 			}
 		);
-		// update inventory
-		inventory = await Inventory.findOne({ bloodBankID: req.bloodBank.id });
-		if (!inventory) {
-			// create inventory
-			inventory = new Inventory({
-				bloodBankID: req.bloodBank.id,
-			});
-		}
 		// credit points -  add blood group credits
 		if (bgroup == 'A+Ve') {
 			credits += 50;
-			inventory.sdplasma['A+Ve'] += 1;
 		}
 		if (bgroup == 'A-Ve') {
 			credits += 90;
-			inventory.sdplasma['A-Ve'] += 1;
 		}
 		if (bgroup == 'B+Ve') {
 			credits += 45;
-			inventory.sdplasma['B+Ve'] += 1;
 		}
 		if (bgroup == 'B-Ve') {
 			credits += 85;
-			inventory.sdplasma['B-Ve'] += 1;
 		}
 		if (bgroup == 'AB+Ve') {
 			credits += 70;
-			inventory.sdplasma['AB+Ve'] += 1;
 		}
 		if (bgroup == 'AB-Ve') {
 			credits += 100;
-			inventory.sdplasma['AB-Ve'] += 1;
 		}
 		if (bgroup == 'O+Ve') {
 			credits += 40;
-			inventory.sdplasma['O+Ve'] += 1;
 		}
 		if (bgroup == 'O-Ve') {
 			credits += 85;
-			inventory.sdplasma['O-Ve'] += 1;
 		}
-
-		await inventory.save();
 		await component.save();
 		return credits;
 	} catch (err) {
@@ -1095,7 +893,7 @@ const testCredit = async (
 	}
 };
 
-//  @route /api/bloodbank/test/bloodTestReport/:bagNumber
+//  @route /api/bloodbank/test/bloodTestReport/:user_id
 // @desc post bloodtest Report
 // @access Private
 const testReportAndCredits = async (req, res, next) => {
@@ -1120,7 +918,7 @@ const testReportAndCredits = async (req, res, next) => {
 	hematocrit = parseFloat(hematocrit);
 	bglucose = parseFloat(bglucose);
 	// bp = parseFloat(bp);
-	const bagNumber = req.params.bagNumber;
+	// const bagNumber = req.params.bagNumber;
 
 	// #############
 	// DEFINE COMPONENT STATUS FLAG
@@ -1147,7 +945,7 @@ const testReportAndCredits = async (req, res, next) => {
 	try {
 		// credits=0;
 		report = await BloodTestReport.findOne({
-			bagNumber: bagNumber,
+			user: req.params.user_id,
 			bloodBank: req.bloodBank.id,
 		});
 		if (!report) {
@@ -1158,6 +956,7 @@ const testReportAndCredits = async (req, res, next) => {
 		// if (report.bloodBank != req.bloodBank.id) {
 		//     return res.status(302).json({errors:[{msg : "OOPS Invalid Bag Number!"}]});
 		// }
+		const bagNumber = report.bagNumber;
 		if (!components) {
 			return res
 				.status(302)
@@ -1213,20 +1012,12 @@ const testReportAndCredits = async (req, res, next) => {
 		// ###################
 		if (WBC_STATUS == 1) {
 			WBC_STATUS = 0;
-			credits = await wbc(
-				req,
-				report,
-				bgroup,
-				segNumber,
-				credits,
-				bagNumber
-			);
+			credits = await wbc(req, report, bgroup, segNumber, credits, bagNumber);
 			if (credits == -1) {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1236,20 +1027,12 @@ const testReportAndCredits = async (req, res, next) => {
 		}
 		if (WHOLEBLOOD_STATUS == 1) {
 			WHOLEBLOOD_STATUS = 0;
-			credits = await whole(
-				req,
-				report,
-				bgroup,
-				segNumber,
-				credits,
-				bagNumber
-			);
+			credits = await whole(req, report, bgroup, segNumber, credits, bagNumber);
 			if (credits == -1) {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1271,8 +1054,7 @@ const testReportAndCredits = async (req, res, next) => {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1294,8 +1076,7 @@ const testReportAndCredits = async (req, res, next) => {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1305,20 +1086,12 @@ const testReportAndCredits = async (req, res, next) => {
 		}
 		if (PRBC_STATUS == 1) {
 			PRBC_STATUS = 0;
-			credits = await prbc(
-				req,
-				report,
-				bgroup,
-				segNumber,
-				credits,
-				bagNumber
-			);
+			credits = await prbc(req, report, bgroup, segNumber, credits, bagNumber);
 			if (credits == -1) {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1328,20 +1101,12 @@ const testReportAndCredits = async (req, res, next) => {
 		}
 		if (FFP_STATUS == 1) {
 			FFP_STATUS = 0;
-			credits = await ffp(
-				req,
-				report,
-				bgroup,
-				segNumber,
-				credits,
-				bagNumber
-			);
+			credits = await ffp(req, report, bgroup, segNumber, credits, bagNumber);
 			if (credits == -1) {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1351,20 +1116,12 @@ const testReportAndCredits = async (req, res, next) => {
 		}
 		if (CRYO_STATUS == 1) {
 			CRYO_STATUS = 0;
-			credits = await cryo(
-				req,
-				report,
-				bgroup,
-				segNumber,
-				credits,
-				bagNumber
-			);
+			credits = await cryo(req, report, bgroup, segNumber, credits, bagNumber);
 			if (credits == -1) {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1374,20 +1131,12 @@ const testReportAndCredits = async (req, res, next) => {
 		}
 		if (SPRBC_STATUS == 1) {
 			SPRBC_STATUS = 0;
-			credits = await sprbc(
-				req,
-				report,
-				bgroup,
-				segNumber,
-				credits,
-				bagNumber
-			);
+			credits = await sprbc(req, report, bgroup, segNumber, credits, bagNumber);
 			if (credits == -1) {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1409,8 +1158,7 @@ const testReportAndCredits = async (req, res, next) => {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1432,8 +1180,7 @@ const testReportAndCredits = async (req, res, next) => {
 				return res.status(302).json({
 					errors: [
 						{
-							msg:
-								'Component with this Segment Number or Bag Number already exist!',
+							msg: 'Component with this Segment Number or Bag Number already exist!',
 						},
 					],
 				});
@@ -1512,4 +1259,4 @@ const testReportAndCredits = async (req, res, next) => {
 exports.testReportAndCredits = testReportAndCredits;
 exports.primaryTest = primaryTest;
 exports.postBagNumber = postBagNumber;
-exports.getDonorBagNumber=getDonorBagNumber;
+exports.getDonorBagNumber = getDonorBagNumber;

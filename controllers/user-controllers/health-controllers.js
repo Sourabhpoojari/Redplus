@@ -44,7 +44,6 @@ const addHealthInfo = async (req,res,next) => {
         };
         lastMeal = moment(lastMeal,'HH:mm');
         if (moment()>=lastMeal.add(2,'h') ) {
-            console.log("jabdckj");
             return res.status(422).send("Please have some food");
         }
         let health;
@@ -73,6 +72,7 @@ const addHealthInfo = async (req,res,next) => {
     
     request = await new DonorRequest({
         donor:req.user.id,
+        bloodBank:req.para
         
     });
 
