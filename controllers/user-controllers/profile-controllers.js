@@ -5,7 +5,8 @@ const Profile = require('../../models/user/profileSchema'),
 	{ validationResult } = require('express-validator'),
 	CLOUDINARY_API_KEY = config.get('CLOUDINARY_API_KEY'),
 	User = require('../../models/user/userSchema'),
-	CLOUDINARY_SECRET = config.get('CLOUDINARY_SECRET');
+	CLOUDINARY_SECRET = config.get('CLOUDINARY_SECRET'),
+    Credit = require('../../models/user/bloodTestReportSchema');
 
 // set-up cloudinary
 cloudinary.config({
@@ -24,26 +25,17 @@ const getProfile = async (req, res, next) => {
 			'user',
 			['phone']
 		);
+        const credit = await Credit.findOne({ user: req.user.id })
+        console.log(credit);
+
+        if(!credit){
+            console.log("credit not found");
+        }
 		//console.log(profile);
 		if (!profile) {
 			return res.status(400).json({ msg: 'Profile not found!' });
 		} else {
-			// let date;
-			// console.log(profile.dateOfBirth);
-			//  date = new Date(profile.dateOfBirth);
-			//  var month = date.getMonth();
-			//  var day = date.getUTCDate();
-			//  var year = date.getUTCFullYear();
-			//  month +=2;
-			//  day +=1;
-			//  //dateOfBirth = day+'/'+month+'/'+year;
-			//  console.log(dateOfBirth);
-			// date =date.setDate(date.getDate());
-			// //console.log(toLocalDateString(date));
-			// var d = new Date(date);
-			// dmy=d.toLocaleDateString()
-			// console.log(d.toLocaleDateString());
-			// profile.dateOfBirth = dmy;
+			
 
 			return res.json(profile);
 		}
@@ -111,10 +103,22 @@ const createProfile = async (req, res, next) => {
 		return res.status(422).json({ errors: errors });
 	}
 
+     
+    let anumber= await Profile.find();
+    //console.log(anumber);
+    anumber.forEach(elemnt => {
+        if(aadhaar == elemnt.aadhaar){
+           return res.status(422).send('This Donor already exist');
+           
+        }
+        return true;
+    });
+    
 	if (!validator.isValidNumber(aadhaar)) {
 		return res.status(422).send('Invalid aadhar number');
+        
 	}
-
+    
 	let profile;
 	try {
 		const profileFields = {
@@ -140,6 +144,7 @@ const createProfile = async (req, res, next) => {
 				phone: bPhone,
 			};
 		}
+        
 		if (profileImage) {
 			let user = await User.findById(req.user.id);
 			user.profileImage = profileImage;
@@ -164,92 +169,5 @@ const createProfile = async (req, res, next) => {
 	}
 };
 
-//  @route /api/user/profile
-// @desc put update user profile
-// @access Private
-const editProfile = async (req, res, next) => {
-	const {
-		name,
-		fatherName,
-		email,
-		address,
-		gender,
-		dateOfBirth,
-		aadhaar,
-		bloodGroup,
-		bName,
-		relation,
-		bPhone,
-		profileImage,
-	} = req.body;
-	let errors = validationResult(req);
-	errors = errors.array();
-	if (bName || relation || bPhone) {
-		if (!bPhone || bPhone.length !== 13) {
-			errors.push({
-				value: bPhone,
-				msg: 'Enter a valid Benificiary Phone Number',
-				param: 'bPhone',
-				location: 'body',
-			});
-		}
-		if (!bName) {
-			errors.push({
-				value: bName,
-				msg: 'Benificiary Name is required',
-				param: 'bName',
-				location: 'body',
-			});
-		}
-		if (!relation) {
-			errors.push({
-				value: relation,
-				msg: 'Benificiary Relation is required',
-				param: 'relation',
-				location: 'body',
-			});
-		}
-	}
-
-	if (errors.length !== 0) {
-		return res.status(422).json({ errors: errors });
-	}
-	if (!validator.isValidNumber(aadhaar)) {
-		return res.status(422).send('Invalid aadhar number');
-	}
-	let profile;
-	try {
-		profile = await Profile.findOne({ user: req.user.id });
-		if (!profile) {
-			return res.status(404).send('Profile not found!');
-		}
-		// profile = {
-		//     name, fatherName, email, address, gender, dateOfBirth, aadhaar, bloodGroup, bName, relation, bPhone
-		// }
-		profile.name = name;
-		profile.fatherName = fatherName;
-		profile.email = email;
-		profile.address = address;
-		profile.gender = gender;
-		profile.dateOfBirth = dateOfBirth;
-		profile.aadhaar = aadhaar;
-		profile.bloodGroup = bloodGroup;
-		profile.profileImage = profileImage;
-		if (bName) {
-			profile.benificiary = {
-				name: bName,
-				relation,
-				phone: bPhone,
-			};
-		}
-		await profile.save();
-		return res.status(200).json(profile);
-	} catch (err) {
-		console.error(err);
-		return res.status(500).send('Server error');
-	}
-};
-
 exports.createProfile = createProfile;
 exports.getProfile = getProfile;
-exports.editProfile = editProfile;

@@ -122,11 +122,11 @@ const postBagNumber = async (req, res, next) => {
 		}
 		// console.log(req.bloodBank.id);
 		report = await new BloodTestReport({
-			user: req.params.user,
+			user: req.params.user_id,
 			bloodBank: req.bloodBank.id,
 			bagNumber,
 		});
-
+		console.log(report);
 		primarydonor = await new PrimaryTestedDonor({
 		user: req.params.user_id,
 		 	bloodbank: req.bloodBank.id,
@@ -180,14 +180,14 @@ const getDonorBagNumber = async(req,res,next) =>{
 // @desc  get user info
 // @access bloodbank
 const getDonorById = async (req,res,next) =>{
-    let donor,user;
+    let donor,user,primary;
     try {
         donor = await  Profile.findOne({user:req.params.id}).populate('user',['phone']);
-        
+        primary = await PrimaryTestedDonor.findOne({user:req.params.id});
         if (!donor) {
             return res.status(400).json({errors:[{msg : "Profile not found!"}]});
         }
-        return res.status(200).json(donor);
+        return res.status(200).json({donor,primary});
     } catch (err) {
         console.log(err);
         return res.status(500).send('Server error');

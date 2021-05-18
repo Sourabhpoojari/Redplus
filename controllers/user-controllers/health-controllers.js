@@ -9,6 +9,7 @@ const Health = require('../../models/user/healthInfoSchema'),
 // @desc post health info
 // @access Private
 const addHealthInfo = async (req,res,next) => {
+    
     let {isDonated, date,  lastMeal, history, disease, consumptions, result, isPregnant, abortion, child, periods} = req.body;
     let request;
     try {
@@ -60,7 +61,7 @@ const addHealthInfo = async (req,res,next) => {
             await data.save();
         }
         
-        if (history || disease || consumptions || isPregnant) {
+        if (history.length != 0 || disease.length !=0 || consumptions.length != 0 || isPregnant) {
             return res.status(422).send("You cannot donate blood");
         } 
         date = new Date(date);
@@ -91,10 +92,10 @@ const addHealthInfo = async (req,res,next) => {
 // @access Private
 const getDonation = async (req, res, next) => {
 	try {
-		let previousDonation = await Donation.findById({ user: req.user.id }).sort(
+		let previousDonation = await Donation.find({ user: req.user.id }).sort(
 			'-donatedOn'
 		);
-		previousDonation = previousDonation[0];
+		previousDonation =previousDonation[0];
 		if (previousDonation) {
 			return res.status(201).json({ previousDonation });
 		}
