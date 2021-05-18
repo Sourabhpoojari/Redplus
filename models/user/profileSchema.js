@@ -31,7 +31,7 @@ const profileSchema = mongoose.Schema({
         required:true
     },
     dateOfBirth : {
-        type:Date,
+        type:String,
         required:true
     },
     aadhaar :{
@@ -40,8 +40,7 @@ const profileSchema = mongoose.Schema({
         unique:true
     },
     bloodGroup : {
-        type:String,
-        required:true
+        type:String
     },
     createdOn :{
         type:Date,

@@ -48,9 +48,11 @@ router.post('/',isLogin,
   check('email','Enter a valid Email address').isEmail(),
   check('address','Address is required').exists(),
   check('gender','Gender is required').exists(),
-  check('dateOfBirth','Date Of Birth is required').exists().isDate(),
+  //check('dateOfBirth','Date Of Birth is required').exists(),
   check('aadhaar','Enter a valid number').isLength({min:12}),
-  check('bloodGroup','Blood Group is required').exists(),upload.single('profileImage'),profileControllers.createProfile);
+  check('bloodGroup','Blood Group is required').exists(),
+ // upload.single('profileImage'),
+  profileControllers.createProfile);
 
 
 router.get('/',isLogin,profileControllers.getProfile);

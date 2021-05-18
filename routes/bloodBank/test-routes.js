@@ -41,5 +41,6 @@ router.post(
 );
 
 router.get('/bagNumbers',auth,testControllers.getDonorBagNumber);
+router.get('/bagNumbers/:id',auth,testControllers.getDonorById);
 
 module.exports = router;

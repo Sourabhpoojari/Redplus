@@ -5,7 +5,8 @@ const Profile = require('../../models/user/profileSchema'),
     {validationResult} = require('express-validator'),
     CLOUDINARY_API_KEY = config.get('CLOUDINARY_API_KEY'),
     CLOUDINARY_SECRET = config.get('CLOUDINARY_SECRET');
-    User = require('../../models/user/userSchema');
+    User = require('../../models/user/userSchema'),
+    moment = require('moment');
 
 // set-up cloudinary
 cloudinary.config({
@@ -21,12 +22,30 @@ cloudinary.config({
 const getProfile = async (req,res,next)=>{
     try {
         const profile = await Profile.findOne({user : req.user.id}).populate('user',['phone']);
+        //console.log(profile);
         if (!profile) {
            return res.status(400).json({msg:"Profile not found!"});
         }
         else{
+        // let date;
+        // console.log(profile.dateOfBirth);
+        //  date = new Date(profile.dateOfBirth);
+        //  var month = date.getMonth();
+        //  var day = date.getUTCDate();
+        //  var year = date.getUTCFullYear();
+        //  month +=2;
+        //  day +=1;
+        //  //dateOfBirth = day+'/'+month+'/'+year;
+        //  console.log(dateOfBirth);
+        // date =date.setDate(date.getDate());
+        // //console.log(toLocalDateString(date));
+        // var d = new Date(date);
+        // dmy=d.toLocaleDateString()
+        // console.log(d.toLocaleDateString());
+        // profile.dateOfBirth = dmy;
         
-        res.json(profile);}
+        return res.json(profile);
+    }
     } catch (err) {
         console.error(err.message);
         if(err.kind == 'ObjectId'){
@@ -41,7 +60,9 @@ const getProfile = async (req,res,next)=>{
 // @desc post user profile
 // @access Private
 const createProfile = async (req,res,next)  => {
-    const {  name, fatherName, email, address, gender, dateOfBirth, aadhaar, bloodGroup, bName, relation, bPhone } = req.body;
+    console.log(req.body);
+    const {  name, fatherName, email, address, gender, dateOfBirth, aadhaar, bloodGroup, bName, relation, bPhone,profileImage} = req.body;
+
     let errors = validationResult(req);
     errors = errors.array();
 
@@ -72,7 +93,9 @@ const createProfile = async (req,res,next)  => {
         });
        }
     }
-   
+
+    //var  date = moment(dateOfBirth).format('YYYY-MM-DD');
+    // console.log(date);
     if(errors.length !== 0){
         return res.status(422).json({errors:errors});
     }
@@ -94,12 +117,13 @@ const createProfile = async (req,res,next)  => {
             gender,
             dateOfBirth,
             aadhaar,
-            bloodGroup
+            bloodGroup,
+            profileImage
         };
-        if (req.file) {
+         if (req.file) {
            const result = await cloudinary.uploader.upload(req.file.path);
-           profileFields.profileImage = result.secure_url;
-        }
+       profileFields.profileImage = result.secure_url;
+         }
         if (bName) {
             profileFields.benificiary = {
                 name:bName,
@@ -129,7 +153,7 @@ const createProfile = async (req,res,next)  => {
 // @desc put update user profile
 // @access Private
 const editProfile = async (req,res,next) =>{
-    const {  name, fatherName, email, address, gender, dateOfBirth, aadhaar, bloodGroup, bName, relation, bPhone } = req.body;
+    const {  name, fatherName, email, address, gender, dateOfBirth, aadhaar, bloodGroup, bName, relation, bPhone,profileImage } = req.body;
     let errors = validationResult(req);
     errors = errors.array();
     if (bName || relation || bPhone) {
@@ -182,7 +206,7 @@ const editProfile = async (req,res,next) =>{
         profile.dateOfBirth = dateOfBirth;
         profile.aadhaar = aadhaar;
         profile.bloodGroup = bloodGroup;
-        
+        profile.profileImage = profileImage;
         if (bName) {
             profile.benificiary = {
                 name:bName,
