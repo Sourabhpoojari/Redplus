@@ -272,8 +272,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'AB+Ve' });
 		platelet.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.platelet['AB+Ve'] = count;

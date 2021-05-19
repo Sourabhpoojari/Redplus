@@ -16,16 +16,30 @@ module.exports = async (req, res, next) => {
 		const decoded = jwt.verify(token, config.get('jwtSecret'));
 		const user = await User.findById(decoded.user.id);
 		const profile = await Profile.findOne({ user: decoded.user.id });
-		if (
-			(user.donorTicket &&
-				jwt.verify(user.donorTicket, config.get('DONOR_TICKET'))) ||
-			!profile
-		) {
-			return res.status(401).json({ msg: 'Authorization denied' });
+		if (!profile) {
+			return res.status(404).send('Please fill your Profile before donation');
 		}
-		req.user = decoded.user;
-		next();
+		if (user.donorTicket) {
+			try {
+				const ticket = jwt.verify(user.donorTicket, config.get('DONOR_TICKET'));
+				if (ticket) {
+					return res.status(401).json({ msg: 'Authorization denied' });
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+					req.user = decoded.user;
+					next();
+				} else {
+					console.error(err);
+					return res.status(500).send('Server error');
+				}
+			}
+		} else {
+			req.user = decoded.user;
+			next();
+		}
 	} catch (err) {
+		console.error(err);
 		res.status(401).json({ msg: 'Token is not valid' });
 	}
 };
