@@ -17,7 +17,7 @@ router.post(
 );
 
 router.post(
-	'/bloodtestReport/:req_id',
+	'/bloodtestReport/:request_id',
 	auth,
 	updateInventory,
 	check('bgroup', 'Enter a valid blood group').exists(),
@@ -34,7 +34,7 @@ router.post(
 );
 
 router.post(
-	'/bagNumber/:req_id',
+	'/bagNumber/:user_id',
 	auth,
 	check('bagNumber', 'Bag Number is required!').exists(),
 	testControllers.postBagNumber
