@@ -931,7 +931,7 @@ const testCredit = async (
 	}
 };
 
-//  @route /api/bloodbank/test/bloodTestReport/:user_id
+//  @route /api/bloodbank/test/bloodTestReport/:request_id
 // @desc post bloodtest Report
 // @access Private
 const testReportAndCredits = async (req, res, next) => {
@@ -981,9 +981,12 @@ const testReportAndCredits = async (req, res, next) => {
 		credits = 0;
 
 	try {
-		// credits=0;
+		const request = await PrimaryTestedDonor.findById(req.params.request_id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'Request not found!' }] });
+		}
 		report = await BloodTestReport.findOne({
-			user: req.params.user_id,
+			user: request.user,
 			bloodBank: req.bloodBank.id,
 		});
 		if (!report) {
