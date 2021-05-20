@@ -6,7 +6,7 @@ const router = require('express').Router(),
 // { isDate } = require('moment');
 
 router.post(
-	'/primaryTest/:user_id',
+	'/primaryTest/:req_id',
 	auth,
 	check('weight', 'Enter a valid weight').exists(),
 	check('pulse', 'Enter a valid pulse').exists(),
@@ -34,7 +34,7 @@ router.post(
 );
 
 router.post(
-	'/bagNumber/:user_id',
+	'/bagNumber/:req_id',
 	auth,
 	check('bagNumber', 'Bag Number is required!').exists(),
 	testControllers.postBagNumber
