@@ -29,8 +29,16 @@ module.exports = async (req, res, next) => {
 		let count = 0;
 		let cryo = await CRYO.find({ bankID, group: 'A+Ve' });
 		cryo.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.cryo['A+Ve'] = count;
@@ -38,8 +46,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'A-Ve' });
 		cryo.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.cryo['A-Ve'] = count;
@@ -47,8 +63,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'AB+Ve' });
 		cryo.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.cryo['AB+Ve'] = count;
@@ -56,8 +80,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'AB-Ve' });
 		cryo.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.cryo['AB-Ve'] = count;
@@ -65,8 +97,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'B+Ve' });
 		cryo.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.cryo['B+Ve'] = count;
@@ -74,8 +114,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'B-Ve' });
 		cryo.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.cryo['B-Ve'] = count;
@@ -83,8 +131,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'O+Ve' });
 		cryo.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.cryo['O+Ve'] = count;
@@ -92,8 +148,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'O-Ve' });
 		cryo.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.cryo['O-Ve'] = count;
@@ -104,8 +168,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		let ffp = await FFP.find({ bankID, group: 'A+Ve' });
 		ffp.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.ffp['A+Ve'] = count;
@@ -113,8 +185,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'A-Ve' });
 		ffp.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.ffp['A-Ve'] = count;
@@ -122,8 +202,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'AB+Ve' });
 		ffp.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.ffp['AB+Ve'] = count;
@@ -131,8 +219,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'AB-Ve' });
 		ffp.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.ffp['AB-Ve'] = count;
@@ -140,8 +236,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'B+Ve' });
 		ffp.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.ffp['B+Ve'] = count;
@@ -149,8 +253,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'B-Ve' });
 		ffp.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.ffp['B-Ve'] = count;
@@ -158,8 +270,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'O+Ve' });
 		ffp.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.ffp['O+Ve'] = count;
@@ -167,8 +287,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'O-Ve' });
 		ffp.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.ffp['O-Ve'] = count;
@@ -179,8 +307,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		let plasma = await PLASMA.find({ bankID, group: 'A+Ve' });
 		plasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.plasma['A+Ve'] = count;
@@ -188,8 +324,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'A-Ve' });
 		plasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.plasma['A-Ve'] = count;
@@ -197,8 +341,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'AB+Ve' });
 		plasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.plasma['AB+Ve'] = count;
@@ -206,8 +358,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'AB-Ve' });
 		plasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.plasma['AB-Ve'] = count;
@@ -215,8 +375,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'B+Ve' });
 		plasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.plasma['B+Ve'] = count;
@@ -224,8 +392,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'B-Ve' });
 		plasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.plasma['B-Ve'] = count;
@@ -233,8 +409,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'O+Ve' });
 		plasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.plasma['O+Ve'] = count;
@@ -242,8 +426,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'O-Ve' });
 		plasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.plasma['O-Ve'] = count;
@@ -254,8 +446,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		let platelet = await PLATELET.find({ bankID, group: 'A+Ve' });
 		platelet.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.platelet['A+Ve'] = count;
@@ -263,8 +463,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'A-Ve' });
 		platelet.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.platelet['A-Ve'] = count;
@@ -289,8 +497,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'AB-Ve' });
 		platelet.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.platelet['AB-Ve'] = count;
@@ -298,8 +514,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'B+Ve' });
 		platelet.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.platelet['B+Ve'] = count;
@@ -307,8 +531,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'B-Ve' });
 		platelet.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.platelet['B-Ve'] = count;
@@ -316,8 +548,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'O+Ve' });
 		platelet.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.platelet['O+Ve'] = count;
@@ -325,8 +565,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'O-Ve' });
 		platelet.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.platelet['O-Ve'] = count;
@@ -337,8 +585,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		let rbc = await RBC.find({ bankID, group: 'A+Ve' });
 		rbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.rbc['A+Ve'] = count;
@@ -346,8 +602,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'A-Ve' });
 		rbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.rbc['A-Ve'] = count;
@@ -355,8 +619,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'AB+Ve' });
 		rbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.rbc['AB+Ve'] = count;
@@ -364,8 +636,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'AB-Ve' });
 		rbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.rbc['AB-Ve'] = count;
@@ -373,8 +653,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'B+Ve' });
 		rbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.rbc['B+Ve'] = count;
@@ -382,8 +670,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'B-Ve' });
 		rbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.rbc['B-Ve'] = count;
@@ -391,8 +687,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'O+Ve' });
 		rbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.rbc['O+Ve'] = count;
@@ -400,8 +704,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'O-Ve' });
 		rbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.rbc['O-Ve'] = count;
@@ -412,8 +724,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		let sagm = await SAGM.find({ bankID, group: 'A+Ve' });
 		sagm.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sagm['A+Ve'] = count;
@@ -421,8 +741,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'A-Ve' });
 		sagm.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sagm['A-Ve'] = count;
@@ -430,8 +758,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'AB+Ve' });
 		sagm.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sagm['AB+Ve'] = count;
@@ -439,8 +775,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'AB-Ve' });
 		sagm.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sagm['AB-Ve'] = count;
@@ -448,8 +792,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'B+Ve' });
 		sagm.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sagm['B+Ve'] = count;
@@ -457,8 +809,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'B-Ve' });
 		sagm.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sagm['B-Ve'] = count;
@@ -466,8 +826,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'O+Ve' });
 		sagm.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sagm['O+Ve'] = count;
@@ -475,8 +843,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'O-Ve' });
 		sagm.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sagm['O-Ve'] = count;
@@ -487,8 +863,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		let sdplasma = await SDPLASMA.find({ bankID, group: 'A+Ve' });
 		sdplasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplasma['A+Ve'] = count;
@@ -496,8 +880,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'A-Ve' });
 		sdplasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplasma['A-Ve'] = count;
@@ -505,8 +897,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'AB+Ve' });
 		sdplasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplasma['AB+Ve'] = count;
@@ -514,8 +914,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'AB-Ve' });
 		sdplasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplasma['AB-Ve'] = count;
@@ -523,8 +931,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'B+Ve' });
 		sdplasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplasma['B+Ve'] = count;
@@ -532,8 +948,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'B-Ve' });
 		sdplasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplasma['B-Ve'] = count;
@@ -541,8 +965,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'O+Ve' });
 		sdplasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplasma['O+Ve'] = count;
@@ -550,8 +982,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'O-Ve' });
 		sdplasma.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplasma['O-Ve'] = count;
@@ -562,8 +1002,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		let sdplate = await SDPLATE.find({ bankID, group: 'A+Ve' });
 		sdplate.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplate['A+Ve'] = count;
@@ -571,8 +1019,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'A-Ve' });
 		sdplate.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplate['A-Ve'] = count;
@@ -580,8 +1036,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'AB+Ve' });
 		sdplate.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplate['AB+Ve'] = count;
@@ -589,8 +1053,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'AB-Ve' });
 		sdplate.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplate['AB-Ve'] = count;
@@ -598,8 +1070,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'B+Ve' });
 		sdplate.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplate['B+Ve'] = count;
@@ -607,8 +1087,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'B-Ve' });
 		sdplate.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplate['B-Ve'] = count;
@@ -616,8 +1104,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'O+Ve' });
 		sdplate.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplate['O+Ve'] = count;
@@ -625,8 +1121,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'O-Ve' });
 		sdplate.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.sdplate['O-Ve'] = count;
@@ -637,8 +1141,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		let wbc = await WBC.find({ bankID, group: 'A+Ve' });
 		wbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.wbc['A+Ve'] = count;
@@ -646,8 +1158,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'A-Ve' });
 		wbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.wbc['A-Ve'] = count;
@@ -655,8 +1175,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'AB+Ve' });
 		wbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.wbc['AB+Ve'] = count;
@@ -664,8 +1192,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'AB-Ve' });
 		wbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.wbc['AB-Ve'] = count;
@@ -673,8 +1209,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'B+Ve' });
 		wbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.wbc['B+Ve'] = count;
@@ -682,8 +1226,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'B-Ve' });
 		wbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.wbc['B-Ve'] = count;
@@ -691,8 +1243,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'O+Ve' });
 		wbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.wbc['O+Ve'] = count;
@@ -700,8 +1260,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'O-Ve' });
 		wbc.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.wbc['O-Ve'] = count;
@@ -712,8 +1280,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		let whole = await WHOLE.find({ bankID, group: 'A+Ve' });
 		whole.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.whole['A+Ve'] = count;
@@ -721,8 +1297,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'A-Ve' });
 		whole.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.whole['A-Ve'] = count;
@@ -730,8 +1314,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'AB+Ve' });
 		whole.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.whole['AB+Ve'] = count;
@@ -739,8 +1331,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'AB-Ve' });
 		whole.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.whole['AB-Ve'] = count;
@@ -748,8 +1348,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'B+Ve' });
 		whole.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.whole['B+Ve'] = count;
@@ -757,8 +1365,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'B-Ve' });
 		whole.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.whole['B-Ve'] = count;
@@ -766,8 +1382,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'O+Ve' });
 		whole.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.whole['O+Ve'] = count;
@@ -775,8 +1399,16 @@ module.exports = async (req, res, next) => {
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'O-Ve' });
 		whole.map((item) => {
-			if (jwt.verify(item.ticket, config.get('STOCKSECRET'))) {
-				count += 1;
+			try {
+				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
+				if (ticket) {
+					count += 1;
+				}
+			} catch (err) {
+				if (err.name == 'TokenExpiredError') {
+				} else {
+					console.error(err);
+				}
 			}
 		});
 		inventory.whole['O-Ve'] = count;

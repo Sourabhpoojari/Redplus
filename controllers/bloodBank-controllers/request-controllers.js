@@ -15,7 +15,7 @@ const getDonorRequests = async (req, res, next) => {
 			'profileImage',
 		]);
 		if (!request) {
-			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
+			return res.status(404).json({ msg: 'No requests found!' });
 		}
 		return res.status(200).json({ request });
 	} catch (err) {
@@ -35,7 +35,7 @@ const getDonorById = async (req, res, next) => {
 		]);
 
 		if (!donor) {
-			return res.status(400).json({ errors: [{ msg: 'Profile not found!' }] });
+			return res.status(400).json({ msg: 'Profile not found!' });
 		}
 		return res.status(200).json(donor);
 	} catch (err) {
