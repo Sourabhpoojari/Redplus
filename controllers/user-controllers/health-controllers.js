@@ -87,23 +87,25 @@ const addHealthInfo = async (req,res,next) => {
     
 }
 
-//  @route /api/user/health/:user_id
+//  @route /api/user/prevDonation
 // @desc get latest donation info
 // @access Private
 const getDonation = async (req, res, next) => {
 	try {
-		let previousDonation = await Donation.find({ user: req.user.id }).sort(
+		const previousDonation = await Donation.findOne({ user: req.user.id }).sort(
 			'-donatedOn'
 		);
-		previousDonation =previousDonation[0];
-		if (previousDonation) {
-			return res.status(201).json({ previousDonation });
+
+		if (!previousDonation) {
+			return res.status(404).send('Previous Donation Not Found!!');
 		}
+		return res.status(201).json({ previousDonation });
 	} catch (err) {
 		console.error(err.message);
 		return res.status(500).send('Server error!');
 	}
 };
+
 
 exports.getDonation = getDonation;
 exports.addHealthInfo = addHealthInfo;

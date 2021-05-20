@@ -17,7 +17,7 @@ router.post(
 );
 
 router.post(
-	'/bloodtestReport/:user_id',
+	'/bloodtestReport/:req_id',
 	auth,
 	updateInventory,
 	check('bgroup', 'Enter a valid blood group').exists(),
@@ -34,7 +34,7 @@ router.post(
 );
 
 router.post(
-	'/bagNumber/:user_id',
+	'/bagNumber/:req_id',
 	auth,
 	check('bagNumber', 'Bag Number is required!').exists(),
 	testControllers.postBagNumber
@@ -42,5 +42,6 @@ router.post(
 
 router.get('/bagNumbers',auth,testControllers.getDonorBagNumber);
 router.get('/bagNumbers/:id',auth,testControllers.getDonorById);
+
 
 module.exports = router;

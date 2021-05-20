@@ -31,14 +31,18 @@ const primaryTest = async (req, res, next) => {
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
 	}
-
-	const { gender } = await Profile.findOne({ user: req.params.user_id }).select(
-		'gender'
-	);
-	request = await DonorRequest.findOne({ donor: req.params.user_id });
+	request = await DonorRequest.findOne(req.params.req_id);
 	if (!request) {
 		return res.status(422).send('No request Found');
 	}
+	//console.log(request.donor);
+
+	const {gender} = await Profile.findOne(req.params.req_id).select(
+		'gender'
+	);
+	//console.log(gender);
+	//request = await DonorRequest.findOne({ donor: req.params.user_id });
+	
 	if (!gender) {
 		return res.status(422).send('Donor not found!');
 	}
@@ -76,7 +80,7 @@ const primaryTest = async (req, res, next) => {
 	}
 	try {
 		let data = {
-			user: req.params.user_id,
+			user: request.donor,
 			bloodbank: req.bloodBank.id,
 			weight,
 			pulse,
@@ -84,13 +88,15 @@ const primaryTest = async (req, res, next) => {
 			bp,
 			temp,
 		};
+		//console.log(data);
 		primary = new primarytestSchema(data);
 		await primary.save();
 		const donation = new Donation({
 			bloodBank: req.bloodBank.id,
-			user: req.params.user_id,
+			user: request.donor,
 			primaryTest: primary.id,
 		});
+		//console.log(donation);
 		await donation.save();
 		return res.status(200).json({ msg: 'You can donate blood' });
 	} catch (err) {
@@ -109,36 +115,47 @@ const postBagNumber = async (req, res, next) => {
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
 	}
-	try {
-		request = await DonorRequest.findOne({ user: req.params.donor });
 
+	//console.log(req.params.req_id);
+	
+	try {
+		request = await DonorRequest.findById(req.params.req_id);
+	//console.log(request);
+		if (!request) {
+			return res.status(422).send('No request Found');
+	 	}
+ 	
+	 	//console.log(request);
 		if (!request) {
 			return res.status(422).send('No request Found');
 		}
+	
 		report = await BloodTestReport.findOne({ bagNumber: bagNumber });
-		primarydonor = await PrimaryTestedDonor.find({ user: req.params.user });
+		primarydonor = await PrimaryTestedDonor.findById(req.params.req_id);
+	 	//console.log(primarydonor);
 		if (report) {
 			return res
-				.status(302)
-				.json({ errors: [{ msg: 'Bag number already exists!' }] });
-		}
-		// console.log(req.bloodBank.id);
-		report = await new BloodTestReport({
-			user: req.params.user_id,
-			bloodBank: req.bloodBank.id,
-			bagNumber,
-		});
-		console.log(report);
+			.status(302)
+		.json({ errors: [{ msg: 'Bag number already exists!' }] });
+	 	}
+	//console.log(req.bloodBank.id);
+	report = await new BloodTestReport({
+		user: request.donor,
+		bloodBank: req.bloodBank.id,
+		bagNumber,
+	});
+ 	//console.log(report);
 		primarydonor = await new PrimaryTestedDonor({
-			user: req.params.user_id,
-			bloodbank: req.bloodBank.id,
-			bagNumber,
+		user: request.donor,
+		bloodbank: req.bloodBank.id,
+		bagNumber,
 		});
-
-		await report.save();
-		await request.delete();
-		await primarydonor.save();
-		let user = await User.findById(req.params.user_id);
+		//console.log(primarydonor);
+	await report.save();
+	await request.delete();
+	await primarydonor.save();
+	let user = await User.findById(request.donor);
+	 //console.log(user);
 		user.donorTicket = jwt.sign(
 			{
 				donor: {
@@ -152,10 +169,12 @@ const postBagNumber = async (req, res, next) => {
 		);
 		await user.save();
 		return res.status(200).json({ report });
-	} catch (err) {
+	} 
+
+	catch (err) {
 		console.error(err);
-		res.status(500).send('Server error');
-	}
+	 	res.status(500).send('Server error');
+	  }
 };
 
 //  @route/api/bloodbank/test/bagNumbers
