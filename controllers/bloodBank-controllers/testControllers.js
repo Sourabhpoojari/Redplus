@@ -35,40 +35,42 @@ const primaryTest = async (req, res, next) => {
 	const { gender } = await Profile.findOne({ user: req.params.user_id }).select(
 		'gender'
 	);
-	request = await DonorRequest.findOne({ donor: req.params.user_id});
-	
+	request = await DonorRequest.findOne({ donor: req.params.user_id });
+	if (!request) {
+		return res.status(422).send('No request Found');
+	}
 	if (!gender) {
 		return res.status(422).send('Donor not found!');
 	}
 
 	if (gender == 'male')
-		if (weight < 50){
+		if (weight < 50) {
 			await request.delete();
 			return res.status(422).send('Weight must be greater than 50');
 		}
-	if (hb < 13 || hb > 20){
+	if (hb < 13 || hb > 20) {
 		await request.delete();
 		return res.status(422).send('hb must be in the range 13-20');
 	}
-	if (gender == 'female'){
-		if (weight < 45){
+	if (gender == 'female') {
+		if (weight < 45) {
 			await request.delete();
 			return res.status(422).send('Weight must be greater than 45');
 		}
 	}
-	if (hb < 12.5 || hb > 20){
+	if (hb < 12.5 || hb > 20) {
 		await request.delete();
 		return res.status(422).send('hb must be in the range 12.5-20');
 	}
-	if (pulse < 60 || pulse > 100){
+	if (pulse < 60 || pulse > 100) {
 		await request.delete();
 		return res.status(422).send('Pulse must be in the range 60-100');
 	}
-	if (bp < 100 || bp > 180){
+	if (bp < 100 || bp > 180) {
 		await request.delete();
 		return res.status(422).send('bp must be in the range 100-180');
 	}
-	if (temp > 99.5){
+	if (temp > 99.5) {
 		await request.delete();
 		return res.status(422).send('tempreture must be less than 99.5');
 	}
@@ -102,19 +104,19 @@ const primaryTest = async (req, res, next) => {
 // @access Private - blood bank access only
 const postBagNumber = async (req, res, next) => {
 	const { bagNumber } = req.body;
-	let report,request,primarydonor;
+	let report, request, primarydonor;
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
 	}
 	try {
-		request = await DonorRequest.findOne({ user: req.params.donor});
-		
-		if(!request){
+		request = await DonorRequest.findOne({ user: req.params.donor });
+
+		if (!request) {
 			return res.status(422).send('No request Found');
 		}
 		report = await BloodTestReport.findOne({ bagNumber: bagNumber });
-		primarydonor = await PrimaryTestedDonor.find({ user: req.params.user});
+		primarydonor = await PrimaryTestedDonor.find({ user: req.params.user });
 		if (report) {
 			return res
 				.status(302)
@@ -128,11 +130,11 @@ const postBagNumber = async (req, res, next) => {
 		});
 		console.log(report);
 		primarydonor = await new PrimaryTestedDonor({
-		user: req.params.user_id,
-		 	bloodbank: req.bloodBank.id,
+			user: req.params.user_id,
+			bloodbank: req.bloodBank.id,
 			bagNumber,
-		 });
-		
+		});
+
 		await report.save();
 		await request.delete();
 		await primarydonor.save();
@@ -159,41 +161,44 @@ const postBagNumber = async (req, res, next) => {
 //  @route/api/bloodbank/test/bagNumbers
 // @desc get bagnumber
 // @access Private - blood bank access only
-const getDonorBagNumber = async(req,res,next) =>{
-    try{
-        let report = await PrimaryTestedDonor.find().populate('user',['name','phone','profileImage']);
+const getDonorBagNumber = async (req, res, next) => {
+	try {
+		let report = await PrimaryTestedDonor.find().populate('user', [
+			'name',
+			'phone',
+			'profileImage',
+		]);
 		//console.log(report);
-        if(!report){
-            return res.status(400).json({msg:"report not found"});
-        }
-        
-        
-        return res.status(200).json(report);
-    }
-    catch(err){
-        console.error(err.message);
-        res.status(500).send("Server error");
-    }
-}
+		if (!report) {
+			return res.status(400).json({ msg: 'report not found' });
+		}
+
+		return res.status(200).json(report);
+	} catch (err) {
+		console.error(err.message);
+		res.status(500).send('Server error');
+	}
+};
 
 //  @route /api/bloodbank/:id
 // @desc  get user info
 // @access bloodbank
-const getDonorById = async (req,res,next) =>{
-    let donor,user,primary;
-    try {
-        donor = await  Profile.findOne({user:req.params.id}).populate('user',['phone']);
-        primary = await PrimaryTestedDonor.findOne({user:req.params.id});
-        if (!donor) {
-            return res.status(400).json({errors:[{msg : "Profile not found!"}]});
-        }
-        return res.status(200).json({donor,primary});
-    } catch (err) {
-        console.log(err);
-        return res.status(500).send('Server error');
-    }
-}
+const getDonorById = async (req, res, next) => {
+	let donor, user;
+	try {
+		donor = await Profile.findOne({ user: req.params.id }).populate('user', [
+			'phone',
+		]);
 
+		if (!donor) {
+			return res.status(400).json({ errors: [{ msg: 'Profile not found!' }] });
+		}
+		return res.status(200).json(donor);
+	} catch (err) {
+		console.log(err);
+		return res.status(500).send('Server error');
+	}
+};
 
 // ###################
 // Component functions
@@ -1293,4 +1298,4 @@ exports.testReportAndCredits = testReportAndCredits;
 exports.primaryTest = primaryTest;
 exports.postBagNumber = postBagNumber;
 exports.getDonorBagNumber = getDonorBagNumber;
-exports.getDonorById= getDonorById;
+exports.getDonorById = getDonorById;
