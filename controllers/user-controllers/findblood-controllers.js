@@ -1,6 +1,7 @@
 const BloodBank = require('../../models/bloodbank/bloodBank/profile'),
 	{ validationResult } = require('express-validator'),
-	UserLocation = require('../../models/user/donorlocationSchema');
+	UserLocation = require('../../models/user/donorlocationSchema'),
+	Inventory = require('../../models/bloodBank/inventory/inventorySchema');
 
 //  @route /api/user/findblood
 // @desc get bloodBank list based on currrent location
@@ -64,10 +65,29 @@ const getBloodBlanks = async (req, res, next) => {
 				},
 			},
 		]);
-		bloodBank.forEach((item) => {
+		// const inventory;
+		bloodBank.forEach(async (item) => {
 			item.distance = parseFloat(item.distance / 1000).toFixed(2);
+			const inventory = await Inventory.findOne({
+				bloodBankID: item.bloodBank,
+			});
+			if (component == 'WholeBlood') {
+				if (bgroup == 'AllBloodGroups') {
+					console.log(inventory);
+					item.inventory = {
+						'A+Ve': inventory.whole['A+Ve'],
+						'A-Ve': inventory.whole['A-Ve'],
+						'AB+Ve': inventory.whole['AB+Ve'],
+						'AB-Ve': inventory.whole['AB-Ve'],
+						'B+Ve': inventory.whole['B+Ve'],
+						'B-Ve': inventory.whole['B-Ve'],
+						'O+Ve': inventory.whole['O+Ve'],
+						'O-Ve': inventory.whole['O-Ve'],
+					};
+				}
+			}
 		});
-		console.log(bloodBank);
+		// console.log(bloodBank);
 	} catch (err) {
 		console.error(err);
 		return res.status(500).send('Server error');
