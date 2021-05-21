@@ -31,10 +31,14 @@ const getDonations = async(req,res,next) =>{
 
 
 const getDonationsById = async(req,res,next) =>{
-    console.log(req.params.donation_id);
+
     let donation = await Donation.findById(req.params.donation_id);
-    console.log(donation.bloodBank);
-    console.log(await BloodBankProfile.findById(donation.bloodBank));
+    //console.log(donation);
+    let bloodBankinfo = await BloodBankProfile.findOne({bloodbank:donation.bloodbank});
+    let primaryTestinfo =await PrimaryTest.findOne({PrimaryTest:donation.PrimaryTest});
+    let TestReportinfo=await TestReport.findOne({BloodTestReport:donation.BloodTestReport});
+    //console.log(donation,bloodBankinfo,primaryTestinfo,TestReportinfo);
+    return res.status(200).json({Donation:donation,BloodBankInfo:bloodBankinfo, PrimaryTestInfo:primaryTestinfo,TestReportInfo:TestReportinfo});
 }
 
 
