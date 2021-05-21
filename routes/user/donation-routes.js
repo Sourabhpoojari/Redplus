@@ -1,4 +1,4 @@
-const TestReportController = require('../../controllers/user-controllers/donation-controller'),
+const TestReportController = require('../../controllers/user-controllers/donation-controllers'),
      router = require('express').Router(),
      isDonor =  require('../../middleware/userAuth');
 
