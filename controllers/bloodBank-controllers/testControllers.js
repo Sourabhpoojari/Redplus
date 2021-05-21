@@ -32,12 +32,23 @@ const primaryTest = async (req, res, next) => {
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
 	}
-	const request = await DonorRequest.findOne(req.params.req_id);
+	request = await DonorRequest.findById(req.params.req_id);
+	console.log(req.params.req_id);
 	if (!request) {
 		return res.status(404).send('No request Found');
 	}
+	
+	console.log(request.donor);
 
-	const { gender } = await Profile.findOne(req.params.req_id).select('gender');
+	const {gender} = await Profile.findOne({user:request.donor}).select(
+		'gender'
+	);
+	console.log(gender);
+	//request = await DonorRequest.findOne({ donor: req.params.user_id });
+	
+	if (!gender) {
+		return res.status(422).send('Donor not found!');
+	}
 
 	if (gender == 'male')
 		if (weight < 50) {
