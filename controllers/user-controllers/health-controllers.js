@@ -1,18 +1,20 @@
+const bloodBank = require('../../models/bloodBank/bloodBank/bloodBank');
 const Health = require('../../models/user/healthInfoSchema'),
-    Profile = require('../../models/user/profileSchema'),
-    Donation = require('../../models/user/donationSchema'),
-    DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
-    moment = require('moment');
-
-
+	Profile = require('../../models/user/profileSchema'),
+	Donation = require('../../models/user/donationSchema'),
+	DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
+	moment = require('moment');
 
 //  @route /api/user/health
 // @desc post health info
 // @access Private
 const addHealthInfo = async (req,res,next) => {
+    
     let {isDonated, date,  lastMeal, history, disease, consumptions, result, isPregnant, abortion, child, periods} = req.body;
     let request;
     try {
+        let profile= await Profile.findOne({user:req.user.id});
+        if(profile){
         const gender = await Profile.findOne({user:req.user.id}).select('gender');
         if (gender == 'Male'&& isPregnant ) {
             return res.status(422).send('You cannot be pregnant');   
@@ -43,7 +45,6 @@ const addHealthInfo = async (req,res,next) => {
         };
         lastMeal = moment(lastMeal,'HH:mm');
         if (moment()>=lastMeal.add(2,'h') ) {
-            console.log("jabdckj");
             return res.status(422).send("Please have some food");
         }
         let health;
@@ -60,7 +61,7 @@ const addHealthInfo = async (req,res,next) => {
             await data.save();
         }
         
-        if (history || disease || consumptions || isPregnant) {
+        if (history.length != 0 || disease.length !=0 || consumptions.length != 0 || isPregnant) {
             return res.status(422).send("You cannot donate blood");
         } 
         date = new Date(date);
@@ -69,33 +70,42 @@ const addHealthInfo = async (req,res,next) => {
         if (current <= date) {
             return res.status(422).send("You cannot donate blood");
         }
+    
     request = await new DonorRequest({
-        donor:req.user.id
+        donor:req.user.id,
+        bloodBank:req.para
+        
     });
+
     await request.save();
     return res.status(201).json(data);
-        
+}
     } catch (err) {
         console.error(err.message);
         return res.status(500).send("Server error!");
     }
+    
 }
 
-//  @route /api/user/health/:user_id
+//  @route /api/user/prevDonation
 // @desc get latest donation info
 // @access Private
-const getDonation = async (req,res,next) => {
-    try {
-        let previousDonation = await Donation.findById({user:req.user.id}).sort('-donatedOn');
-        previousDonation = previousDonation[0];
-        if (previousDonation) {
-            return res.status(201).json({previousDonation});
-        }
-    } catch (err) {
-        console.error(err.message);
-        return res.status(500).send("Server error!");
-    }
-}
+const getDonation = async (req, res, next) => {
+	try {
+		const previousDonation = await Donation.findOne({ user: req.user.id }).sort(
+			'-donatedOn'
+		);
+
+		if (!previousDonation) {
+			return res.status(404).send('Previous Donation Not Found!!');
+		}
+		return res.status(201).json({ previousDonation });
+	} catch (err) {
+		console.error(err.message);
+		return res.status(500).send('Server error!');
+	}
+};
+
 
 exports.getDonation = getDonation;
 exports.addHealthInfo = addHealthInfo;
