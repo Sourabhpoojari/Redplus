@@ -7,7 +7,7 @@ const bloodBankRequestSchema = mongoose.Schema({
   },
   bloodBankEmail:{
       type:String,
-      required:true,
+      required:true, 
       unique:true
   },
   bloodBankAddress:{

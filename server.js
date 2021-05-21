@@ -19,7 +19,7 @@ app.use('/api/user', require('./routes/user/health-routes'));
 //app.use('/api/bloodbank/test',require('./routes/bloodbank/test-routes'));
 app.use('/api/user', require('./routes/user/donateblood-routes'));
 app.use('/api/user/usercamp', require('./routes/user/organizeCamp-routes'));
-app.use('/api/user/testreport', require('./routes/user/testreport-routes'));
+app.use('/api/user/donations', require('./routes/user/donation-routes'));
 app.use('/api/user/findblood',require('././routes/user/findblood-routes'));
 
 // admin routes

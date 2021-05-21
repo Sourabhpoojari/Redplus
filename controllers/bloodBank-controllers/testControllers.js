@@ -1,3 +1,4 @@
+const { request } = require('express');
 const primarytestSchema = require('../../models/user/primarytestSchema'),
 	BloodTestReport = require('../../models/user/bloodTestReportSchema'),
 	Profile = require('../../models/user/profileSchema'),
@@ -31,16 +32,18 @@ const primaryTest = async (req, res, next) => {
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
 	}
-	request = await DonorRequest.findOne(req.params.req_id);
+	request = await DonorRequest.findById(req.params.req_id);
+	console.log(req.params.req_id);
 	if (!request) {
 		return res.status(422).send('No request Found');
 	}
-	//console.log(request.donor);
+	
+	console.log(request.donor);
 
-	const {gender} = await Profile.findOne(req.params.req_id).select(
+	const {gender} = await Profile.findOne({user:request.donor}).select(
 		'gender'
 	);
-	//console.log(gender);
+	console.log(gender);
 	//request = await DonorRequest.findOne({ donor: req.params.user_id });
 	
 	if (!gender) {
@@ -204,7 +207,8 @@ const getDonorBagNumber = async (req, res, next) => {
 // @access bloodbank
 const getDonorById = async (req, res, next) => {
 	let donor, user;
-	try {
+	try { 
+		request = await DonorRequest.find({user:req.params.req_id});
 		donor = await Profile.findOne({ user: req.params.id }).populate('user', [
 			'phone',
 		]);

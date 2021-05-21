@@ -27,7 +27,7 @@ const donationSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'
     },
-    primaryTest : {
+    primaryTest : { 
         type:mongoose.Schema.Types.ObjectId,
         ref:'PrimaryTest'
     },

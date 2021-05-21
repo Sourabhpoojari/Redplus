@@ -27,7 +27,11 @@ const getDonorRequests = async (req,res,next) =>{
 const getDonorById = async (req,res,next) =>{
     let donor,user;
     try {
-        donor = await  Profile.findOne({user:req.params.id}).populate('user',['phone']);
+        request = await DonorRequest.findOne(req.params.req_id);
+		// donor = await Profile.findOne({ user: request.donor }).populate('user', [
+		// 	'phone',
+		// ]);
+        donor = await  Profile.findOne({ user: request.donor }).populate('user',['phone']);
         
         if (!donor) {
             return res.status(400).json({errors:[{msg : "Profile not found!"}]});
