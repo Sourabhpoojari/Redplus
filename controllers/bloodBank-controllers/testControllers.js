@@ -995,9 +995,6 @@ const testReportAndCredits = async (req, res, next) => {
 				.status(302)
 				.json({ errors: [{ msg: 'Bag number do not exist!' }] });
 		}
-		// if (report.bloodBank != req.bloodBank.id) {
-		//     return res.status(302).json({errors:[{msg : "OOPS Invalid Bag Number!"}]});
-		// }
 		const bagNumber = report.bagNumber;
 		if (!components) {
 			return res
