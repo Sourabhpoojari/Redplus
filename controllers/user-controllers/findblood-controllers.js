@@ -1,5 +1,6 @@
 const BloodBank = require('../../models/bloodbank/bloodBank/profile'),
-	UserLocation = require('../../models/user/donorlocationSchema');
+	UserLocation = require('../../models/user/donorlocationSchema'),
+	Inventory = require('../../models/bloodBank/inventory/inventorySchema');
 
 //  @route /api/user/findblood
 // @desc get bloodBank list based on currrent location
@@ -44,7 +45,7 @@ const getBloodBlanks = async (req, res, next) => {
 		const {location} = await UserLocation.findOne({
 			user: req.user.id,
 		}).select('location');
-		console.log(location);
+		
 		const lat = location.coordinates[0],
 			lang = location.coordinates[1];
 		let bloodBank = await BloodBank.aggregate([

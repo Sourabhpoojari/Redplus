@@ -25,7 +25,7 @@ const getProfile = async (req, res, next) => {
 			'user',
 			['phone']
 		);
-        let {credits} = await Credit.findOne({ user: req.user.id }).select('credits');
+        let credits = await Credit.findOne({ user: req.user.id }).select('credits');
         
         if(!credits){
         	credits=0;
@@ -103,8 +103,6 @@ const createProfile = async (req, res, next) => {
 	}
 
      
-    
-    
 	if (!validator.isValidNumber(aadhaar)) {
 		return res.status(422).send('Invalid aadhar number');
         
