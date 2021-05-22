@@ -2,7 +2,8 @@ const bloodBank = require('../../models/bloodBank/bloodBank/bloodBank');
 const Donation = require('../../models/user/donationSchema'),
 TestReport = require('../../models/user/bloodTestReportSchema'),
 PrimaryTest = require('../../models/user/primarytestSchema'),
-BloodBankProfile = require('../../models/bloodbank/bloodBank/profile');
+BloodBankProfile = require('../../models/bloodbank/bloodBank/profile'),
+moment = require('moment');
 
 //  @route /api/user/testreport
 // @desc get  of details of testreport
@@ -10,7 +11,7 @@ BloodBankProfile = require('../../models/bloodbank/bloodBank/profile');
 
 const getDonations = async(req,res,next) =>{
     try{
-        let donation = await Donation.find({user:req.user.id}).sort('donatedOn').populate('bloodBank',['email']).populate('report',['createdOn']).populate('primaryTest',['weight']);
+        let donation = await Donation.find({user:req.user.id}).sort('donatedOn').populate('profile',['email']).populate('report',['createdOn']).populate('primaryTest',['createdOn']);
         console.log(donation);
 
         //console.log(donation[0].donatedOn);
@@ -22,8 +23,9 @@ const getDonations = async(req,res,next) =>{
         let bloodBankinfo = await BloodBankProfile.find({bloodbank:donation.bloodbank});
         let primaryTestinfo =await PrimaryTest.find({PrimaryTest:donation.PrimaryTest});
         let TestReportinfo=await TestReport.find({BloodTestReport:donation.BloodTestReport});
-        donation.forEach(item => {
-            console.log(item.donatedOn);
+        primaryTestinfo.forEach(item => {
+            
+            console.log(item.createdOn);
         });
         return res.status(200).json(donation,bloodBankinfo,primaryTestinfo,TestReportinfo);
     }
@@ -35,15 +37,21 @@ const getDonations = async(req,res,next) =>{
 
 
 const getDonationsById = async(req,res,next) =>{
-
-    let donation = await Donation.findById(req.params.donation_id);
-    //console.log(donation);
-    let bloodBankinfo = await BloodBankProfile.findOne({bloodbank:donation.bloodbank});
-    let primaryTestinfo =await PrimaryTest.findOne({PrimaryTest:donation.PrimaryTest});
-    console.log(primaryTestinfo.createdOn);
-    let TestReportinfo=await TestReport.findOne({BloodTestReport:donation.BloodTestReport});
-    //console.log(donation,bloodBankinfo,primaryTestinfo,TestReportinfo);
-    return res.status(200).json({Donation:donation,BloodBankInfo:bloodBankinfo, PrimaryTestInfo:primaryTestinfo,TestReportInfo:TestReportinfo});
+    try{
+        let donation,bloodBankinfo,primaryTestinfo,TestReportinfo,date;
+        donation = await Donation.findById(req.params.donation_id);
+        bloodBankinfo = await BloodBankProfile.findOne({bloodbank:donation.bloodbank});
+        primaryTestinfo =await PrimaryTest.findOne({PrimaryTest:donation.PrimaryTest});
+        TestReportinfo=await TestReport.findOne({BloodTestReport:donation.BloodTestReport});
+        //let data =date.setDate(date.getDate());
+        date = moment(primaryTestinfo.createdOn).format('DD-MM-YYYY');
+   
+    return res.status(200).json({Donation:donation,BloodBankInfo:bloodBankinfo, PrimaryTestInfo:primaryTestinfo,TestReportInfo:TestReportinfo,Donationdate:date});
+    }
+    catch(err){
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
 }
 
 

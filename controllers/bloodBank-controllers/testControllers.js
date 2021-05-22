@@ -1294,6 +1294,7 @@ const testReportAndCredits = async (req, res, next) => {
 		await report.save();
 		donation.report = report.id;
 		await donation.save();
+		//await primarydonor.delete(); 
 
 		return res.status(200).json(report);
 	} catch (err) {
