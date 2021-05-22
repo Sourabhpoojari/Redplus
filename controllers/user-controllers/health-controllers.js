@@ -95,11 +95,12 @@ const getDonation = async (req, res, next) => {
 		const previousDonation = await Donation.findOne({ user: req.user.id }).sort(
 			'-donatedOn'
 		);
-
+        let gender = await Profile.findOne({user:req.user.id}).select('gender');
+        //console.log(gender);
 		if (!previousDonation) {
-			return res.status(404).send('Previous Donation Not Found!!');
+			return res.json(gender);
 		}
-		return res.status(201).json({ previousDonation });
+		return res.status(201).json({ previousDonation,gender});
 	} catch (err) {
 		console.error(err.message);
 		return res.status(500).send('Server error!');

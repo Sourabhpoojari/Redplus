@@ -189,10 +189,15 @@ const getDonorBagNumber = async (req, res, next) => {
 // @access bloodbank
 const getDonorById = async (req, res, next) => {
 	try {
-		const donor = await Profile.findOne({ user: req.params.id }).populate(
-			'user',
-			['phone']
-		);
+		let primary,donor;
+		 primary = await PrimaryTestedDonor.findById(req.params.req_id);
+		 console.log(primary);
+		 donor = await Profile.findOne({user:primary.user}).populate('user', [
+			'name',
+			'phone',
+			'profileImage',
+		]);
+
 
 		if (!donor) {
 			return res.status(400).json({ errors: [{ msg: 'Profile not found!' }] });

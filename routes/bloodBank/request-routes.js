@@ -3,9 +3,9 @@ const router = require('express').Router(),
     isBloodBank = require('../../middleware/bloodBankAuth');
 
 router.get('/donorRequests',isBloodBank,requestController.getDonorRequests);
-router.get('/donorRequests/:id',isBloodBank,requestController.getDonorById);
+router.get('/donorRequests/:req_id',isBloodBank,requestController.getDonorById);
 
-router.post('/acceptDonorRequest/:id',isBloodBank,requestController.acceptdonorRequest);
-router.delete('/rejectDonorRequest/:id',isBloodBank,requestController.rejectDonorRequest);
+router.post('/acceptDonorRequest/:req_id',isBloodBank,requestController.acceptdonorRequest);
+router.delete('/rejectDonorRequest/:req_id',isBloodBank,requestController.rejectDonorRequest);
 
 module.exports = router;
