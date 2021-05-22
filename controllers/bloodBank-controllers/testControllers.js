@@ -20,7 +20,6 @@ const primarytestSchema = require('../../models/user/primarytestSchema'),
 	DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
 	PrimaryTestedDonor = require('../../models/bloodbank/request/primarytestedDonorsSchema');
 
-
 //  @route /api/bloodbank/test/primarytest/:req_id
 // @desc post primarytest info
 // @access Private
@@ -37,15 +36,15 @@ const primaryTest = async (req, res, next) => {
 	if (!request) {
 		return res.status(404).send('No request Found');
 	}
-	
+
 	console.log(request.donor);
 
-	const {gender} = await Profile.findOne({user:request.donor}).select(
+	const { gender } = await Profile.findOne({ user: request.donor }).select(
 		'gender'
 	);
 	console.log(gender);
 	//request = await DonorRequest.findOne({ donor: req.params.user_id });
-	
+
 	if (!gender) {
 		return res.status(422).send('Donor not found!');
 	}
@@ -551,7 +550,7 @@ const ffp = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component;
 	try {
 		if (
-			await WBC.findOne({
+			await FFP.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 				segment: segNumber,
@@ -618,7 +617,7 @@ const cryo = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component;
 	try {
 		if (
-			await WBC.findOne({
+			await CRYOPRI.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 				segment: segNumber,
@@ -685,7 +684,7 @@ const sprbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component;
 	try {
 		if (
-			await WBC.findOne({
+			await SAGM.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 				segment: segNumber,
@@ -752,7 +751,7 @@ const sdplate = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component;
 	try {
 		if (
-			await WBC.findOne({
+			await SDPLATE.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 				segment: segNumber,
@@ -819,7 +818,7 @@ const sdplasma = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 	let component;
 	try {
 		if (
-			await WBC.findOne({
+			await SDPLASMA.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 				segment: segNumber,
