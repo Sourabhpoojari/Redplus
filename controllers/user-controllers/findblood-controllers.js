@@ -1,6 +1,8 @@
 const BloodBank = require('../../models/bloodbank/bloodBank/profile'),
 	UserLocation = require('../../models/user/donorlocationSchema'),
-	Inventory = require('../../models/bloodBank/inventory/inventorySchema');
+	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
+	BloodRequest = require('../../models/bloodbank/request/bloodrequestSchema'),
+	{validationResult}  = require('express-validator');
 
 //  @route /api/user/findblood
 // @desc get bloodBank list based on currrent location
@@ -1066,5 +1068,30 @@ const sdplasma = (arr, i, bgroup, inventory) => {
 	return i;
 };
 
+
+const bloodRequestForm = async (req, res, next) => {
+	try{
+		let {pateintName,hospitalName,age,bloodGroup,wbc,wholeBlood,platelet,plasma,sdPlatlet,prbc,ffp,cryo,sprbc,sdPlasma} = req.body;
+		const errors = validationResult(req);
+    	if(!errors.isEmpty()){
+        	return res.status(400).json({errors:errors.array()});
+    	}
+    	let request;
+		console.log(req.params.req_id);
+		request = await new BloodRequest({
+			user:req.user.id,
+			bloodBank:req.params.req_id,
+			pateintName,hospitalName,age,bloodGroup,wbc,wholeBlood,platelet,plasma,sdPlatlet,prbc,ffp,cryo,sprbc,sdPlasma
+	});
+	
+		return res.status(200).json(request);
+
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 exports.getnearbybloodBank = getnearbybloodBank;
 exports.getBloodBlanks = getBloodBlanks;
+exports.bloodRequestForm=bloodRequestForm;

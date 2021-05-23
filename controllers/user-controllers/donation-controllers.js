@@ -60,7 +60,7 @@ const getDonationsById = async(req,res,next) =>{
         primaryTestinfo =await PrimaryTest.findOne({PrimaryTest:donation.PrimaryTest});
         TestReportinfo=await TestReport.findOne({BloodTestReport:donation.BloodTestReport});
         //let data =date.setDate(date.getDate());
-        date = moment(primaryTestinfo.createdOn).format('DD-MM-YYYY');
+        date = moment(donation.donatedOn).format('DD-MM-YYYY');
    
     return res.status(200).json({Donation:donation,BloodBankInfo:bloodBankinfo, PrimaryTestInfo:primaryTestinfo,TestReportInfo:TestReportinfo,Donationdate:date});
     }
