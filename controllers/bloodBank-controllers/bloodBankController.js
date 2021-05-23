@@ -122,7 +122,8 @@ const logIn = async (req,res,next) =>{
 // @access Private bloodBank access only
 const getProfile = async (req,res,next)=>{
     try {
-        const profile = await BloodBankProfile.findOne();
+        console.log({ bloodbank: req.bloodBank});
+        const profile = await BloodBankProfile.findOne({ bloodbank: req.bloodbank});
         //console.log(profile);
         if (!profile) {
            return res.status(400).json({msg:"Profile not found!"});
