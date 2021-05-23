@@ -1,7 +1,7 @@
 const BloodBank = require('../../models/bloodbank/bloodBank/profile'),
 	UserLocation = require('../../models/user/donorlocationSchema'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
-	BloodRequest = require('../../models/bloodbank/request/bloodrequestSchema'),
+	BloodRequest = require('../../models/user/bloodRequestFormSchema'),
 	{validationResult}  = require('express-validator');
 
 //  @route /api/user/findblood
@@ -1069,6 +1069,11 @@ const sdplasma = (arr, i, bgroup, inventory) => {
 };
 
 
+
+//  @route /api/user/findblood/bloodrequest/:req_id
+// @desc post user getprofile
+// @access Private
+
 const bloodRequestForm = async (req, res, next) => {
 	try{
 		let {pateintName,hospitalName,age,bloodGroup,wbc,wholeBlood,platelet,plasma,sdPlatlet,prbc,ffp,cryo,sprbc,sdPlasma} = req.body;
@@ -1077,13 +1082,21 @@ const bloodRequestForm = async (req, res, next) => {
         	return res.status(400).json({errors:errors.array()});
     	}
     	let request;
-		console.log(req.params.req_id);
+		//console.log({donor:req.user});
+
+
 		request = await new BloodRequest({
-			user:req.user.id,
+			donor:req.user.id,
 			bloodBank:req.params.req_id,
 			pateintName,hospitalName,age,bloodGroup,wbc,wholeBlood,platelet,plasma,sdPlatlet,prbc,ffp,cryo,sprbc,sdPlasma
-	});
-	
+		});
+		
+		let find = await BloodRequest.find({donor:req.user.id});
+		
+		if(find){
+			return res.status(422).send("Your Request is Already sent");
+		}
+		//request.save();
 		return res.status(200).json(request);
 
 	} catch (err) {

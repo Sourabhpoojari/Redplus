@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const bloodRequest= mongoose.Schema({
-    user:{
+    donor:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'
     },
