@@ -1,9 +1,5 @@
-const bloodBank = require('../../models/bloodBank/bloodBank/bloodBank');
 const Donation = require('../../models/user/donationSchema'),
-	TestReport = require('../../models/user/bloodTestReportSchema'),
-	PrimaryTest = require('../../models/user/primarytestSchema'),
-	BloodBankProfile = require('../../models/bloodbank/bloodBank/profile'),
-	moment = require('moment');
+	BloodBankProfile = require('../../models/bloodbank/bloodBank/profile');
 
 //  @route /api/user/donations
 // @desc get donations of user
@@ -40,30 +36,25 @@ const getDonations = async (req, res, next) => {
 // @access Private to donor
 const getDonationById = async (req, res, next) => {
 	try {
-		let bloodBankinfo, primaryTestinfo, TestReportinfo, date;
-		const donation = await Donation.findById(req.params.donation_id).populate(
-			'primaryTest'
-		);
+		const donation = await Donation.findById(req.params.donation_id)
+			.populate('primaryTest')
+			.populate('report');
 		console.log(donation);
 		if (!donation) {
 			return res.status(400).json({ msg: 'Donation not found' });
 		}
-		// bloodBankinfo = await BloodBankProfile.findOne({
-		// 	bloodbank: donation.bloodbank,
-		// });
-		// primaryTestinfo = await PrimaryTest.findOne({
-		// 	PrimaryTest: donation.PrimaryTest,
-		// });
-		// TestReportinfo = await TestReport.findOne({
-		// 	BloodTestReport: donation.BloodTestReport,
-		// });
+		const bloodBankinfo = await BloodBankProfile.findOne({
+			bloodBank: donation.bloodBank,
+		});
+		const profile = await Profile.findOne({ user: donation.user }).populate(
+			'user',
+			['phone']
+		);
 
 		return res.status(200).json({
-			Donation: donation,
-			// BloodBankInfo: bloodBankinfo,
-			// PrimaryTestInfo: primaryTestinfo,
-			// TestReportInfo: TestReportinfo,
-			// Donationdate: date,
+			donation,
+			bloodBankinfo,
+			userInfo: profile,
 		});
 	} catch (err) {
 		console.error(err.message);
