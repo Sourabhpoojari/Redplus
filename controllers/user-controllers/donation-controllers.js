@@ -1,70 +1,60 @@
-const bloodBank = require('../../models/bloodBank/bloodBank/bloodBank');
 const Donation = require('../../models/user/donationSchema'),
-	TestReport = require('../../models/user/bloodTestReportSchema'),
-	PrimaryTest = require('../../models/user/primarytestSchema'),
-	BloodBankProfile = require('../../models/bloodbank/bloodBank/profile'),
-	moment = require('moment');
+	BloodBankProfile = require('../../models/bloodbank/bloodBank/profile');
 
-//  @route /api/user/testreport
-// @desc get  of details of testreport
+//  @route /api/user/donations
+// @desc get donations of user
 // @access Private to donor
 
 const getDonations = async (req, res, next) => {
 	try {
-		const donation = await Donation.find({ user: req.user.id }).sort(
+		let donation = await Donation.find({ user: req.user.id }).sort(
 			'-donatedOn'
 		);
 		if (!donation || donation.length == 0) {
 			return res.status(404).json({ msg: 'Donation not found' });
 		}
-		// donation.forEach((item) => {
-		// 	item.date = moment(item.donatedOn).format('DD-MM-YYYY');
-		// 	console.log(item.date);
-		// });
 		let i;
+		const arr = [];
+
 		for (i = 0; i < donation.length; i++) {
-			const donationDate = moment(donation[i].donatedOn).format('DD-MM-YYYY');
-			// donation[i].donationDate = moment(donation[i].donatedOn).format(
-			// 	'DD-MM-YYYY'
-			// );
-			console.log(donationDate);
-			donation[i].expiryTicket = donationDate;
-			console.log(donation[i]);
+			const profile = await BloodBankProfile.findOne({
+				bloodBank: donation[i].bloodBank,
+			});
+			const bank = { donation: donation[i], profile };
+			arr.push(bank);
 		}
-		console.log(donation[0].donatedOn);
-		console.log(donation);
-		return res.status(200).json(donation);
+
+		return res.status(200).json(arr);
 	} catch (err) {
 		console.error(err.message);
 		res.status(500).send('Server error');
 	}
 };
 
-const getDonationsById = async (req, res, next) => {
+//  @route /api/user/donations/:donation_id
+// @desc get details of donation
+// @access Private to donor
+const getDonationById = async (req, res, next) => {
 	try {
-		let donation, bloodBankinfo, primaryTestinfo, TestReportinfo, date;
-		donation = await Donation.findById(req.params.donation_id);
+		const donation = await Donation.findById(req.params.donation_id)
+			.populate('primaryTest')
+			.populate('report');
+		console.log(donation);
 		if (!donation) {
 			return res.status(400).json({ msg: 'Donation not found' });
 		}
-		bloodBankinfo = await BloodBankProfile.findOne({
-			bloodbank: donation.bloodbank,
+		const bloodBankinfo = await BloodBankProfile.findOne({
+			bloodBank: donation.bloodBank,
 		});
-		primaryTestinfo = await PrimaryTest.findOne({
-			PrimaryTest: donation.PrimaryTest,
-		});
-		TestReportinfo = await TestReport.findOne({
-			BloodTestReport: donation.BloodTestReport,
-		});
-		//let data =date.setDate(date.getDate());
-		date = moment(primaryTestinfo.createdOn).format('DD-MM-YYYY');
+		const profile = await Profile.findOne({ user: donation.user }).populate(
+			'user',
+			['phone']
+		);
 
 		return res.status(200).json({
-			Donation: donation,
-			BloodBankInfo: bloodBankinfo,
-			PrimaryTestInfo: primaryTestinfo,
-			TestReportInfo: TestReportinfo,
-			Donationdate: date,
+			donation,
+			bloodBankinfo,
+			userInfo: profile,
 		});
 	} catch (err) {
 		console.error(err.message);
@@ -73,4 +63,4 @@ const getDonationsById = async (req, res, next) => {
 };
 
 exports.getDonations = getDonations;
-exports.getDonationsById = getDonationsById;
+exports.getDonationsById = getDonationById;
