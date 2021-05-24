@@ -153,7 +153,7 @@ const postBagNumber = async (req, res, next) => {
 			},
 			config.get('DONOR_TICKET'),
 			{
-				expiresIn: '180d',
+				expiresIn: '180D',
 			}
 		);
 		await user.save();
@@ -1294,6 +1294,9 @@ const testReportAndCredits = async (req, res, next) => {
 		await report.save();
 		donation.report = report.id;
 		await donation.save();
+		//let testreport;
+		
+
 		//await primarydonor.delete();
 
 		return res.status(200).json(report);

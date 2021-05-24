@@ -73,7 +73,7 @@ const addHealthInfo = async (req,res,next) => {
     
     request = await new DonorRequest({
         donor:req.user.id,
-        bloodBank:req.para
+       // bloodbank:req.parms.bloodBank
         
     });
 
@@ -95,9 +95,9 @@ const getDonation = async (req, res, next) => {
 		let previousDonation = await Donation.findOne({ user: req.user.id }).sort(
 			'-donatedOn'
 		);
-        console.log(previousDonation.donateOn);
+        
         let gender = await Profile.findOne({user:req.user.id}).select('gender');
-        console.log(gender);
+
         if(!gender){
             return res.status(422).send("No profile found");
         }
