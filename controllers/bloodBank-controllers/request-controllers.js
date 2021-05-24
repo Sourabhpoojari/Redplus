@@ -1,3 +1,4 @@
+const { request } = require('express');
 const DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
 Profile = require('../../models/user/profileSchema');
 User = require('../../models/user/userSchema');
@@ -25,9 +26,12 @@ const getDonorRequests = async (req,res,next) =>{
 // @desc  get user info
 // @access bloodbank
 const getDonorById = async (req,res,next) =>{
-    let donor,user;
+    let donor,request;
     try {
-        donor = await  Profile.findOne({user:req.params.id}).populate('user',['phone']);
+       
+        request = await  DonorRequest.findById(req.params.req_id).populate('user',['phone','ProfileImage']);
+        
+        donor = await  Profile.findOne({user:request.donor}).populate('user',['phone']);
         
         if (!donor) {
             return res.status(400).json({errors:[{msg : "Profile not found!"}]});
@@ -46,7 +50,7 @@ const acceptdonorRequest = async (req,res,next) =>{
     let request;
     try {
         //console.log({user:req.params.id.user});
-        request = await DonorRequest.findOne({user:req.params.id.user});
+        request = await DonorRequest.findById(req.params.req_id);
         if (!request) {
             return res.status(400).json({errors:[{msg : "Donation Request not found!"}]});
         }
@@ -69,8 +73,9 @@ const rejectDonorRequest = async (req,res,next) =>{
     try {
         //phone= await User.findOne({user:req.params.id.user});
         //console.log(phone.phone);
-        request = await DonorRequest.findOne({user:req.params.id.user});
-        health = await Health.findOne({user:req.params.id});
+        request = await DonorRequest.findById(req.params.req_id);
+
+        health = await Health.findOne({user:request.donor});
         
         if (!request) {
             return res.status(400).json({errors:[{msg : "Donation request not found!"}]});

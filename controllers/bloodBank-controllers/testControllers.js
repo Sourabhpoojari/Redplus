@@ -97,6 +97,7 @@ const primaryTest = async (req, res, next) => {
 			bloodBank: req.bloodBank.id,
 			user: request.donor,
 			primaryTest: primary.id,
+			donationDate: moment().format('DD-MM-YYYY'),
 		});
 		//console.log(donation);
 		await donation.save();
@@ -188,10 +189,14 @@ const getDonorBagNumber = async (req, res, next) => {
 // @access bloodbank
 const getDonorById = async (req, res, next) => {
 	try {
-		const donor = await Profile.findOne({ user: req.params.id }).populate(
-			'user',
-			['phone']
-		);
+		let primary, donor;
+		primary = await PrimaryTestedDonor.findById(req.params.req_id);
+		console.log(primary);
+		donor = await Profile.findOne({ user: primary.user }).populate('user', [
+			'name',
+			'phone',
+			'profileImage',
+		]);
 
 		if (!donor) {
 			return res.status(400).json({ errors: [{ msg: 'Profile not found!' }] });
@@ -1289,6 +1294,7 @@ const testReportAndCredits = async (req, res, next) => {
 		await report.save();
 		donation.report = report.id;
 		await donation.save();
+		//await primarydonor.delete();
 
 		return res.status(200).json(report);
 	} catch (err) {

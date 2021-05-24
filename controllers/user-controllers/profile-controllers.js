@@ -6,7 +6,7 @@ const Profile = require('../../models/user/profileSchema'),
 	CLOUDINARY_API_KEY = config.get('CLOUDINARY_API_KEY'),
 	User = require('../../models/user/userSchema'),
 	CLOUDINARY_SECRET = config.get('CLOUDINARY_SECRET'),
-    Credit = require('../../models/user/bloodTestReportSchema');
+    Credit = require('../../models/user/donationSchema');
 
 // set-up cloudinary
 cloudinary.config({
@@ -25,19 +25,18 @@ const getProfile = async (req, res, next) => {
 			'user',
 			['phone']
 		);
-        const credit = await Credit.findOne({ user: req.user.id })
-        console.log(credit);
-
-        if(!credit){
-            console.log("credit not found");
+        let credits = await Credit.findOne({ user: req.user.id }).select('credits');
+        
+        if(!credits){
+        	credits=0;
         }
-		//console.log(profile);
+		
 		if (!profile) {
 			return res.status(400).json({ msg: 'Profile not found!' });
 		} else {
 			
 
-			return res.json(profile);
+			return res.json({profile,credits});
 		}
 	} catch (err) {
 		console.error(err.message);
@@ -104,16 +103,6 @@ const createProfile = async (req, res, next) => {
 	}
 
      
-    let anumber= await Profile.find();
-    //console.log(anumber);
-    anumber.forEach(elemnt => {
-        if(aadhaar == elemnt.aadhaar){
-           return res.status(422).send('This Donor already exist');
-           
-        }
-        return true;
-    });
-    
 	if (!validator.isValidNumber(aadhaar)) {
 		return res.status(422).send('Invalid aadhar number');
         

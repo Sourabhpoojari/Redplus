@@ -1,5 +1,4 @@
 const BloodBank = require('../../models/bloodbank/bloodBank/profile'),
-	{ validationResult } = require('express-validator'),
 	UserLocation = require('../../models/user/donorlocationSchema'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema');
 
@@ -8,14 +7,10 @@ const BloodBank = require('../../models/bloodbank/bloodBank/profile'),
 // @access Private
 
 const getnearbybloodBank = async (req, res, next) => {
-	let { lat, lang } = req.body;
-	lat = parseFloat(lat);
-	lang = parseFloat(lang);
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({ errors: errors.array() });
-	}
-
+	
+	const {location}= await UserLocation.findOne({user:req.user.id}).select('location');
+	const lat = location.coordinates[0];
+	lang = location.coordinates[1];
 	try {
 		let bloodBank = await BloodBank.aggregate([
 			{
@@ -47,9 +42,10 @@ const getnearbybloodBank = async (req, res, next) => {
 const getBloodBlanks = async (req, res, next) => {
 	const { component, bgroup } = req.params;
 	try {
-		const { location } = await UserLocation.findOne({
+		const {location} = await UserLocation.findOne({
 			user: req.user.id,
 		}).select('location');
+		
 		const lat = location.coordinates[0],
 			lang = location.coordinates[1];
 		let bloodBank = await BloodBank.aggregate([

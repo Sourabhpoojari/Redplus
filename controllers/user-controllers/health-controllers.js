@@ -92,14 +92,20 @@ const addHealthInfo = async (req,res,next) => {
 // @access Private
 const getDonation = async (req, res, next) => {
 	try {
-		const previousDonation = await Donation.findOne({ user: req.user.id }).sort(
+		let previousDonation = await Donation.findOne({ user: req.user.id }).sort(
 			'-donatedOn'
 		);
-
+        console.log(previousDonation.donateOn);
+        let gender = await Profile.findOne({user:req.user.id}).select('gender');
+        console.log(gender);
+        if(!gender){
+            return res.status(422).send("No profile found");
+        }
 		if (!previousDonation) {
-			return res.status(404).send('Previous Donation Not Found!!');
+			return res.json(gender);
 		}
-		return res.status(201).json({ previousDonation });
+        
+		return res.status(201).json({ previousDonation,gender});
 	} catch (err) {
 		console.error(err.message);
 		return res.status(500).send('Server error!');
