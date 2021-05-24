@@ -9,10 +9,9 @@ const bloodRequestfromDonor= mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'BloodBank'
     },
-    createdOn:{
-        type:Date,
-        default:Date.now()
-    },
+    RequestDate: {
+		type: String,
+	},
     pattientName:{
         type:String
     },

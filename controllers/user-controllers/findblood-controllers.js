@@ -1,8 +1,11 @@
+const Bprofile = require('../../models/bloodbank/bloodBank/profile');
 const BloodBank = require('../../models/bloodbank/bloodBank/profile'),
 	UserLocation = require('../../models/user/donorlocationSchema'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
 	BloodRequest = require('../../models/user/bloodRequestFormSchema'),
-	{validationResult}  = require('express-validator');
+	{validationResult}  = require('express-validator'),
+	Profile = require('../../models/user/profileSchema'),
+	moment = require('moment');
 
 //  @route /api/user/findblood
 // @desc get bloodBank list based on currrent location
@@ -1081,13 +1084,17 @@ const bloodRequestForm = async (req, res, next) => {
     	if(!errors.isEmpty()){
         	return res.status(400).json({errors:errors.array()});
     	}
+
+		let profile = await Profile.findOne({donor:req.user.id});
+		if(!profile){
+			return res.status(422).send("Please compleate your Profile");
+		}
     	let request;
 		//console.log({donor:req.user});
-
-
 		request = await new BloodRequest({
 			donor:req.user.id,
 			bloodBank:req.params.req_id,
+			RequestDate: moment().format('DD-MM-YYYY'),
 			pateintName,hospitalName,age,bloodGroup,wbc,wholeBlood,platelet,plasma,sdPlatlet,prbc,ffp,cryo,sprbc,sdPlasma
 		});
 		
@@ -1096,7 +1103,7 @@ const bloodRequestForm = async (req, res, next) => {
 		if(find){
 			return res.status(422).send("Your Request is Already sent");
 		}
-		//request.save();
+		request.save();
 		return res.status(200).json(request);
 
 	} catch (err) {

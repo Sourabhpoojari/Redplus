@@ -1,5 +1,6 @@
 const Donation = require('../../models/user/donationSchema'),
-	BloodBankProfile = require('../../models/bloodbank/bloodBank/profile');
+	BloodBankProfile = require('../../models/bloodbank/bloodBank/profile'),
+	Profile = require('../../models/user/profileSchema');
 
 //  @route /api/user/donations
 // @desc get donations of user
@@ -39,7 +40,7 @@ const getDonationById = async (req, res, next) => {
 		const donation = await Donation.findById(req.params.donation_id)
 			.populate('primaryTest')
 			.populate('report');
-		console.log(donation);
+		
 		if (!donation) {
 			return res.status(400).json({ msg: 'Donation not found' });
 		}
