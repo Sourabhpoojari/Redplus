@@ -1,14 +1,17 @@
 const BloodBank = require('../../models/bloodbank/bloodBank/profile'),
 	UserLocation = require('../../models/user/donorlocationSchema'),
-	Inventory = require('../../models/bloodBank/inventory/inventorySchema');
+	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
+	BloodRequest = require('../../models/user/bloodRequestFormSchema'),
+	{ validationResult } = require('express-validator');
 
 //  @route /api/user/findblood
 // @desc get bloodBank list based on currrent location
 // @access Private
 
 const getnearbybloodBank = async (req, res, next) => {
-	
-	const {location}= await UserLocation.findOne({user:req.user.id}).select('location');
+	const { location } = await UserLocation.findOne({ user: req.user.id }).select(
+		'location'
+	);
 	const lat = location.coordinates[0];
 	lang = location.coordinates[1];
 	try {
@@ -42,10 +45,10 @@ const getnearbybloodBank = async (req, res, next) => {
 const getBloodBlanks = async (req, res, next) => {
 	const { component, bgroup } = req.params;
 	try {
-		const {location} = await UserLocation.findOne({
+		const { location } = await UserLocation.findOne({
 			user: req.user.id,
 		}).select('location');
-		
+
 		const lat = location.coordinates[0],
 			lang = location.coordinates[1];
 		let bloodBank = await BloodBank.aggregate([
@@ -1066,5 +1069,67 @@ const sdplasma = (arr, i, bgroup, inventory) => {
 	return i;
 };
 
+//  @route /api/user/findblood/bloodrequest/:req_id
+// @desc post user getprofile
+// @access Private
+
+const bloodRequestForm = async (req, res, next) => {
+	try {
+		const {
+			pateintName,
+			hospitalName,
+			age,
+			bloodGroup,
+			wbc,
+			wholeBlood,
+			platelet,
+			plasma,
+			sdPlatlet,
+			prbc,
+			ffp,
+			cryo,
+			sprbc,
+			sdPlasma,
+		} = req.body;
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(400).json({ errors: errors.array() });
+		}
+		let request;
+		//console.log({donor:req.user});
+
+		request = await new BloodRequest({
+			donor: req.user.id,
+			bloodBank: req.params.req_id,
+			pateintName,
+			hospitalName,
+			age,
+			bloodGroup,
+			wbc,
+			wholeBlood,
+			platelet,
+			plasma,
+			sdPlatlet,
+			prbc,
+			ffp,
+			cryo,
+			sprbc,
+			sdPlasma,
+		});
+
+		let find = await BloodRequest.find({ donor: req.user.id });
+
+		if (find) {
+			return res.status(422).send('Your Request is Already sent');
+		}
+		//request.save();
+		return res.status(200).json(request);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 exports.getnearbybloodBank = getnearbybloodBank;
 exports.getBloodBlanks = getBloodBlanks;
+exports.bloodRequestForm = bloodRequestForm;

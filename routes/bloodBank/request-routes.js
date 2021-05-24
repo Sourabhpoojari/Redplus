@@ -8,4 +8,9 @@ router.get('/donorRequests/:req_id',isBloodBank,requestController.getDonorById);
 router.post('/acceptDonorRequest/:req_id',isBloodBank,requestController.acceptdonorRequest);
 router.delete('/rejectDonorRequest/:req_id',isBloodBank,requestController.rejectDonorRequest);
 
+router.get('/bloodRequests',isBloodBank,requestController.getBloodRequests);
+router.get('/bloodRequests/:req_id',isBloodBank,requestController.getBloodRequestById);
+router.post('/acceptBloodRequest/:req_id',isBloodBank,requestController.acceptBloodRequest);
+router.delete('/rejectBloodRequest/:req_id',isBloodBank,requestController.rejectBloodRequest);
+
 module.exports = router;
