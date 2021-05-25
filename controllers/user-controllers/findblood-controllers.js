@@ -1,15 +1,10 @@
-const Bprofile = require('../../models/bloodbank/bloodBank/profile');
 const BloodBank = require('../../models/bloodbank/bloodBank/profile'),
 	UserLocation = require('../../models/user/donorlocationSchema'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
 	BloodRequest = require('../../models/user/bloodRequestFormSchema'),
-<<<<<<< HEAD
-	{ validationResult } = require('express-validator');
-=======
-	{validationResult}  = require('express-validator'),
+	{ validationResult } = require('express-validator'),
 	Profile = require('../../models/user/profileSchema'),
 	moment = require('moment');
->>>>>>> 04823fefedca4c281289349a04d403428cda2e8b
 
 //  @route /api/user/findblood
 // @desc get bloodBank list based on currrent location
@@ -1099,16 +1094,20 @@ const bloodRequestForm = async (req, res, next) => {
 			sdPlasma,
 		} = req.body;
 		const errors = validationResult(req);
-<<<<<<< HEAD
 		if (!errors.isEmpty()) {
 			return res.status(400).json({ errors: errors.array() });
 		}
+
+		let profile = await Profile.findOne({ donor: req.user.id });
+		if (!profile) {
+			return res.status(422).send('Please compleate your Profile');
+		}
 		let request;
 		//console.log({donor:req.user});
-
 		request = await new BloodRequest({
 			donor: req.user.id,
 			bloodBank: req.params.req_id,
+			RequestDate: moment().format('DD-MM-YYYY'),
 			pateintName,
 			hospitalName,
 			age,
@@ -1123,23 +1122,6 @@ const bloodRequestForm = async (req, res, next) => {
 			cryo,
 			sprbc,
 			sdPlasma,
-=======
-    	if(!errors.isEmpty()){
-        	return res.status(400).json({errors:errors.array()});
-    	}
-
-		let profile = await Profile.findOne({donor:req.user.id});
-		if(!profile){
-			return res.status(422).send("Please compleate your Profile");
-		}
-    	let request;
-		//console.log({donor:req.user});
-		request = await new BloodRequest({
-			donor:req.user.id,
-			bloodBank:req.params.req_id,
-			RequestDate: moment().format('DD-MM-YYYY'),
-			pateintName,hospitalName,age,bloodGroup,wbc,wholeBlood,platelet,plasma,sdPlatlet,prbc,ffp,cryo,sprbc,sdPlasma
->>>>>>> 04823fefedca4c281289349a04d403428cda2e8b
 		});
 
 		let find = await BloodRequest.find({ donor: req.user.id });
