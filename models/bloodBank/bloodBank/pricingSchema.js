@@ -1,35 +1,48 @@
 const mongoose = require('mongoose');
 
 const pricingSchema = mongoose.Schema({
+    bloodBank: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'BloodBank',
+	},
     wbc:{
-        type:Number
+        type:Number,
+        default:1200
     },
     whole:{
-        type:Number
+        type:Number,
+        default:1450
     },
     platelet:{
-        type:Number
+        type:Number,
+        default:400
     },
     plasma:{
-        type:Number
+        type:Number,
+        default:400
     },
     prbc:{
-        type:Number
+        type:Number,
+        default:1200
     },
     ffp:{
-        type:Number
+        type:Number,
+        default:450
     },
     cryo:{
-        type:Number
+        type:Number,
+        default:200
     },
     sprbc:{
         type:Number
     },
     sdplatelet:{
-        type:Number
+        type:Number,
+        default:400
     },
     sdplasma:{
-        type:Number
+        type:Number,
+        default:400
     },
     createdAt:{
         type:Date,
