@@ -1,6 +1,6 @@
 const router = require('express').Router(),
 	{ check } = require('express-validator'),
-	campOrganizeController = require('../../controllers/bloodBank-Controllers/organizeCamp-controller'),
+	campOrganizeController = require('../../controllers/bloodBank-controllers/organizeCamp-controller'),
 	auth = require('../../middleware/bloodBankAuth');
 
 router.post(
