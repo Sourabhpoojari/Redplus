@@ -5,42 +5,43 @@ const pricingSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'BloodBank',
 	},
-    wbc:{
+    WBC:{
         type:Number,
         default:1200
     },
-    whole:{
+    WholeBlood:{
         type:Number,
         default:1450
     },
-    platelet:{
+    Platelet:{
         type:Number,
         default:400
     },
-    plasma:{
+    Plasma:{
         type:Number,
         default:400
     },
-    prbc:{
+    PRBC:{
         type:Number,
         default:1200
     },
-    ffp:{
+    FFP:{
         type:Number,
         default:450
     },
-    cryo:{
+    Cryoprecipitate:{
         type:Number,
         default:200
     },
-    sprbc:{
-        type:Number
-    },
-    sdplatelet:{
+    SPRBC:{
         type:Number,
         default:400
     },
-    sdplasma:{
+    SDPlatele:{
+        type:Number,
+        default:400
+    },
+    SDPlasma:{
         type:Number,
         default:400
     },

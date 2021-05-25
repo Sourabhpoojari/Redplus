@@ -146,16 +146,16 @@ const acceptBloodRequest = async (req,res,next) =>{
         request = await BloodReuests.findById(req.params.req_id);
         if (!request) {
             return res.status(400).json({errors:[{msg : "Blood Request not found!"}]});
-        }
+        } 
       
         const {
-			pateintName,hospitalName,age,bloodGroup,RequestDate,wbc,wholeBlood,platelet,plasma,sdPlatlet,prbc,ffp,cryo,sprbc,sdPlasma
+			pateintName,hospitalName,age,bloodGroup,RequestDate,WBC,WholeBlood,Platelet,Plasma,PRBC,FFP,Cryoprecipitate,SPRBC,SDPlatele,SDPlasma
 		} = request;
         profile = await new BloodRequestedDonor({
             donor:request.donor,
 			bloodBank: req.bloodBank.id,
             RequestDate,
-			pateintName,hospitalName,age,bloodGroup,wbc,wholeBlood,platelet,plasma,sdPlatlet,prbc,ffp,cryo,sprbc,sdPlasma
+			pateintName,hospitalName,age,bloodGroup,WBC,WholeBlood,Platelet,Plasma,PRBC,FFP,Cryoprecipitate,SPRBC,SDPlatele,SDPlasma
 		});
 
        await profile.save();
