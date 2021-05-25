@@ -161,7 +161,7 @@ const acceptBloodRequest = async (req,res,next) =>{
        await profile.save();
        await request.delete();
 
-    return res.status(200).json({msg:"Request accepted"});
+    return res.status(200).json({msg:"Request accepted You can Proced"});
   
         
     } catch (err) {
