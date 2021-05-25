@@ -1,6 +1,6 @@
 const Donation = require('../../models/user/donationSchema'),
 	Profile = require('../../models/user/profileSchema'),
-	BloodBankProfile = require('../../models/bloodbank/bloodBank/profile');
+	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile');
 
 //  @route /api/user/donations
 // @desc get donations of user

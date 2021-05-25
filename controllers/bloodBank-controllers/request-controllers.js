@@ -3,7 +3,7 @@ const DonorRequest = require('../../models/bloodBank/request/userRequestSchema')
 	User = require('../../models/user/userSchema'),
 	Health = require('../../models/user/healthInfoSchema'),
 	BloodReuests = require('../../models/user/bloodRequestFormSchema'),
-	BloodRequestedDonor = require('../../models/bloodbank/request/bloodrequestSchema'),
+	BloodRequestedDonor = require('../../models/bloodBank/request/bloodrequestSchema'),
 	moment = require('moment');
 
 //  @route /api/bloodBank/requests/donorRequests
