@@ -1,6 +1,6 @@
 const router = require('express').Router(),
 	userControllers = require('../../controllers/user-controllers/user-controllers'),
-	bloodBankController = require('../../controllers/bloodbank-Controllers/bloodBankController'),
+	bloodBankController = require('../../controllers/bloodBank-controllers/bloodBankController'),
 	campController = require('../../controllers/camp-controllers/camp-controllers'),
 	{ check } = require('express-validator'),
 	auth = require('../../middleware/userAuth');
