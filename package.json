@@ -1,35 +1,35 @@
 {
-  "name": "bms",
-  "version": "1.0.0",
-  "description": "Centralized Blood Bank with Donor Credit System",
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "author": "Sourabh Poojari",
-  "license": "ISC",
-  "dependencies": {
-    "@sendgrid/mail": "^7.4.2",
-    "@vonage/server-sdk": "^2.10.8",
-    "aadhaar-validator": "^1.1.0",
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "cloudinary": "^1.25.0",
-    "config": "^3.3.6",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "express-fileupload": "^1.2.1",
-    "express-validator": "^6.10.0",
-    "jsonwebtoken": "^8.5.1",
-    "messagebird": "^3.6.0",
-    "moment": "^2.29.1",
-    "momentjs": "^2.0.0",
-    "mongoose": "^5.11.15",
-    "multer": "^1.4.2",
-    "nodemon": "^2.0.7",
-    "path": "^0.12.7",
-    "telesignsdk": "^2.2.1",
-    "twilio": "^3.57.0"
-  }
+	"name": "bms",
+	"version": "1.0.0",
+	"description": "Centralized Blood Bank with Donor Credit System",
+	"main": "server.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "nodemon server.js"
+	},
+	"author": "Sourabh Poojari",
+	"license": "ISC",
+	"dependencies": {
+		"@sendgrid/mail": "^7.4.2",
+		"@vonage/server-sdk": "^2.10.8",
+		"aadhaar-validator": "^1.1.0",
+		"bcryptjs": "^2.4.3",
+		"body-parser": "^1.19.0",
+		"cloudinary": "^1.25.0",
+		"config": "^3.3.6",
+		"cors": "^2.8.5",
+		"express": "^4.17.1",
+		"express-fileupload": "^1.2.1",
+		"express-validator": "^6.10.0",
+		"jsonwebtoken": "^8.5.1",
+		"messagebird": "^3.6.0",
+		"moment": "^2.29.1",
+		"momentjs": "^2.0.0",
+		"mongoose": "^5.11.15",
+		"multer": "^1.4.2",
+		"nodemon": "^2.0.7",
+		"path": "^0.12.7",
+		"telesignsdk": "^2.2.1",
+		"twilio": "^3.57.0"
+	}
 }
