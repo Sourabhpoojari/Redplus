@@ -1,6 +1,6 @@
 const router = require('express').Router(),
 	{ check } = require('express-validator'),
-	FlashRequest = require('../../controllers/bloodBank-Controllers/flashRequest-controller'),
+	FlashRequest = require('../../controllers/bloodBank-controllers/flashRequest-controller'),
 	auth = require('../../middleware/bloodBankAuth');
 
 router.post(
