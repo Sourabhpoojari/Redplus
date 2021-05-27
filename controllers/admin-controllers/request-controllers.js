@@ -12,7 +12,7 @@ const BloodBankRequest = require('../../models/admin/requests/bloodBankRequestSc
 	sgMail = require('@sendgrid/mail'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
 	SENDGRID_API_KEY = config.get('SENDGRID_API_KEY'),
-	Price = require('../../models/bloodbank/bloodBank/pricingSchema');
+	Price = require('../../models/bloodBank/bloodBank/pricingSchema');
 
 sgMail.setApiKey(SENDGRID_API_KEY);
 

@@ -1,4 +1,4 @@
-const Pricing = require('../../models/bloodbank/bloodBank/pricingSchema');
+const Pricing = require('../../models/bloodBank/bloodBank/pricingSchema');
 
 
 
@@ -13,7 +13,7 @@ const getPricing = async(req,res,next) =>{
         return res.status(400).json({ msg: 'No pricing found!' });
     }
 
-    return res.json(pricing);
+    return res.status(200).json(pricing);
     }
     catch(err){
         console.error(err.message);
@@ -41,7 +41,7 @@ const createandupdatePricing = async(req,res,next) =>{
 				{ $set: data },
 				{ new: true }
 			);
-			return res.json(pricing);
+			return res.status(200).json(pricing);
 		}
 		pricing = new Pricing(data);
 		await pricing.save();

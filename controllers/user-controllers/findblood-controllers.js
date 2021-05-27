@@ -1,5 +1,5 @@
-const Bprofile = require('../../models/bloodbank/bloodBank/profile');
-const BloodBank = require('../../models/bloodbank/bloodBank/profile'),
+const Bprofile = require('../../models/bloodBank/bloodBank/profile');
+const BloodBank = require('../../models/bloodBank/bloodBank/profile'),
 	UserLocation = require('../../models/user/donorlocationSchema'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
 	BloodRequest = require('../../models/user/bloodRequestFormSchema'),

@@ -1,6 +1,6 @@
 const  {validationResult} = require('express-validator'),
 campSheduleRequest = require('../../models/admin/requests/campsheduleReuestSchema'),
-Profile = require('../../models/bloodbank/bloodBank/profile');
+Profile = require('../../models/bloodBank/bloodBank/profile');
 //campShema = require('../../models/user/organizecampSchema');
 
 //  @route /api/bloodbank/campshedule

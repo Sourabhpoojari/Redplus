@@ -1,5 +1,5 @@
 const Donation = require('../../models/user/donationSchema'),
-	BloodBankProfile = require('../../models/bloodbank/bloodBank/profile'),
+	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
 	Profile = require('../../models/user/profileSchema');
 
 //  @route /api/user/donations

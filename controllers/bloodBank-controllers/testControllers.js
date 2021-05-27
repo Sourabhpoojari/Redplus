@@ -18,7 +18,7 @@ const primarytestSchema = require('../../models/user/primarytestSchema'),
 	moment = require('moment'),
 	User = require('../../models/user/userSchema'),
 	DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
-	PrimaryTestedDonor = require('../../models/bloodbank/request/primarytestedDonorsSchema');
+	PrimaryTestedDonor = require('../../models/bloodBank/request/primarytestedDonorsSchema');
 
 //  @route /api/bloodbank/test/primarytest/:req_id
 // @desc post primarytest info
@@ -32,12 +32,10 @@ const primaryTest = async (req, res, next) => {
 		return res.status(400).json({ errors: errors.array() });
 	}
 	request = await DonorRequest.findById(req.params.req_id);
-	console.log(req.params.req_id);
+	
 	if (!request) {
 		return res.status(404).send('No request Found');
 	}
-
-	console.log(request.donor);
 
 	const { gender } = await Profile.findOne({ user: request.donor }).select(
 		'gender'
