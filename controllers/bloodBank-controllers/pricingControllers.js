@@ -6,7 +6,6 @@ const Pricing = require('../../models/bloodBank/bloodBank/pricingSchema');
 
 const getPricing = async (req, res, next) => {
 	try {
-		console.log(req.bloodBank.id);
 		let pricing = await Pricing.findOne({ bloodBank: req.bloodBank.id });
 		if (!pricing) {
 			return res.status(400).json({ msg: 'No pricing found!' });
