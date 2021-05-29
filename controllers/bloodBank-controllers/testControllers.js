@@ -18,7 +18,7 @@ const primarytestSchema = require('../../models/user/primarytestSchema'),
 	moment = require('moment'),
 	User = require('../../models/user/userSchema'),
 	DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
-	PrimaryTestedDonor = require('../../models/bloodbank/request/primarytestedDonorsSchema');
+	PrimaryTestedDonor = require('../../models/bloodBank/request/primarytestedDonorsSchema');
 
 //  @route /api/bloodbank/test/primarytest/:req_id
 // @desc post primarytest info
@@ -1295,7 +1295,6 @@ const testReportAndCredits = async (req, res, next) => {
 		donation.report = report.id;
 		await donation.save();
 		//let testreport;
-		
 
 		//await primarydonor.delete();
 
