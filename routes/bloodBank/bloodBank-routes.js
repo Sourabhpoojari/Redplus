@@ -29,8 +29,9 @@ bloodBankController.logIn
 
 router.get('/profile',isBloodBank,bloodBankController.getProfile);
 
-router.get('/getDonors',isBloodBank,userControllers.getDonors);
+router.get('/getDonors',isBloodBank,bloodBankController.getDonors);
 
-router.get('/getDonors/:id',isBloodBank,userControllers.getDonorsById);
+router.get('/getDonors/:id',isBloodBank,bloodBankController.getDonorsById);
+
 
 module.exports = router;

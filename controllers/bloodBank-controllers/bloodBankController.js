@@ -4,7 +4,9 @@ const BloodBankRequest = require('../../models/admin/requests/bloodBankRequestSc
 	jwt = require('jsonwebtoken'),
 	config = require('config'),
 	{ validationResult } = require('express-validator'),
-	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile');
+	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
+	Donation = require('../../models/user/donationSchema'),
+	UserProfile = require('../../models/user/profileSchema');
 
 //  @route /api/bloodBank/signup
 // @desc  post blood bank signup request
@@ -173,8 +175,55 @@ const getBloodBankById = async (req, res, next) => {
 	}
 };
 
+//  @route /api/bloodbank/getdonors
+// @desc  get registered donor info
+// @access Private - authorized bloodbank access only
+const getDonors = async (req, res, next) => {
+	let donor;
+	try {
+		donor = await Donation.find({bloodBank:req.bloodBank.id}).populate('user', [
+			'name',
+			'phone',
+			'profileImage',
+		]);
+		if (!donor) {
+			return res.status(400).json({ msg: 'No Donor Found' });
+		}
+		return res.status(200).json(donor);
+	} catch (err) {
+		console.log(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+
+//  @route /api/bloodbank/getdonors/:id
+// @desc  get registered donor all informaion
+// @access Private - authorized bloodbank access only
+
+const getDonorsById = async (req, res, next) => {
+	let donor;
+	try {
+		const donor = await UserProfile.findOne({user:req.params.id}).populate('user', [
+			'name',
+			'phone',
+			'profileImage',
+		]);
+	
+		return res.status(200).json(donor);
+	} catch (err) {
+		console.log(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+
+
+
 exports.signUpRequest = signUpRequest;
 exports.setPassword = setPassword;
 exports.logIn = logIn;
 exports.getProfile = getProfile;
 exports.getBloodBankById = getBloodBankById;
+exports.getDonors=getDonors;
+exports.getDonorsById=getDonorsById;
