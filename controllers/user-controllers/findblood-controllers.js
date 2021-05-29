@@ -1078,53 +1078,54 @@ const sdplasma = (arr, i, bgroup, inventory) => {
 const bloodRequestForm = async (req, res, next) => {
 	try {
 		const {
-			pateintName,
+			patientName,
 			hospitalName,
 			age,
 			bloodGroup,
-			wbc,
-			wholeBlood,
-			platelet,
-			plasma,
-			sdPlatlet,
-			prbc,
-			ffp,
-			cryo,
-			sprbc,
-			sdPlasma,
+			WBC,
+			WholeBlood,
+			Platelet,
+			Plasma,
+			PRBC,
+			FFP,
+			Cryoprecipitate,
+			SPRBC,
+			SDPlatele,
+			SDPlasma,
 		} = req.body;
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
 			return res.status(400).json({ errors: errors.array() });
 		}
 
-		let profile = await Profile.findOne({ donor: req.user.id });
+		const profile = await Profile.findOne({ user: req.user.id });
+
 		if (!profile) {
 			return res.status(422).send('Please compleate your Profile');
 		}
 		let request;
-		//console.log({donor:req.user});
+
 		request = await new BloodRequest({
 			donor: req.user.id,
 			bloodBank: req.params.req_id,
 			RequestDate: moment().format('DD-MM-YYYY'),
-			pateintName,
+			patientName,
 			hospitalName,
 			age,
 			bloodGroup,
-			wbc,
-			wholeBlood,
-			platelet,
-			plasma,
-			sdPlatlet,
-			prbc,
-			ffp,
-			cryo,
-			sprbc,
-			sdPlasma,
+			WBC,
+			WholeBlood,
+			Platelet,
+			Plasma,
+			PRBC,
+			FFP,
+			Cryoprecipitate,
+			SPRBC,
+			SDPlatele,
+			SDPlasma,
 		});
 
-		let find = await BloodRequest.find({ donor: req.user.id });
+		let find = await BloodRequest.findOne({ donor: req.user.id });
 
 		if (find) {
 			return res.status(422).send('Your Request is Already sent');

@@ -12,7 +12,7 @@ const bloodRequestfromDonor = mongoose.Schema({
 	RequestDate: {
 		type: String,
 	},
-	pattientName: {
+	patientName: {
 		type: String,
 	},
 	hospitalName: {
@@ -24,39 +24,36 @@ const bloodRequestfromDonor = mongoose.Schema({
 	bloodGroup: {
 		type: String,
 	},
-	wbc: {
+	WBC: {
 		type: Number,
 	},
-	wholeBlood: {
+	WholeBlood: {
 		type: Number,
 	},
-	platelet: {
+	Platelet: {
 		type: Number,
 	},
-	plasma: {
+	Plasma: {
 		type: Number,
 	},
-	sdPlatelet: {
+	PRBC: {
 		type: Number,
 	},
-	prbc: {
+	FFP: {
 		type: Number,
 	},
-	ffp: {
+	Cryoprecipitate: {
 		type: Number,
 	},
-	cryo: {
+	SPRBC: {
 		type: Number,
 	},
-	sprbc: {
+	SDPlatele: {
 		type: Number,
 	},
-	sdPlasma: {
+	SDPlasma: {
 		type: Number,
 	},
 });
 
-module.exports = mongoose.model(
-	'BloodRequesttoBloodBank',
-	bloodRequestfromDonor
-);
+module.exports = mongoose.model('BloodRequest', bloodRequestfromDonor);

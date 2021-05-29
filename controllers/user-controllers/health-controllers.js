@@ -71,10 +71,13 @@ const addHealthInfo = async (req,res,next) => {
             return res.status(422).send("You cannot donate blood");
         }
     
+    // let req = await DonorRequest.findOne({donor:req.user.id});
+    // if(req){
+    //     return res.status(422).send("You already sent Donation Request");
+    // }
     request = await new DonorRequest({
         donor:req.user.id,
-       // bloodbank:req.parms.bloodBank
-        
+        bloodBank:req.parms.bloodBank_id
     });
 
     await request.save();
