@@ -13,10 +13,9 @@ const campRequest = async(req,res,next) =>{
         if(!errors.isEmpty()){
             return res.status(400).json({errors:errors.array()});
         }
-        let request;
         try {
            
-            request = await new campSheduleRequest({
+            const request = await new campSheduleRequest({
                bloodBank : req.bloodBank.id,
                 campAddress, campName, campSchedule, capacity, community,poster,referenceId,sponserOrganization
             });
@@ -26,9 +25,8 @@ const campRequest = async(req,res,next) =>{
                 ];
                 request.location.type = "Point";
             }
-            let profile;
            
-             profile = await Profile.find({bloodBank : req.bloodBank.id});
+             const profile = await Profile.find({bloodBank : req.bloodBank.id});
             if(!profile){
                 return res.status(400).json({msg:"Please update your profile"});
             }

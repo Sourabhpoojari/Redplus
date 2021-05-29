@@ -1094,9 +1094,8 @@ const bloodRequestForm = async (req, res, next) => {
 		if(!profile){
 			return res.status(422).send("Please compleate your Profile");
 		}
-    	let request;
 		
-		request = await new BloodRequest({
+		const request = await new BloodRequest({
 			donor:req.user.id,
 			bloodBank:req.params.req_id,
 			RequestDate: moment().format('DD-MM-YYYY'),

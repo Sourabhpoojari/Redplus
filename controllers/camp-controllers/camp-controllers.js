@@ -4,9 +4,9 @@ const BloodCamps = require('../../models/camp/organizeCampSchema');
 // @desc  get blood Bank profile info
 // @access Private - authorized user access only
 const getCampById = async (req,res,next) =>{
-    let camp;
+
     try {
-        camp = await BloodCamps.findById(req.params.id);
+        const camp = await BloodCamps.findById(req.params.id);
         if (!camp) {
             return res.status(400).json({errors:[{msg : "No Camps found!"}]});
         }

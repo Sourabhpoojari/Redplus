@@ -8,7 +8,7 @@ const Pricing = require('../../models/bloodBank/bloodBank/pricingSchema');
 
 const getPricing = async(req,res,next) =>{  
     try{
-    let pricing = await Pricing.findOne({bloodBank:req.bloodBank.id});
+    const  pricing = await Pricing.findOne({bloodBank:req.bloodBank.id});
     if(!pricing){
         return res.status(400).json({ msg: 'No pricing found!' });
     }
@@ -25,15 +25,14 @@ const getPricing = async(req,res,next) =>{
 // @desc careaate and update prcing of Blood Component
 // @access Private to blood bank
 const createandupdatePricing = async(req,res,next) =>{
-    let {WBC,WholeBlood,Platelet,Plasma,PRBC,FFP,Cryoprecipitate,SPRBC,SDPlatele,SDPlasma} = req.body;
-    let pricing;
+    const {WBC,WholeBlood,Platelet,Plasma,PRBC,FFP,Cryoprecipitate,SPRBC,SDPlatele,SDPlasma} = req.body;
 	try {
 		const data = {
 			
 			WBC,WholeBlood,Platelet,Plasma,PRBC,FFP,Cryoprecipitate,SPRBC,SDPlatele,SDPlasma
 		};
        
-        pricing = await Pricing.findOne({bloodBank: req.bloodBank.id });
+        const pricing = await Pricing.findOne({bloodBank: req.bloodBank.id });
         
 		if (pricing) {
 			pricing = await Pricing.findOneAndUpdate( 

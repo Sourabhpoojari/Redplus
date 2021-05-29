@@ -11,9 +11,8 @@ moment = require('moment');
 // @desc get Donor requests
 // @access Private - blood bank access only
 const getDonorRequests = async (req,res,next) =>{
-    let request;
     try {
-        request = await DonorRequest.find().populate('donor',['name','phone','profileImage']);
+        const request = await DonorRequest.find().populate('donor',['name','phone','profileImage']);
         if (!request) {
             return res.status(404).json({errors:[{msg : "No requests found!"}]});
         }
@@ -29,12 +28,11 @@ const getDonorRequests = async (req,res,next) =>{
 // @desc  get user info
 // @access bloodbank
 const getDonorById = async (req,res,next) =>{
-    let donor,request;
     try {
        
-        request = await  DonorRequest.findById(req.params.req_id).populate('user',['phone','ProfileImage']);
+        const request = await  DonorRequest.findById(req.params.req_id).populate('user',['phone','ProfileImage']);
         
-        donor = await  Profile.findOne({user:request.donor}).populate('user',['phone']);
+        const donor = await  Profile.findOne({user:request.donor}).populate('user',['phone']);
         
         if (!donor) {
             return res.status(400).json({errors:[{msg : "Profile not found!"}]});
@@ -50,10 +48,9 @@ const getDonorById = async (req,res,next) =>{
 // @desc POST accept donation shedule request
 // @access Private - bloodbank access only
 const acceptdonorRequest = async (req,res,next) =>{
-    let request;
     try {
         //console.log({user:req.params.id.user});
-        request = await DonorRequest.findById(req.params.req_id);
+        const request = await DonorRequest.findById(req.params.req_id);
         if (!request) {
             return res.status(400).json({errors:[{msg : "Donation Request not found!"}]});
         }
@@ -71,14 +68,13 @@ const acceptdonorRequest = async (req,res,next) =>{
 // @desc DELETE reject camp shedule request
 // @access Private - admin access only
 const rejectDonorRequest = async (req,res,next) =>{
-    let request;
-    let phone;
+   
     try {
         //phone= await User.findOne({user:req.params.id.user});
         //console.log(phone.phone);
-        request = await DonorRequest.findById(req.params.req_id);
+        const request = await DonorRequest.findById(req.params.req_id);
 
-        health = await Health.findOne({user:request.donor});
+        const health = await Health.findOne({user:request.donor});
         
         if (!request) {
             return res.status(400).json({errors:[{msg : "Donation request not found!"}]});
@@ -99,9 +95,9 @@ const rejectDonorRequest = async (req,res,next) =>{
 // @desc get blood requests
 // @access Private - blood bank access only
 const getBloodRequests = async (req,res,next) =>{
-    let request;
+   
     try {
-        request = await BloodReuests.find().populate('donor',['name','phone','profileImage']);
+        const request = await BloodReuests.find().populate('donor',['name','phone','profileImage']);
         if (!request) {
             return res.status(404).json({errors:[{msg : "No requests found!"}]});
         }
@@ -118,12 +114,12 @@ const getBloodRequests = async (req,res,next) =>{
 // @desc  get user info
 // @access bloodbank
 const getBloodRequestById = async (req,res,next) =>{
-    let donor,request;
+   
     try {
        
-        request = await  BloodReuests.findById(req.params.req_id);
+        const request = await  BloodReuests.findById(req.params.req_id);
         
-        donor = await  Profile.findOne({user:request.donor}).populate('user',['phone']);
+        const donor = await  Profile.findOne({user:request.donor}).populate('user',['phone']);
         
         if (!donor) {
             return res.status(400).json({errors:[{msg : "Profile not found!"}]});
@@ -140,10 +136,9 @@ const getBloodRequestById = async (req,res,next) =>{
 // @desc POST accept donation shedule request
 // @access Private - bloodbank access only
 const acceptBloodRequest = async (req,res,next) =>{
-    let request,profile;
     try {
         //console.log({user:req.params.id.user});
-        request = await BloodReuests.findById(req.params.req_id);
+        const request = await BloodReuests.findById(req.params.req_id);
         if (!request) {
             return res.status(400).json({errors:[{msg : "Blood Request not found!"}]});
         } 
@@ -151,7 +146,7 @@ const acceptBloodRequest = async (req,res,next) =>{
         const {
 			pateintName,hospitalName,age,bloodGroup,RequestDate,WBC,WholeBlood,Platelet,Plasma,PRBC,FFP,Cryoprecipitate,SPRBC,SDPlatele,SDPlasma
 		} = request;
-        profile = await new BloodReuestsAccepted({
+        const profile = await new BloodReuestsAccepted({
             donor:request.donor,
 			bloodBank: req.bloodBank.id,
             RequestDate,
@@ -174,9 +169,8 @@ const acceptBloodRequest = async (req,res,next) =>{
 // @desc DELETE reject camp shedule request
 // @access Private - admin access only
 const rejectBloodRequest = async (req,res,next) =>{
-    let request;
     try {
-        request = await BloodReuests.findById(req.params.req_id);
+        const request = await BloodReuests.findById(req.params.req_id);
         if (!request) {
             return res.status(400).json({errors:[{msg : "Blood request not found!"}]});
         }
