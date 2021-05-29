@@ -57,6 +57,6 @@ const bloodRequestfromDonor= mongoose.Schema({
 });
 
 module.exports = mongoose.model(
-	'BloodRequesttoBloodBank',
+	'BloodRequest',
 	bloodRequestfromDonor
 );

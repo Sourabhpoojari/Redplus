@@ -1,8 +1,7 @@
-const Bprofile = require('../../models/bloodBank/bloodBank/profile');
 const BloodBank = require('../../models/bloodBank/bloodBank/profile'),
 	UserLocation = require('../../models/user/donorlocationSchema'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
-	BloodRequest = require('../../models/user/bloodRequestFormSchema'),
+	BloodRequest = require('../../models/bloodBank/request/bloodrequestSchema'),
 	{validationResult}  = require('express-validator'),
 	Profile = require('../../models/user/profileSchema'),
 	moment = require('moment');
@@ -1090,7 +1089,7 @@ const bloodRequestForm = async (req, res, next) => {
         	return res.status(400).json({errors:errors.array()});
     	}
 		
-		let profile = await Profile.findOne({user:req.user.id});
+		const profile = await Profile.findOne({user:req.user.id});
 		
 		if(!profile){
 			return res.status(422).send("Please compleate your Profile");
@@ -1104,7 +1103,7 @@ const bloodRequestForm = async (req, res, next) => {
 			patientName,hospitalName,age,bloodGroup,WBC,WholeBlood,Platelet,Plasma,PRBC,FFP,Cryoprecipitate,SPRBC,SDPlatele,SDPlasma
 		});
 		
-		let find = await BloodRequest.findOne({donor:req.user.id});
+		const find = await BloodRequest.findOne({donor:req.user.id});
 		
 		if (find) {
 			return res.status(422).send('Your Request is Already sent');

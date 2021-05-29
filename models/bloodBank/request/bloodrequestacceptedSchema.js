@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const bloodRequest= mongoose.Schema({
+const AcceptedbloodRequest= mongoose.Schema({
     donor:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'
@@ -56,5 +56,7 @@ const bloodRequest= mongoose.Schema({
     }
 });
 
-
-module.exports= mongoose.model('BloodRequestForm',bloodRequest);
+module.exports = mongoose.model(
+	'BloodRequestAccepted',
+	AcceptedbloodRequest
+);

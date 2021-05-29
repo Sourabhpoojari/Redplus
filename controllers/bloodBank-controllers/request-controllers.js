@@ -3,8 +3,8 @@ const DonorRequest = require('../../models/bloodBank/request/userRequestSchema')
 Profile = require('../../models/user/profileSchema');
 User = require('../../models/user/userSchema');
 Health = require('../../models/user/healthInfoSchema'),
-BloodReuests = require('../../models/user/bloodRequestFormSchema'),
 BloodRequestedDonor = require('../../models/bloodBank/request/bloodrequestSchema'),
+BloodReuestsAccepted = require('../../models/bloodBank/request/bloodrequestacceptedSchema')
 moment = require('moment');
 
 //  @route /api/bloodBank/requests/donorRequests
@@ -151,7 +151,7 @@ const acceptBloodRequest = async (req,res,next) =>{
         const {
 			pateintName,hospitalName,age,bloodGroup,RequestDate,WBC,WholeBlood,Platelet,Plasma,PRBC,FFP,Cryoprecipitate,SPRBC,SDPlatele,SDPlasma
 		} = request;
-        profile = await new BloodRequestedDonor({
+        profile = await new BloodReuestsAccepted({
             donor:request.donor,
 			bloodBank: req.bloodBank.id,
             RequestDate,
