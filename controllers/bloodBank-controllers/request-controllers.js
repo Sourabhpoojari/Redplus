@@ -1,9 +1,8 @@
 const DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
-	Profile = require('../../models/user/profileSchema');
-User = require('../../models/user/userSchema');
-(Health = require('../../models/user/healthInfoSchema')),
-	(BloodRequestedDonor = require('../../models/bloodBank/request/bloodrequestSchema')),
-	(BloodReuestsAccepted = require('../../models/bloodBank/request/bloodrequestacceptedSchema'));
+	Profile = require('../../models/user/profileSchema'),
+	Health = require('../../models/user/healthInfoSchema'),
+	BloodRequestedDonor = require('../../models/bloodBank/request/bloodrequestSchema'),
+	BloodReuestsAccepted = require('../../models/bloodBank/request/bloodrequestacceptedSchema');
 moment = require('moment');
 
 //  @route /api/bloodBank/requests/donorRequests
