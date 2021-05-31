@@ -47,8 +47,9 @@ const createandupdatePricing = async (req, res, next) => {
 			SDPlatele,
 			SDPlasma,
 		};
-		
+
 		let pricing = await Pricing.findOne({ bloodBank: req.bloodBank.id });
+
 		if (pricing) {
 			pricing = await Pricing.findOneAndUpdate(
 				{ bloodBank: req.bloodBank.id } ,

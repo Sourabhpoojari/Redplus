@@ -142,7 +142,6 @@ const getBloodRequestById = async (req, res, next) => {
 // @access Private - bloodbank access only
 const acceptBloodRequest = async (req, res, next) => {
 	try {
-		//console.log({user:req.params.id.user});
 		const request = await BloodReuests.findById(req.params.req_id);
 		if (!request) {
 			return res
