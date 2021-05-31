@@ -1,6 +1,6 @@
 const Donation = require('../../models/user/donationSchema'),
-	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
-	Profile = require('../../models/user/profileSchema');
+	Profile = require('../../models/user/profileSchema'),
+	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile');
 
 //  @route /api/user/donations
 // @desc get donations of user
@@ -40,7 +40,6 @@ const getDonationById = async (req, res, next) => {
 		const donation = await Donation.findById(req.params.donation_id)
 			.populate('primaryTest')
 			.populate('report');
-		
 		if (!donation) {
 			return res.status(400).json({ msg: 'Donation not found' });
 		}
@@ -58,7 +57,7 @@ const getDonationById = async (req, res, next) => {
 			userInfo: profile,
 		});
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 		res.status(500).send('Server error');
 	}
 };
