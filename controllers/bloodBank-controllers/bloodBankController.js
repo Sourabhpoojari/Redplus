@@ -59,10 +59,17 @@ const signUpRequest = async (req, res, next) => {
 // @desc put bloodbank signup for login details
 // @access Public
 const setPassword = async (req, res, next) => {
-	const { email, password } = req.body;
+	const { password } = req.body;
 	let bloodBank;
 	try {
-		bloodBank = await BloodBank.findOne({ email });
+		const token = req.header('x-auth-token');
+		if (!token) {
+			return res
+				.status(401)
+				.json({ msg: 'No token found, authorization denied' });
+		}
+		const decoded = jwt.verify(token, config.get('jwtSecret'));
+		bloodBank = await BloodBank.findById(decoded.bloodBank.id);
 		if (!bloodBank) {
 			return res
 				.status(400)
@@ -71,21 +78,7 @@ const setPassword = async (req, res, next) => {
 		const salt = await bcrypt.genSalt(10);
 		bloodBank.password = await bcrypt.hash(password, salt);
 		await bloodBank.save();
-		// setting jwt
-		const payload = {
-			bloodBank: {
-				id: bloodBank.id,
-			},
-		};
-		jwt.sign(
-			payload,
-			config.get('jwtSecret'),
-			{ expiresIn: 3600 },
-			(err, token) => {
-				if (err) throw err;
-				return res.status(200).json({ token });
-			}
-		);
+		return res.status(201).json('Your password is sucessfully set!');
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');
@@ -180,11 +173,10 @@ const getBloodBankById = async (req, res, next) => {
 // @access Private - authorized bloodbank access only
 const getDonors = async (req, res, next) => {
 	try {
-		const donor = await Donation.find({bloodBank:req.bloodBank.id}).populate('user', [
-			'name',
-			'phone',
-			'profileImage',
-		]);
+		const donor = await Donation.find({ bloodBank: req.bloodBank.id }).populate(
+			'user',
+			['name', 'phone', 'profileImage']
+		);
 		if (!donor) {
 			return res.status(400).json({ msg: 'No Donor Found' });
 		}
@@ -195,31 +187,30 @@ const getDonors = async (req, res, next) => {
 	}
 };
 
-
 //  @route /api/bloodbank/getdonors/:id
 // @desc  get registered donor all informaion
 // @access Private - authorized bloodbank access only
 
 const getDonorsById = async (req, res, next) => {
 	try {
-		const donation = await Donation.findById({user:req.params.id})
-		.populate('primaryTest')
-		.populate('report');
-	
-	if (!donation) {
-		return res.status(400).json({ msg: 'Donation not found' });
-	}
-	
-	const profile = await UserProfile.findOne({ user: donation.user }).populate(
-		'user',
-		['phone']
-	);
+		const donation = await Donation.findById({ user: req.params.id })
+			.populate('primaryTest')
+			.populate('report');
 
-	return res.status(200).json({
-		donation,
-		bloodBankinfo,
-		userInfo: profile,
-	});
+		if (!donation) {
+			return res.status(400).json({ msg: 'Donation not found' });
+		}
+
+		const profile = await UserProfile.findOne({ user: donation.user }).populate(
+			'user',
+			['phone']
+		);
+
+		return res.status(200).json({
+			donation,
+			bloodBankinfo,
+			userInfo: profile,
+		});
 		return res.status(200).json(donor);
 	} catch (err) {
 		console.log(err);
@@ -227,13 +218,10 @@ const getDonorsById = async (req, res, next) => {
 	}
 };
 
-
-
-
 exports.signUpRequest = signUpRequest;
 exports.setPassword = setPassword;
 exports.logIn = logIn;
 exports.getProfile = getProfile;
 exports.getBloodBankById = getBloodBankById;
-exports.getDonors=getDonors;
-exports.getDonorsById=getDonorsById;
+exports.getDonors = getDonors;
+exports.getDonorsById = getDonorsById;
