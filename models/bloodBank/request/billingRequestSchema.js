@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const AcceptedbloodRequest = mongoose.Schema({
+const billingRequestSchema = mongoose.Schema({
 	donor: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
@@ -56,4 +56,4 @@ const AcceptedbloodRequest = mongoose.Schema({
 	},
 });
 
-module.exports = mongoose.model('Billing', AcceptedbloodRequest);
+module.exports = mongoose.model('BillingRequest', billingRequestSchema);
