@@ -16,9 +16,8 @@ HospitalProfile = require('../../models/hospital/hospital/profile');
     if(!errors.isEmpty()){
         return res.status(400).json({errors:errors.array()});
     }
-    let request;
     try {
-            request = await hospitalRequest.findOne({hospitalEmail});
+            const request = await hospitalRequest.findOne({hospitalEmail});
             if(request){
                 return res.status(400).json({errors:[{msg : "Hospital already exists!"}]});
             }
@@ -86,9 +85,8 @@ const logIn = async (req,res,next) =>{
         return res.status(400).json({errors:errors.array()});
     }
     const {email,password} = req.body;
-    let hospital;
     try {
-        hospital= await Hospital.findOne({email});
+        const hospital= await Hospital.findOne({email});
         if(!hospital){
             return res.status(400).json({errors:[{msg : "You need to register before login!"}]});
         }

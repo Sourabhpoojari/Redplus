@@ -28,6 +28,8 @@ app.use('/api/admin/', require('./routes/admin/admin-routes'));
 
 app.use('/api/admin/requests', require('./routes/admin/request-routes'));
 
+app.use('/api/admin/post',require('././routes/admin/post-routes'));
+
 // bloodBank routes
 app.use('/api/bloodBank', require('./routes/bloodBank/bloodBank-routes'));
 

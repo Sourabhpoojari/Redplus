@@ -1,3 +1,5 @@
+const Pricing = require('twilio/lib/rest/Pricing');
+
 const BloodBankRequest = require('../../models/admin/requests/bloodBankRequestSchema'),
 	campSheduleRequest = require('../../models/admin/requests/campsheduleReuestSchema'),
 	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
@@ -9,7 +11,8 @@ const BloodBankRequest = require('../../models/admin/requests/bloodBankRequestSc
 	config = require('config'),
 	sgMail = require('@sendgrid/mail'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
-	SENDGRID_API_KEY = config.get('SENDGRID_API_KEY');
+	SENDGRID_API_KEY = config.get('SENDGRID_API_KEY'),
+	Price = require('../../models/bloodBank/bloodBank/pricingSchema');
 
 sgMail.setApiKey(SENDGRID_API_KEY);
 
@@ -108,13 +111,19 @@ const acceptBloodBankRequest = async (req, res, next) => {
 		const inventory = await new Inventory({
 			bloodBankID: bloodBank.id,
 		});
+
+		const pricing = await new Price({
+			bloodBank: bloodBank.id,
+		});
 		sgMail
 			.send(msg)
 			.then(async () => {
 				bloodBank.isBloodBank = true;
+
 				await bloodBank.save();
 				await profile.save();
 				await inventory.save();
+				await pricing.save();
 				await request.delete();
 				return res.status(200).json({ msg: 'Request accepted' });
 			})
