@@ -47,19 +47,19 @@ const createandupdatePricing = async (req, res, next) => {
 			SDPlatele,
 			SDPlasma,
 		};
-
-		const pricing = await Pricing.findOne({ bloodBank: req.bloodBank.id });
-
+		
+		let pricing = await Pricing.findOne({ bloodBank: req.bloodBank.id });
 		if (pricing) {
 			pricing = await Pricing.findOneAndUpdate(
-				{ bloodBank: req.bloodBank.id },
+				{ bloodBank: req.bloodBank.id } ,
 				{ $set: data },
-				{ new: true }
+				{ new: true },
 			);
 			return res.status(200).json(pricing);
-		}
+		} 
 		pricing = new Pricing(data);
 		await pricing.save();
+		console.log(pricing);
 		return res.json(pricing);
 	} catch (err) {
 		console.error(err.message);

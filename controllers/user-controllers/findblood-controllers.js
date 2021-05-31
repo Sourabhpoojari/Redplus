@@ -1105,7 +1105,7 @@ const bloodRequestForm = async (req, res, next) => {
 		if (request) {
 			return res.status(422).send('Your Request is Already sent');
 		}
-		const inventory = await Inventory.findOne({ bloodBankID: req_id });
+		const inventory = await Inventory.findOne({ bloodBankID: req.params.req_id });
 		// Check  inventory
 		if (WBC > 0) {
 			if (!wbcStatus(inventory, bloodGroup, WBC)) {
