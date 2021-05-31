@@ -9,6 +9,7 @@ const Health = require('../../models/user/healthInfoSchema'),
 // @desc post health info
 // @access Private
 const addHealthInfo = async (req,res,next) => {
+
     
     let {isDonated, date,  lastMeal, history, disease, consumptions, result, isPregnant, abortion, child, periods} = req.body;
     let request;
@@ -75,9 +76,11 @@ const addHealthInfo = async (req,res,next) => {
     // if(req){
     //     return res.status(422).send("You already sent Donation Request");
     // }
+
+    
     request = await new DonorRequest({
         donor:req.user.id,
-        bloodBank:req.parms.bloodBank_id
+        bloodBank:req.params.bloodBank_id
     });
 
     await request.save();

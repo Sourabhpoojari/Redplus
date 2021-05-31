@@ -1295,7 +1295,7 @@ const testReportAndCredits = async (req, res, next) => {
 		//let testreport;
 		
 
-		//await primarydonor.delete();
+		await request.delete();
 
 		return res.status(200).json(report);
 	} catch (err) {

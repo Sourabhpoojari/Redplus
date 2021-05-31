@@ -202,7 +202,8 @@ const getDonors = async (req, res, next) => {
 
 const getDonorsById = async (req, res, next) => {
 	try {
-		const donation = await Donation.findById({user:req.params.id})
+		
+		const donation = await Donation.findOne({user:req.params.id})
 		.populate('primaryTest')
 		.populate('report');
 	
@@ -217,10 +218,9 @@ const getDonorsById = async (req, res, next) => {
 
 	return res.status(200).json({
 		donation,
-		bloodBankinfo,
 		userInfo: profile,
 	});
-		return res.status(200).json(donor);
+		
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');

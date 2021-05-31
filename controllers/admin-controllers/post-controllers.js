@@ -15,7 +15,7 @@ const uploadPoster = async(req,res,next)=>{
     }
     const {description,poster} = req.body;
     try {
-        const uploadposter = await Poster.find();
+        let uploadposter = await Poster.find();
         if(!uploadposter){
             return res.status(400).json({msg : "No poster found"});
         }
