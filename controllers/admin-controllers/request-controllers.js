@@ -1,5 +1,3 @@
-const Pricing = require('twilio/lib/rest/Pricing');
-
 const BloodBankRequest = require('../../models/admin/requests/bloodBankRequestSchema'),
 	campSheduleRequest = require('../../models/admin/requests/campsheduleReuestSchema'),
 	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
@@ -12,7 +10,8 @@ const BloodBankRequest = require('../../models/admin/requests/bloodBankRequestSc
 	sgMail = require('@sendgrid/mail'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
 	SENDGRID_API_KEY = config.get('SENDGRID_API_KEY'),
-	Price = require('../../models/bloodBank/bloodBank/pricingSchema');
+	Price = require('../../models/bloodBank/bloodBank/pricingSchema'),
+	jwt = require('jsonwebtoken');
 
 sgMail.setApiKey(SENDGRID_API_KEY);
 
@@ -71,11 +70,9 @@ const acceptBloodBankRequest = async (req, res, next) => {
 		} = request;
 		bloodBank = await BloodBank.findOne({ email: bloodBankEmail });
 		if (bloodBank) {
-			return res
-				.status(302)
-				.json({
-					errors: [{ msg: 'Blood Bank with this email already exists!' }],
-				});
+			return res.status(302).json({
+				errors: [{ msg: 'Blood Bank with this email already exists!' }],
+			});
 		}
 		bloodBank = await new BloodBank({
 			email: bloodBankEmail,
@@ -83,11 +80,9 @@ const acceptBloodBankRequest = async (req, res, next) => {
 
 		profile = await BloodBankProfile.findOne({ bloodBankEmail });
 		if (profile) {
-			return res
-				.status(302)
-				.json({
-					errors: [{ msg: 'Blood Bank with this profile already exists!' }],
-				});
+			return res.status(302).json({
+				errors: [{ msg: 'Blood Bank with this profile already exists!' }],
+			});
 		}
 		profile = await new BloodBankProfile({
 			bloodBank: bloodBank.id,
@@ -99,13 +94,24 @@ const acceptBloodBankRequest = async (req, res, next) => {
 			location,
 			bloodBankRegistrationDocument,
 		});
+		const payload = {
+			bloodBank: {
+				id: bloodBank.id,
+			},
+		};
+		const token = jwt.sign(payload, config.get('jwtSecret'), {
+			expiresIn: '5d',
+		});
+		const link = 'https://redplusbeta.herokuapp.com/#/accountSetup/' + token;
 		const msg = {
 			to: bloodBankEmail, // Change to your recipient
 			from: 'redplus112@gmail.com', // Change to your verified sender
 			subject: 'Request accepted',
 			text:
 				'Your registraion to Redplus is accepted. Kindly use below link to set-up your password and login to your account using emailID ' +
-				bloodBankEmail,
+				bloodBankEmail +
+				' ' +
+				link,
 			// html: '<strong>and easy to do anywhere, even with Node.js</strong>',
 		};
 		const inventory = await new Inventory({
@@ -125,7 +131,7 @@ const acceptBloodBankRequest = async (req, res, next) => {
 				await inventory.save();
 				await pricing.save();
 				await request.delete();
-				return res.status(200).json({ msg: 'Request accepted' });
+				return res.status(200).json({ msg: 'Request accepted', token });
 			})
 			.catch((err) => {
 				console.error(err);
@@ -151,7 +157,7 @@ const rejectBloodBankRequest = async (req, res, next) => {
 			to: request.bloodBankEmail, // Change to your recipient
 			from: 'redplus112@gmail.com', // Change to your verified sender
 			subject: 'Request Rejected',
-			text: 'Your registraion to Redplus is rejected.',
+			text: 'Your registration to Redplus is rejected.',
 			// html: '<strong>and easy to do anywhere, even with Node.js</strong>',
 		};
 		const status = await sgMail.send(msg);
@@ -221,11 +227,9 @@ const acceptHospitalRequest = async (req, res, next) => {
 		} = request;
 		hospital = await Hospital.findOne({ email: hospitalEmail });
 		if (hospital) {
-			return res
-				.status(400)
-				.json({
-					errors: [{ msg: 'Hospital with this email already exists!' }],
-				});
+			return res.status(400).json({
+				errors: [{ msg: 'Hospital with this email already exists!' }],
+			});
 		}
 		hospital = await new Hospital({
 			email: hospitalEmail,
@@ -233,11 +237,9 @@ const acceptHospitalRequest = async (req, res, next) => {
 
 		profile = await Hospitalprofile.findOne({ hospitalEmail });
 		if (profile) {
-			return res
-				.status(400)
-				.json({
-					errors: [{ msg: 'Hospital with this profile already exists!' }],
-				});
+			return res.status(400).json({
+				errors: [{ msg: 'Hospital with this profile already exists!' }],
+			});
 		}
 		profile = await new Hospitalprofile({
 			hospital: hospital.id,
