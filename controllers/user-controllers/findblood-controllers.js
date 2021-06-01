@@ -1296,6 +1296,7 @@ const plateletStatus = (inventory, bgroup, count) => {
 			}
 		}
 		if (bgroup == 'B+Ve') {
+			console.log(inventory.platelet['B+Ve']);
 			if (inventory.platelet['B+Ve'] < count) {
 				console.log(inventory.platelet['B+Ve']);
 				return false;
