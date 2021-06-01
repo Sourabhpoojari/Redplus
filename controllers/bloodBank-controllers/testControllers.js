@@ -32,7 +32,7 @@ const primaryTest = async (req, res, next) => {
 		return res.status(400).json({ errors: errors.array() });
 	}
 	request = await DonorRequest.findById(req.params.req_id);
-	
+
 	if (!request) {
 		return res.status(404).send('No request Found');
 	}
@@ -165,13 +165,11 @@ const postBagNumber = async (req, res, next) => {
 //  @route/api/bloodbank/test/bagNumbers
 // @desc get bagnumber
 // @access Private - blood bank access only
-const getDonorBagNumber = async (req, res, next) => {
+const getDonors = async (req, res, next) => {
 	try {
-		const report = await PrimaryTestedDonor.find().populate('user', [
-			'name',
-			'phone',
-			'profileImage',
-		]);
+		const report = await PrimaryTestedDonor.find({
+			bloodbank: req.bloodBank.id,
+		}).populate('user', ['name', 'phone', 'profileImage']);
 		if (!report) {
 			return res.status(400).json({ msg: 'report not found' });
 		}
@@ -1306,5 +1304,5 @@ const testReportAndCredits = async (req, res, next) => {
 exports.testReportAndCredits = testReportAndCredits;
 exports.primaryTest = primaryTest;
 exports.postBagNumber = postBagNumber;
-exports.getDonorBagNumber = getDonorBagNumber;
+exports.getDonorBagNumber = getDonors;
 exports.getDonorById = getDonorById;
