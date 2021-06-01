@@ -1108,6 +1108,9 @@ const bloodRequestForm = async (req, res, next) => {
 		const inventory = await Inventory.findOne({
 			bloodBankID: req.params.req_id,
 		});
+		if (!inventory) {
+			return res.status(404).send('Inventory not found!');
+		}
 		// Check  inventory
 		if (WBC > 0) {
 			if (!wbcStatus(inventory, bloodGroup, WBC)) {
