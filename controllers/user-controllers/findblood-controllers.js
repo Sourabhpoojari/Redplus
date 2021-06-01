@@ -1109,6 +1109,7 @@ const bloodRequestForm = async (req, res, next) => {
 			bloodBankID: req.params.req_id,
 		});
 		if (!inventory) {
+			console.log(req.params.req_id);
 			return res.status(404).send('Inventory not found!');
 		}
 		// Check  inventory
