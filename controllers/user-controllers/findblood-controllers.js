@@ -1097,10 +1097,10 @@ const bloodRequestForm = async (req, res, next) => {
 		if (!errors.isEmpty()) {
 			return res.status(400).json({ errors: errors.array() });
 		}
-		const profile = await Profile.findOne({ user: req.user.id });
-		if (!profile) {
-			return res.status(404).send('Please complete your Profile');
-		}
+		// const profile = await Profile.findOne({ user: req.user.id });
+		// if (!profile) {
+		// 	return res.status(404).send('Please complete your Profile');
+		// }
 		let request = await BloodRequest.findOne({ donor: req.user.id });
 		if (request) {
 			return res.status(422).send('Your Request is Already sent');
