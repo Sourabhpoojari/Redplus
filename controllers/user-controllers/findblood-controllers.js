@@ -1233,7 +1233,7 @@ const wbcStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 	}
 };
 const wholeStatus = (inventory, bgroup, count) => {
@@ -1280,7 +1280,7 @@ const wholeStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 	}
 };
 const plateletStatus = (inventory, bgroup, count) => {
@@ -1329,7 +1329,7 @@ const plateletStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 	}
 };
 const plasmaStatus = (inventory, bgroup, count) => {
@@ -1376,7 +1376,7 @@ const plasmaStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 	}
 };
 const prbcStatus = (inventory, bgroup, count) => {
@@ -1431,7 +1431,7 @@ const prbcStatus = (inventory, bgroup, count) => {
 			return true;
 		}
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 	}
 };
 const ffpStatus = (inventory, bgroup, count) => {
@@ -1478,7 +1478,7 @@ const ffpStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 	}
 };
 const cryoStatus = (inventory, bgroup, count) => {
@@ -1525,7 +1525,7 @@ const cryoStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 	}
 };
 const sprbcStatus = (inventory, bgroup, count) => {
@@ -1572,7 +1572,7 @@ const sprbcStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 	}
 };
 const sdplateStatus = (inventory, bgroup, count) => {
@@ -1619,7 +1619,7 @@ const sdplateStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 	}
 };
 const sdplasmaStatus = (inventory, bgroup, count) => {
@@ -1666,7 +1666,7 @@ const sdplasmaStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 	}
 };
 
