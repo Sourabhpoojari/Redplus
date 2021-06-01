@@ -333,6 +333,7 @@ const wbcStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -379,6 +380,7 @@ const wholeStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -425,6 +427,7 @@ const plateletStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -471,6 +474,7 @@ const plasmaStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -481,41 +485,50 @@ const prbcStatus = (inventory, bgroup, count) => {
 			if (inventory.rbc['A+Ve'] < count) {
 				return false;
 			}
+			return true;
 		}
 		if (bgroup == 'A-Ve') {
 			if (inventory.rbc['A-Ve'] < count) {
 				return false;
 			}
+			return true;
 		}
 		if (bgroup == 'B+Ve') {
 			if (inventory.rbc['B+Ve'] < count) {
 				return false;
 			}
+			return true;
 		}
 		if (bgroup == 'B-Ve') {
 			if (inventory.rbc['B-Ve'] < count) {
 				return false;
 			}
+			return true;
 		}
 		if (bgroup == 'AB+Ve') {
 			if (inventory.rbc['AB+Ve'] < count) {
+				console.log(inventory.rbc['AB+Ve']);
 				return false;
 			}
+			return true;
 		}
 		if (bgroup == 'AB-Ve') {
 			if (inventory.rbc['AB-Ve'] < count) {
 				return false;
 			}
+			return true;
 		}
 		if (bgroup == 'O+Ve') {
 			if (inventory.rbc['O+Ve'] < count) {
 				return false;
 			}
+			return true;
 		}
 		if (bgroup == 'O-Ve') {
 			if (inventory.rbc['O-Ve'] < count) {
 				return false;
 			}
+			return true;
 		}
 	} catch (err) {
 		console.error(err.message);
@@ -563,6 +576,7 @@ const ffpStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -609,6 +623,7 @@ const cryoStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -655,6 +670,7 @@ const sprbcStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -701,6 +717,7 @@ const sdplateStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -747,6 +764,7 @@ const sdplasmaStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
