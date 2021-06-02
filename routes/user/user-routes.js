@@ -1,7 +1,8 @@
 const router = require('express').Router(),
 	userControllers = require('../../controllers/user-controllers/user-controllers'),
-	bloodBankController = require('../../controllers/bloodBank-controllers/bloodBankController'),
-	campController = require('../../controllers/camp-controllers/camp-controllers'),
+	bloodBankController = require('../../controllers/bloodbank-Controllers/bloodBankController'),
+	campController = require('../../controllers/camp-controllers/camp-controllers')
+	posterController = require('../../controllers/admin-controllers/post-controllers'),
 	{ check } = require('express-validator'),
 	auth = require('../../middleware/userAuth');
 
@@ -44,4 +45,9 @@ router.get('/bloodbankinfo/:id', auth, bloodBankController.getBloodBankById);
 router.get('/campinfo/:id', auth, campController.getCampById);
 
 router.post('/updatelocation', auth, userControllers.updateLocation);
+
+router.get('/dashboardPoster',auth,posterController.getPoster);
+
+router.get('/dashboardPoster/:id',auth,posterController.getPosterById);
+
 module.exports = router;

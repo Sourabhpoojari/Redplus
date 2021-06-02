@@ -193,25 +193,25 @@ const getDonors = async (req, res, next) => {
 
 const getDonorsById = async (req, res, next) => {
 	try {
-		const donation = await Donation.findById({ user: req.params.id })
-			.populate('primaryTest')
-			.populate('report');
+		
+		const donation = await Donation.findOne({user:req.params.id})
+		.populate('primaryTest')
+		.populate('report');
+	
+	if (!donation) {
+		return res.status(400).json({ msg: 'Donation not found' });
+	}
+	
+	const profile = await UserProfile.findOne({ user: donation.user }).populate(
+		'user',
+		['phone']
+	);
 
-		if (!donation) {
-			return res.status(400).json({ msg: 'Donation not found' });
-		}
-
-		const profile = await UserProfile.findOne({ user: donation.user }).populate(
-			'user',
-			['phone']
-		);
-
-		return res.status(200).json({
-			donation,
-			bloodBankinfo,
-			userInfo: profile,
-		});
-		return res.status(200).json(donor);
+	return res.status(200).json({
+		donation,
+		userInfo: profile,
+	});
+		
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');

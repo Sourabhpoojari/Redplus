@@ -32,12 +32,16 @@ const addHealthInfo = async (req, res, next) => {
 			if (gender == 'Male' && isPregnant) {
 				return res.status(422).send('You cannot be pregnant');
 			}
-			// const d = date;
 
-			// lastMeal = new Date(lastMeal);
+			//Age calculation
+			const dob = await Profile.findOne({ user: req.user.id }).select(
+				'dateOfBirth'
+			);
+			const age = moment().diff(dob.dateOfBirth, 'years');
+			if (age < 18) {
+				return res.status(422).send('Your Age should be Greater Than 18');
+			}
 
-			// console.log(lastMeal);
-			// console.log(typeof(lastMeal));
 			let data = {
 				user: req.user.id,
 				previousDonation: {
@@ -89,10 +93,11 @@ const addHealthInfo = async (req, res, next) => {
 				return res.status(422).send('You cannot donate blood');
 			}
 
-			// let req = await DonorRequest.findOne({donor:req.user.id});
-			// if(req){
-			//     return res.status(422).send("You already sent Donation Request");
-			// }
+			request = await DonorRequest.findOne({ donor: req.user.id });
+			if (request) {
+				return res.status(422).send('You already sent Donation Request');
+			}
+
 			request = await new DonorRequest({
 				donor: req.user.id,
 				bloodBank: req.params.bloodBank_id,
