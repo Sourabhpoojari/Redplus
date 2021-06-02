@@ -773,11 +773,12 @@ const sdplasmaStatus = (inventory, bgroup, count) => {
 };
 
 // update Inventory
-const wbcUpdate = async (inventory, bgroup, count) => {
+const wbcUpdate = async (bgroup, count) => {
 	try {
 		if (bgroup == 'A+Ve') {
-			inventory.wbc['A+Ve'] -= count;
-			await inventory.save();
+			// inventory.wbc['A+Ve'] -= count;
+			// await inventory.save();
+
 			return;
 		}
 		if (bgroup == 'A-Ve') {
