@@ -40,7 +40,6 @@ const primaryTest = async (req, res, next) => {
 	const { gender } = await Profile.findOne({ user: request.donor }).select(
 		'gender'
 	);
-	console.log(gender);
 	//request = await DonorRequest.findOne({ donor: req.params.user_id });
 
 	if (!gender) {
