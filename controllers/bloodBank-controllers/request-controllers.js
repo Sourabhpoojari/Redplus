@@ -3,6 +3,8 @@ const DonorRequest = require('../../models/bloodBank/request/userRequestSchema')
 	Health = require('../../models/user/healthInfoSchema'),
 	BloodRequest = require('../../models/bloodBank/request/bloodrequestSchema'),
 	BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
+	Booking = require('../../models/bloodBank/inventory/bookingSchema'),
+	wbcSchema = require('../../models/bloodBank/storage/wbc-schema'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema');
 
 //  @route /api/bloodBank/requests/donorRequests
@@ -230,7 +232,7 @@ const acceptBloodRequest = async (req, res, next) => {
 
 		// update Inventory
 		if (WBC > 0) {
-			wbcUpdate(inventory, bloodGroup, WBC);
+			wbcUpdate(bloodGroup, WBC);
 		}
 		if (WholeBlood > 0) {
 			wholeUpdate(inventory, bloodGroup, WholeBlood);

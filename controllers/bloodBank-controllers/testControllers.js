@@ -640,34 +640,34 @@ const testCredit = async (
 ) => {
 	try {
 		if (gender == 'male') {
-			if (4.7 < rbcCount < 6.1) {
+			if (4.7 <= rbcCount && rbcCount <= 6.1) {
 				credits += 25;
 			}
-			if (4.5 < wbcCount < 11) {
+			if (4.5 <= wbcCount && wbcCount <= 11) {
 				credits += 25;
 			}
-			if (13.5 < hemoglobinCount < 17.5) {
+			if (13.5 <= hemoglobinCount && hemoglobinCount <= 17.5) {
 				credits += 25;
 			}
-			if (41 < hematocrit < 50) {
+			if (41 <= hematocrit && hematocrit <= 50) {
 				credits += 25;
 			}
 		}
 		if (gender == 'female') {
-			if (4.2 < rbcCount < 5.4) {
+			if (4.2 <= rbcCount && rbcCount <= 5.4) {
 				credits += 25;
 			}
-			if (4.5 < wbcCount < 11) {
+			if (4.5 <= wbcCount && wbcCount <= 11) {
 				credits += 25;
 			}
-			if (12 < hemoglobinCount < 15.5) {
+			if (12 <= hemoglobinCount && hemoglobinCount <= 15.5) {
 				credits += 25;
 			}
-			if (36 < hematocrit < 48) {
+			if (36 <= hematocrit && hematocrit <= 48) {
 				credits += 25;
 			}
 		}
-		if (150000 < plateCount < 450000) {
+		if (150000 <= plateCount && plateCount <= 450000) {
 			credits += 25;
 		}
 		if (bglucose == 140) {
