@@ -207,7 +207,7 @@ const getDonorById = async (req, res, next) => {
 // ###################
 // Component functions
 // ###################
-const whole = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+const whole = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
@@ -241,40 +241,15 @@ const whole = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 				expiresIn: '35d',
 			}
 		);
-		// credit points -  add blood group credits
-		if (bgroup == 'A+Ve') {
-			credits += 55;
-		}
-		if (bgroup == 'A-Ve') {
-			credits += 90;
-		}
-		if (bgroup == 'B+Ve') {
-			credits += 45;
-		}
-		if (bgroup == 'B-Ve') {
-			credits += 85;
-		}
-		if (bgroup == 'AB+Ve') {
-			credits += 70;
-		}
-		if (bgroup == 'AB-Ve') {
-			credits += 100;
-		}
-		if (bgroup == 'O+Ve') {
-			credits += 40;
-		}
-		if (bgroup == 'O-Ve') {
-			credits += 85;
-		}
+
 		await component.save();
-		return credits;
 	} catch (err) {
 		console.error(err);
 		return -2;
 	}
 };
 
-const platelet = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+const platelet = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
@@ -308,40 +283,15 @@ const platelet = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 				expiresIn: '5d',
 			}
 		);
-		// credit points -  add blood group credits
-		if (bgroup == 'A+Ve') {
-			credits += 50;
-		}
-		if (bgroup == 'A-Ve') {
-			credits += 90;
-		}
-		if (bgroup == 'B+Ve') {
-			credits += 45;
-		}
-		if (bgroup == 'B-Ve') {
-			credits += 85;
-		}
-		if (bgroup == 'AB+Ve') {
-			credits += 70;
-		}
-		if (bgroup == 'AB-Ve') {
-			credits += 100;
-		}
-		if (bgroup == 'O+Ve') {
-			credits += 40;
-		}
-		if (bgroup == 'O-Ve') {
-			credits += 85;
-		}
+
 		await component.save();
-		return credits;
 	} catch (err) {
 		console.error(err);
 		return -2;
 	}
 };
 
-const wbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
@@ -375,40 +325,15 @@ const wbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 				expiresIn: '42d',
 			}
 		);
-		// credit points -  add blood group credits
-		if (bgroup == 'A+Ve') {
-			credits += 50;
-		}
-		if (bgroup == 'A-Ve') {
-			credits += 90;
-		}
-		if (bgroup == 'B+Ve') {
-			credits += 45;
-		}
-		if (bgroup == 'B-Ve') {
-			credits += 85;
-		}
-		if (bgroup == 'AB+Ve') {
-			credits += 70;
-		}
-		if (bgroup == 'AB-Ve') {
-			credits += 100;
-		}
-		if (bgroup == 'O+Ve') {
-			credits += 40;
-		}
-		if (bgroup == 'O-Ve') {
-			credits += 85;
-		}
+
 		await component.save();
-		return credits;
 	} catch (err) {
 		console.error(err);
 		return -2;
 	}
 };
 
-const plasma = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
@@ -442,40 +367,15 @@ const plasma = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 				expiresIn: '1y',
 			}
 		);
-		// credit points -  add blood group credits
-		if (bgroup == 'A+Ve') {
-			credits += 50;
-		}
-		if (bgroup == 'A-Ve') {
-			credits += 90;
-		}
-		if (bgroup == 'B+Ve') {
-			credits += 45;
-		}
-		if (bgroup == 'B-Ve') {
-			credits += 85;
-		}
-		if (bgroup == 'AB+Ve') {
-			credits += 70;
-		}
-		if (bgroup == 'AB-Ve') {
-			credits += 100;
-		}
-		if (bgroup == 'O+Ve') {
-			credits += 40;
-		}
-		if (bgroup == 'O-Ve') {
-			credits += 85;
-		}
+
 		await component.save();
-		return credits;
 	} catch (err) {
 		console.error(err);
 		return -2;
 	}
 };
 
-const prbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+const prbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
@@ -509,40 +409,15 @@ const prbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 				expiresIn: '42d',
 			}
 		);
-		// credit points -  add blood group credits
-		if (bgroup == 'A+Ve') {
-			credits += 50;
-		}
-		if (bgroup == 'A-Ve') {
-			credits += 90;
-		}
-		if (bgroup == 'B+Ve') {
-			credits += 45;
-		}
-		if (bgroup == 'B-Ve') {
-			credits += 85;
-		}
-		if (bgroup == 'AB+Ve') {
-			credits += 70;
-		}
-		if (bgroup == 'AB-Ve') {
-			credits += 100;
-		}
-		if (bgroup == 'O+Ve') {
-			credits += 40;
-		}
-		if (bgroup == 'O-Ve') {
-			credits += 85;
-		}
+
 		await component.save();
-		return credits;
 	} catch (err) {
 		console.error(err);
 		return -2;
 	}
 };
 
-const ffp = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+const ffp = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
@@ -576,40 +451,15 @@ const ffp = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 				expiresIn: '1y',
 			}
 		);
-		// credit points -  add blood group credits
-		if (bgroup == 'A+Ve') {
-			credits += 50;
-		}
-		if (bgroup == 'A-Ve') {
-			credits += 90;
-		}
-		if (bgroup == 'B+Ve') {
-			credits += 45;
-		}
-		if (bgroup == 'B-Ve') {
-			credits += 85;
-		}
-		if (bgroup == 'AB+Ve') {
-			credits += 70;
-		}
-		if (bgroup == 'AB-Ve') {
-			credits += 100;
-		}
-		if (bgroup == 'O+Ve') {
-			credits += 40;
-		}
-		if (bgroup == 'O-Ve') {
-			credits += 85;
-		}
+
 		await component.save();
-		return credits;
 	} catch (err) {
 		console.error(err);
 		return -2;
 	}
 };
 
-const cryo = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+const cryo = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
@@ -643,40 +493,15 @@ const cryo = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 				expiresIn: '1y',
 			}
 		);
-		// credit points -  add blood group credits
-		if (bgroup == 'A+Ve') {
-			credits += 50;
-		}
-		if (bgroup == 'A-Ve') {
-			credits += 90;
-		}
-		if (bgroup == 'B+Ve') {
-			credits += 45;
-		}
-		if (bgroup == 'B-Ve') {
-			credits += 85;
-		}
-		if (bgroup == 'AB+Ve') {
-			credits += 70;
-		}
-		if (bgroup == 'AB-Ve') {
-			credits += 100;
-		}
-		if (bgroup == 'O+Ve') {
-			credits += 40;
-		}
-		if (bgroup == 'O-Ve') {
-			credits += 85;
-		}
+
 		await component.save();
-		return credits;
 	} catch (err) {
 		console.error(err);
 		return -2;
 	}
 };
 
-const sprbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+const sprbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
@@ -710,40 +535,15 @@ const sprbc = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 				expiresIn: '1y',
 			}
 		);
-		// credit points -  add blood group credits
-		if (bgroup == 'A+Ve') {
-			credits += 50;
-		}
-		if (bgroup == 'A-Ve') {
-			credits += 90;
-		}
-		if (bgroup == 'B+Ve') {
-			credits += 45;
-		}
-		if (bgroup == 'B-Ve') {
-			credits += 85;
-		}
-		if (bgroup == 'AB+Ve') {
-			credits += 70;
-		}
-		if (bgroup == 'AB-Ve') {
-			credits += 100;
-		}
-		if (bgroup == 'O+Ve') {
-			credits += 40;
-		}
-		if (bgroup == 'O-Ve') {
-			credits += 85;
-		}
+
 		await component.save();
-		return credits;
 	} catch (err) {
 		console.error(err);
 		return -2;
 	}
 };
 
-const sdplate = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+const sdplate = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
@@ -777,40 +577,15 @@ const sdplate = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 				expiresIn: '5d',
 			}
 		);
-		// credit points -  add blood group credits
-		if (bgroup == 'A+Ve') {
-			credits += 50;
-		}
-		if (bgroup == 'A-Ve') {
-			credits += 90;
-		}
-		if (bgroup == 'B+Ve') {
-			credits += 45;
-		}
-		if (bgroup == 'B-Ve') {
-			credits += 85;
-		}
-		if (bgroup == 'AB+Ve') {
-			credits += 70;
-		}
-		if (bgroup == 'AB-Ve') {
-			credits += 100;
-		}
-		if (bgroup == 'O+Ve') {
-			credits += 40;
-		}
-		if (bgroup == 'O-Ve') {
-			credits += 85;
-		}
+
 		await component.save();
-		return credits;
 	} catch (err) {
 		console.error(err);
 		return -2;
 	}
 };
 
-const sdplasma = async (req, report, bgroup, segNumber, credits, bagNumber) => {
+const sdplasma = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
@@ -844,33 +619,7 @@ const sdplasma = async (req, report, bgroup, segNumber, credits, bagNumber) => {
 				expiresIn: '1y',
 			}
 		);
-		// credit points -  add blood group credits
-		if (bgroup == 'A+Ve') {
-			credits += 50;
-		}
-		if (bgroup == 'A-Ve') {
-			credits += 90;
-		}
-		if (bgroup == 'B+Ve') {
-			credits += 45;
-		}
-		if (bgroup == 'B-Ve') {
-			credits += 85;
-		}
-		if (bgroup == 'AB+Ve') {
-			credits += 70;
-		}
-		if (bgroup == 'AB-Ve') {
-			credits += 100;
-		}
-		if (bgroup == 'O+Ve') {
-			credits += 40;
-		}
-		if (bgroup == 'O-Ve') {
-			credits += 85;
-		}
 		await component.save();
-		return credits;
 	} catch (err) {
 		console.error(err);
 		return -2;
@@ -1004,6 +753,7 @@ const testReportAndCredits = async (req, res, next) => {
 				.status(302)
 				.json({ errors: [{ msg: 'Component is required!' }] });
 		}
+
 		// ################
 		// credit points  - component credits
 		//  ###############
@@ -1049,13 +799,39 @@ const testReportAndCredits = async (req, res, next) => {
 				SDPLASMA_STATUS = 1;
 			}
 		});
+		// credit points -  add blood group credits
+		if (bgroup == 'A+Ve') {
+			credits += 55;
+		}
+		if (bgroup == 'A-Ve') {
+			credits += 90;
+		}
+		if (bgroup == 'B+Ve') {
+			credits += 45;
+		}
+		if (bgroup == 'B-Ve') {
+			credits += 85;
+		}
+		if (bgroup == 'AB+Ve') {
+			credits += 70;
+		}
+		if (bgroup == 'AB-Ve') {
+			credits += 100;
+		}
+		if (bgroup == 'O+Ve') {
+			credits += 40;
+		}
+		if (bgroup == 'O-Ve') {
+			credits += 85;
+		}
 		// ###################
 		// COMPONENT FUNCTIONS
 		// ###################
+		let flag = 0;
 		if (WBC_STATUS == 1) {
 			WBC_STATUS = 0;
-			credits = await wbc(req, report, bgroup, segNumber, credits, bagNumber);
-			if (credits == -1) {
+			flag = await wbc(req, report, bgroup, segNumber, bagNumber);
+			if (flag == -1) {
 				return res.status(302).json({
 					errors: [
 						{
@@ -1063,14 +839,14 @@ const testReportAndCredits = async (req, res, next) => {
 						},
 					],
 				});
-			} else if (credits == -2) {
+			} else if (flag == -2) {
 				return res.status(500).send('Server error');
 			}
 		}
 		if (WHOLEBLOOD_STATUS == 1) {
 			WHOLEBLOOD_STATUS = 0;
-			credits = await whole(req, report, bgroup, segNumber, credits, bagNumber);
-			if (credits == -1) {
+			flag = await whole(req, report, bgroup, segNumber, bagNumber);
+			if (flag == -1) {
 				return res.status(302).json({
 					errors: [
 						{
@@ -1078,21 +854,21 @@ const testReportAndCredits = async (req, res, next) => {
 						},
 					],
 				});
-			} else if (credits == -2) {
+			} else if (flag == -2) {
 				return res.status(500).send('Server error');
 			}
 		}
 		if (PLASMA_STATUS == 1) {
 			PLASMA_STATUS = 0;
-			credits = await plasma(
+			flag = await plasma(
 				req,
 				report,
 				bgroup,
 				segNumber,
-				credits,
+
 				bagNumber
 			);
-			if (credits == -1) {
+			if (flag == -1) {
 				return res.status(302).json({
 					errors: [
 						{
@@ -1100,21 +876,21 @@ const testReportAndCredits = async (req, res, next) => {
 						},
 					],
 				});
-			} else if (credits == -2) {
+			} else if (flag == -2) {
 				return res.status(500).send('Server error');
 			}
 		}
 		if (PLATELET_STATUS == 1) {
 			PLATELET_STATUS = 0;
-			credits = await platelet(
+			flag = await platelet(
 				req,
 				report,
 				bgroup,
 				segNumber,
-				credits,
+
 				bagNumber
 			);
-			if (credits == -1) {
+			if (flag == -1) {
 				return res.status(302).json({
 					errors: [
 						{
@@ -1122,14 +898,14 @@ const testReportAndCredits = async (req, res, next) => {
 						},
 					],
 				});
-			} else if (credits == -2) {
+			} else if (flag == -2) {
 				return res.status(500).send('Server error');
 			}
 		}
 		if (PRBC_STATUS == 1) {
 			PRBC_STATUS = 0;
-			credits = await prbc(req, report, bgroup, segNumber, credits, bagNumber);
-			if (credits == -1) {
+			flag = await prbc(req, report, bgroup, segNumber, bagNumber);
+			if (flag == -1) {
 				return res.status(302).json({
 					errors: [
 						{
@@ -1137,14 +913,14 @@ const testReportAndCredits = async (req, res, next) => {
 						},
 					],
 				});
-			} else if (credits == -2) {
+			} else if (flag == -2) {
 				return res.status(500).send('Server error');
 			}
 		}
 		if (FFP_STATUS == 1) {
 			FFP_STATUS = 0;
-			credits = await ffp(req, report, bgroup, segNumber, credits, bagNumber);
-			if (credits == -1) {
+			flag = await ffp(req, report, bgroup, segNumber, bagNumber);
+			if (flag == -1) {
 				return res.status(302).json({
 					errors: [
 						{
@@ -1152,14 +928,14 @@ const testReportAndCredits = async (req, res, next) => {
 						},
 					],
 				});
-			} else if (credits == -2) {
+			} else if (flag == -2) {
 				return res.status(500).send('Server error');
 			}
 		}
 		if (CRYO_STATUS == 1) {
 			CRYO_STATUS = 0;
-			credits = await cryo(req, report, bgroup, segNumber, credits, bagNumber);
-			if (credits == -1) {
+			flag = await cryo(req, report, bgroup, segNumber, bagNumber);
+			if (flag == -1) {
 				return res.status(302).json({
 					errors: [
 						{
@@ -1167,14 +943,14 @@ const testReportAndCredits = async (req, res, next) => {
 						},
 					],
 				});
-			} else if (credits == -2) {
+			} else if (flag == -2) {
 				return res.status(500).send('Server error');
 			}
 		}
 		if (SPRBC_STATUS == 1) {
 			SPRBC_STATUS = 0;
-			credits = await sprbc(req, report, bgroup, segNumber, credits, bagNumber);
-			if (credits == -1) {
+			flag = await sprbc(req, report, bgroup, segNumber, bagNumber);
+			if (flag == -1) {
 				return res.status(302).json({
 					errors: [
 						{
@@ -1182,21 +958,21 @@ const testReportAndCredits = async (req, res, next) => {
 						},
 					],
 				});
-			} else if (credits == -2) {
+			} else if (flag == -2) {
 				return res.status(500).send('Server error');
 			}
 		}
 		if (SDPLATELET_STATUS == 1) {
 			SDPLATELET_STATUS = 0;
-			credits = await sdplate(
+			flag = await sdplate(
 				req,
 				report,
 				bgroup,
 				segNumber,
-				credits,
+
 				bagNumber
 			);
-			if (credits == -1) {
+			if (flag == -1) {
 				return res.status(302).json({
 					errors: [
 						{
@@ -1204,21 +980,21 @@ const testReportAndCredits = async (req, res, next) => {
 						},
 					],
 				});
-			} else if (credits == -2) {
+			} else if (flag == -2) {
 				return res.status(500).send('Server error');
 			}
 		}
 		if (SDPLASMA_STATUS == 1) {
 			SDPLASMA_STATUS = 0;
-			credits = await sdplasma(
+			flag = await sdplasma(
 				req,
 				report,
 				bgroup,
 				segNumber,
-				credits,
+
 				bagNumber
 			);
-			if (credits == -1) {
+			if (flag == -1) {
 				return res.status(302).json({
 					errors: [
 						{
@@ -1226,7 +1002,7 @@ const testReportAndCredits = async (req, res, next) => {
 						},
 					],
 				});
-			} else if (credits == -2) {
+			} else if (flag == -2) {
 				return res.status(500).send('Server error');
 			}
 		}
