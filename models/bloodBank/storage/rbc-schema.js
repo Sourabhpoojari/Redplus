@@ -15,7 +15,6 @@ const rbcSchema = mongoose.Schema({
 	},
 	segment: {
 		type: String,
-		unique: true,
 	},
 	duration: {
 		type: String,
@@ -25,7 +24,6 @@ const rbcSchema = mongoose.Schema({
 	},
 	bagNumber: {
 		type: String,
-		unique: true,
 	},
 	createdOn: {
 		type: Date,

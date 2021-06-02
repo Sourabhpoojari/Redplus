@@ -186,7 +186,6 @@ const getDonorById = async (req, res, next) => {
 	try {
 		let primary, donor;
 		primary = await PrimaryTestedDonor.findById(req.params.req_id);
-		console.log(primary);
 		donor = await Profile.findOne({ user: primary.user }).populate('user', [
 			'name',
 			'phone',
