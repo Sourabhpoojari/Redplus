@@ -40,7 +40,7 @@ const primaryTest = async (req, res, next) => {
 	const { gender } = await Profile.findOne({ user: request.donor }).select(
 		'gender'
 	);
-	console.log(gender);
+	
 	//request = await DonorRequest.findOne({ donor: req.params.user_id });
 
 	if (!gender) {
@@ -49,33 +49,31 @@ const primaryTest = async (req, res, next) => {
 
 	if (gender == 'male')
 		if (weight < 50) {
-			await request.delete();
+			
 			return res.status(422).send('Weight must be greater than 50');
 		}
 	if (hb < 13 || hb > 20) {
-		await request.delete();
+		
 		return res.status(422).send('hb must be in the range 13-20');
 	}
 	if (gender == 'female') {
 		if (weight < 45) {
-			await request.delete();
 			return res.status(422).send('Weight must be greater than 45');
+			
 		}
 	}
 	if (hb < 12.5 || hb > 20) {
-		await request.delete();
 		return res.status(422).send('hb must be in the range 12.5-20');
+		
 	}
 	if (pulse < 60 || pulse > 100) {
-		await request.delete();
-		return res.status(422).send('Pulse must be in the range 60-100');
+		return res.status(422).send('Pulse must be in the range 60-100');	
 	}
 	if (bp < 100 || bp > 180) {
-		await request.delete();
 		return res.status(422).send('bp must be in the range 100-180');
+		
 	}
 	if (temp > 99.5) {
-		await request.delete();
 		return res.status(422).send('tempreture must be less than 99.5');
 	}
 	try {
@@ -90,7 +88,7 @@ const primaryTest = async (req, res, next) => {
 		};
 		//console.log(data);
 		primary = new primarytestSchema(data);
-		await primary.save();
+		
 		const donation = new Donation({
 			bloodBank: req.bloodBank.id,
 			user: request.donor,
@@ -98,6 +96,7 @@ const primaryTest = async (req, res, next) => {
 			donationDate: moment().format('DD-MM-YYYY'),
 		});
 		//console.log(donation);
+		await primary.save();
 		await donation.save();
 		return res.status(200).json({ request });
 	} catch (err) {
