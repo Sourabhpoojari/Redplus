@@ -1,3 +1,4 @@
+const { localeData } = require('moment');
 const moment = require('moment'),
 {validationResult}  = require('express-validator'),
  Poster = require('../../models/admin/postSchema');
@@ -13,7 +14,7 @@ const uploadPoster = async(req,res,next)=>{
     if(!errors.isEmpty()){
         return res.status(400).json({errors:errors.array()});
     }
-    const {description,poster} = req.body;
+    let {description,poster} = req.body;
     try {
         let uploadposter = await Poster.find();
         if(!uploadposter){
@@ -43,7 +44,7 @@ const deletePoster = async(req,res,next)=>{
     
   
     try {
-        const poster = await Poster.findById(req.params.post_id);
+        const poster = await Poster.findOneAndDelete(req.params.post_id);
         if(!poster){
             return res.status(400).json({msg : "No poster found"});
         }
@@ -77,7 +78,27 @@ const getPoster = async(req,res,next)=>{
 }
 
 
+//  @route /api/admin/post/getposter
+// @desc  delete post
+// @access Private to Admin
+const getPosterById = async(req,res,next)=>{
+    
+    try {
+        const poster = await Poster.findById(req.params.id);
+        if(!poster){
+            return res.status(400).json({msg : "No poster found"});
+        }
+
+        return res.status(200).json(poster);
+       
+    } catch (err) {
+        console.log(err);
+       return res.status(500).send('Server error');
+    }
+}
+
 
 exports.uploadPoster = uploadPoster;
 exports.deletePoster=deletePoster;
 exports.getPoster=getPoster;
+exports.getPosterById=getPosterById;

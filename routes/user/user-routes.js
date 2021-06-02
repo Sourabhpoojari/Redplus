@@ -48,4 +48,6 @@ router.post('/updatelocation', auth, userControllers.updateLocation);
 
 router.get('/dashboardPoster',auth,posterController.getPoster);
 
+router.get('/dashboardPoster/:id',auth,posterController.getPosterById);
+
 module.exports = router;

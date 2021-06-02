@@ -63,5 +63,6 @@ app.use(
 //hospital routes
 app.use('/api/hospital', require('./routes/hospital/hospital-routes'));
 
+app.use('/api/hospital/findblood',require('./routes/hospital/findblood-routes'));
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

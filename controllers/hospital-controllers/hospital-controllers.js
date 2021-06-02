@@ -6,23 +6,35 @@ config = require('config'),
 {validationResult} = require('express-validator'),
 HospitalProfile = require('../../models/hospital/hospital/profile');
 
-
 //  @route /api/hospital/signup request
 // @desc  post hospital signup request
 // @access Public
     const signUpRequest = async (req,res,next) => {
-    const {hospitalName, hospitalEmail, hospitalAddress, hospitalPhone, hospitalRegistrationNumber, hospitalLat, hospitalLng, hospitalRegistrationDocument} = req.body;
+    const {hospitalName, 
+        hospitalEmail, 
+        hospitalAddress, 
+        hospitalPhone, 
+        hospitalRegistrationNumber, 
+        hospitalLat, 
+        hospitalLng, 
+        hospitalRegistrationDocument
+    } = req.body;
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({errors:errors.array()});
     }
     try {
-            const request = await hospitalRequest.findOne({hospitalEmail});
+            let request = await hospitalRequest.findOne({hospitalEmail});
             if(request){
                 return res.status(400).json({errors:[{msg : "Hospital already exists!"}]});
             }
             request = await new hospitalRequest({
-                hospitalName, hospitalEmail, hospitalAddress, hospitalPhone, hospitalRegistrationNumber, hospitalRegistrationDocument
+                hospitalName, 
+                hospitalEmail, 
+                hospitalAddress, 
+                hospitalPhone, 
+                hospitalRegistrationNumber, 
+                hospitalRegistrationDocument
             });
             if (hospitalLng && hospitalLat) {
                 // request.location.coordinates.append(hospitalLat,hospitalLng);
@@ -43,31 +55,24 @@ HospitalProfile = require('../../models/hospital/hospital/profile');
 // @desc put hospital signup for login details
 // @access Public
 const setPassword = async (req,res,next) =>{
-    const {email,password} = req.body;
+    const {password} = req.body;
     let hospital;
     try {
-        hospital = await Hospital.findOne({email});
+        const token = req.header('x-auth-token');
+        if (!token) {
+			return res
+				.status(401)
+				.json({ msg: 'No token found, authorization denied' });
+		}
+        const decoded = jwt.verify(token, config.get('jwtSecret'));
+        hospital = await Hospital.findById(decoded.hospital.id);
         if (!hospital) {
             return res.status(400).json({errors:[{msg : "You need to register before login!"}]});
         }
         const salt = await bcrypt.genSalt(10);
         hospital.password = await bcrypt.hash(password,salt);
         await hospital.save();
-         // setting jwt
-         const payload = {
-             hospital : {
-                 id : hospital.id
-             }
-         };
-         jwt.sign(
-             payload,
-             config.get('jwtSecret'),
-             {expiresIn : 3600},
-             (err,token)=>{
-                 if(err) throw err;
-                  return res.status(200).json({token});
-             }
-         );
+        return res.status(201).json('Your password is sucessfully set!'); 
 
     } catch (err) {
     console.log(err);
