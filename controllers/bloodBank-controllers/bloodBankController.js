@@ -173,14 +173,22 @@ const getBloodBankById = async (req, res, next) => {
 // @access Private - authorized bloodbank access only
 const getDonors = async (req, res, next) => {
 	try {
-		const donor = await Donation.find({ bloodBank: req.bloodBank.id }).populate(
-			'user',
-			['name', 'phone', 'profileImage']
-		);
+		const donor = await Donation.find({ bloodBank: req.bloodBank.id }).populate('user',['phone']);
 		if (!donor) {
 			return res.status(400).json({ msg: 'No Donor Found' });
 		}
-		return res.status(200).json(donor);
+		let i;
+		const arr = [];
+
+		for (i = 0; i < donor.length; i++) {
+			const profile = await UserProfile.findOne({
+				user: donor[i].user,
+			});
+			const donorinfo = { donor: donor[i], profile };
+			arr.push(donorinfo);
+		}
+		
+		return res.status(200).json(arr);
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');
