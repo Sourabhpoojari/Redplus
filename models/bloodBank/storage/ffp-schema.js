@@ -11,7 +11,6 @@ const ffpSchema = mongoose.Schema({
 	},
 	segment: {
 		type: String,
-		unique: true,
 	},
 	group: {
 		type: String,
@@ -25,7 +24,6 @@ const ffpSchema = mongoose.Schema({
 	},
 	bagNumber: {
 		type: String,
-		unique: true,
 	},
 	createdOn: {
 		type: Date,
