@@ -24,11 +24,9 @@ const DonorRequest = require('../../models/bloodBank/request/userRequestSchema')
 // @access Private - blood bank access only
 const getDonorRequests = async (req, res, next) => {
 	try {
-		const request = await DonorRequest.find().populate('donor', [
-			'name',
-			'phone',
-			'profileImage',
-		]);
+		const request = await DonorRequest.find({
+			bloodBank: req.bloodBank.id,
+		}).populate('donor', ['name', 'phone', 'profileImage']);
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
@@ -114,11 +112,9 @@ const rejectDonorRequest = async (req, res, next) => {
 // @access Private - blood bank access only
 const getBloodRequests = async (req, res, next) => {
 	try {
-		const request = await BloodRequest.find().populate('donor', [
-			'name',
-			'phone',
-			'profileImage',
-		]);
+		const request = await BloodRequest.find({
+			bloodBank: req.bloodBank.id,
+		}).populate('donor', ['name', 'phone', 'profileImage']);
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
