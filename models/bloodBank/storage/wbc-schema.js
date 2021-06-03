@@ -1,36 +1,34 @@
 const mongoose = require('mongoose');
 
 const wbcSchema = mongoose.Schema({
-    bankID:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'bloodBank'
-    },
-    donor:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User'
-    },
-    group:{
-        type:String,
-        required:true
-    },
-    segment:{
-        type:String,
-        unique:true
-    },
-    duration:{
-        type:String
-    },
-    ticket:{
-        type:String 
-    },
-    bagNumber:{
-        type:String,
-        unique:true
-    },
-    createdOn:{
-        type:Date,
-        default:Date.now()
-    }
+	bankID: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'bloodBank',
+	},
+	donor: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
+	},
+	group: {
+		type: String,
+		required: true,
+	},
+	segment: {
+		type: String,
+	},
+	duration: {
+		type: String,
+	},
+	ticket: {
+		type: String,
+	},
+	bagNumber: {
+		type: String,
+	},
+	createdOn: {
+		type: Date,
+		default: Date.now(),
+	},
 });
 
-module.exports = mongoose.model('WBC',wbcSchema);
+module.exports = mongoose.model('WBC', wbcSchema);

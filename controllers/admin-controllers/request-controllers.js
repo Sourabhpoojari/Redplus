@@ -251,22 +251,35 @@ const acceptHospitalRequest = async (req, res, next) => {
 			location,
 			hospitalRegistrationDocument,
 		});
+		const payload = {
+			hospital: {
+				id: hospital.id,
+			},
+		};
+		const token = jwt.sign(payload, config.get('jwtSecret'), {
+			expiresIn: '5d',
+		});
+		const link = 'https://redplusbeta.herokuapp.com/#/accountSetup/' + token;
 		const msg = {
 			to: hospitalEmail, // Change to your recipient
 			from: 'redplus112@gmail.com', // Change to your verified sender
 			subject: 'Request accepted',
 			text:
 				'Your registraion to Redplus is accepted. Kindly use below link to set-up your password and login to your account using emailID ' +
-				hospitalEmail,
+				hospitalEmail +
+				' ' +
+				link,
 			// html: '<strong>and easy to do anywhere, even with Node.js</strong>',
 		};
+		
 		const status = await sgMail.send(msg);
 		if (status) {
 			hospital.isHospital = true;
+
 			await hospital.save();
-			-(await profile.save());
+			await profile.save();
 			await request.delete();
-			return res.status(200).json({ msg: 'Request accepted' });
+			return res.status(200).json({ msg: 'Request accepted', token });
 		}
 	} catch (err) {
 		console.log(err);

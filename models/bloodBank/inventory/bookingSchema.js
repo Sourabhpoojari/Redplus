@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const sagmSchema = mongoose.Schema({
+const bookingSchema = mongoose.Schema({
 	bankID: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'bloodBank',
@@ -9,12 +9,16 @@ const sagmSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User',
 	},
+	component: {
+		type: String,
+	},
 	group: {
 		type: String,
 		required: true,
 	},
 	segment: {
 		type: String,
+		unique: true,
 	},
 	duration: {
 		type: String,
@@ -24,6 +28,7 @@ const sagmSchema = mongoose.Schema({
 	},
 	bagNumber: {
 		type: String,
+		unique: true,
 	},
 	createdOn: {
 		type: Date,
@@ -31,4 +36,4 @@ const sagmSchema = mongoose.Schema({
 	},
 });
 
-module.exports = mongoose.model('SAGM', sagmSchema);
+module.exports = mongoose.model('Booking', bookingSchema);

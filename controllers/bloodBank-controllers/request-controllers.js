@@ -1,9 +1,11 @@
 const DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
 	Profile = require('../../models/user/profileSchema'),
 	Health = require('../../models/user/healthInfoSchema'),
-	BloodRequestedDonor = require('../../models/bloodBank/request/bloodrequestSchema'),
-	BloodReuestsAccepted = require('../../models/bloodBank/request/bloodrequestacceptedSchema');
-moment = require('moment');
+	BloodRequest = require('../../models/bloodBank/request/bloodrequestSchema'),
+	BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
+	Booking = require('../../models/bloodBank/inventory/bookingSchema'),
+	wbcSchema = require('../../models/bloodBank/storage/wbc-schema'),
+	Inventory = require('../../models/bloodBank/inventory/inventorySchema');
 
 //  @route /api/bloodBank/requests/donorRequests
 // @desc get Donor requests
@@ -100,7 +102,7 @@ const rejectDonorRequest = async (req, res, next) => {
 // @access Private - blood bank access only
 const getBloodRequests = async (req, res, next) => {
 	try {
-		const request = await BloodReuests.find().populate('donor', [
+		const request = await BloodRequest.find().populate('donor', [
 			'name',
 			'phone',
 			'profileImage',
@@ -108,28 +110,35 @@ const getBloodRequests = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
-		return res.status(200).json({ request });
+		return res.status(200).json(request);
 	} catch (err) {
 		console.error(err.message);
 		return res.status(500).send('Server error!');
 	}
 };
 
-//  @route /api/user/:id
-// @desc  get user info
+//  @route /api/bloodBank/requests/bloodRequests/:id
+// @desc  get request info
 // @access bloodbank
 const getBloodRequestById = async (req, res, next) => {
 	try {
-		const request = await BloodReuests.findById(req.params.req_id);
-
+		const request = await BloodRequest.findById(req.params.req_id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
+		}
 		const donor = await Profile.findOne({ user: request.donor }).populate(
 			'user',
 			['phone']
 		);
 
-		if (!donor) {
-			return res.status(400).json({ errors: [{ msg: 'Profile not found!' }] });
-		}
+		// if (!donor) {
+		// 	return res.status(400).json({ errors: [{ msg: 'Profile not found!' }] });
+		// }
+		// let item = {};
+		// const inventory = await Inventory.findOne({
+		// 	bloodBankID: req.bloodBank.id,
+		// });
+
 		return res.status(200).json({ request, donor });
 	} catch (err) {
 		console.log(err);
@@ -142,7 +151,7 @@ const getBloodRequestById = async (req, res, next) => {
 // @access Private - bloodbank access only
 const acceptBloodRequest = async (req, res, next) => {
 	try {
-		const request = await BloodReuests.findById(req.params.req_id);
+		const request = await BloodRequest.findById(req.params.req_id);
 		if (!request) {
 			return res
 				.status(400)
@@ -166,7 +175,62 @@ const acceptBloodRequest = async (req, res, next) => {
 			SDPlatele,
 			SDPlasma,
 		} = request;
-		const profile = await new BloodReuestsAccepted({
+		let inventory = await Inventory.findOne({
+			bloodBankID: req.bloodBank.id,
+		});
+		const bankID = req.bloodBank.id;
+		// Check  inventory
+		if (WBC > 0) {
+			if (!wbcStatus(inventory, bloodGroup, WBC)) {
+				return res.status(422).send('WBC out of stock!');
+			}
+		}
+		if (WholeBlood > 0) {
+			if (!wholeStatus(inventory, bloodGroup, WholeBlood)) {
+				return res.status(422).send('WholeBlood out of stock!');
+			}
+		}
+		if (Platelet > 0) {
+			if (!plateletStatus(inventory, bloodGroup, Platelet)) {
+				return res.status(422).send('Platelet out of stock!');
+			}
+		}
+		if (Plasma > 0) {
+			if (!plasmaStatus(inventory, bloodGroup, Plasma)) {
+				return res.status(422).send('Plasma out of stock!');
+			}
+		}
+		if (PRBC > 0) {
+			if (!prbcStatus(inventory, bloodGroup, PRBC)) {
+				return res.status(422).send('PRBC out of stock!');
+			}
+		}
+		if (FFP > 0) {
+			if (!ffpStatus(inventory, bloodGroup, FFP)) {
+				return res.status(422).send('FFP out of stock!');
+			}
+		}
+		if (Cryoprecipitate > 0) {
+			if (!cryoStatus(inventory, bloodGroup, Cryoprecipitate)) {
+				return res.status(422).send('Cryoprecipitate out of stock!');
+			}
+		}
+		if (SPRBC > 0) {
+			if (!sprbcStatus(inventory, bloodGroup, SPRBC)) {
+				return res.status(422).send('SPRBC out of stock!');
+			}
+		}
+		if (SDPlatele > 0) {
+			if (!sdplateStatus(inventory, bloodGroup, SDPlatele)) {
+				return res.status(422).send('SDPlatele out of stock!');
+			}
+		}
+		if (SDPlasma > 0) {
+			if (!sdplasmaStatus(inventory, bloodGroup, SDPlasma)) {
+				return res.status(422).send('SDPlasma out of stock!');
+			}
+		}
+		const billing = await new BillingRequest({
 			donor: request.donor,
 			bloodBank: req.bloodBank.id,
 			RequestDate,
@@ -186,16 +250,974 @@ const acceptBloodRequest = async (req, res, next) => {
 			SDPlasma,
 		});
 
-		await profile.save();
+		// update Inventory
+		if (WBC > 0) {
+			await wbcUpdate(bloodGroup, bankID, WBC, billing);
+		}
+		if (WholeBlood > 0) {
+			await wholeUpdate(billing, bloodGroup, WholeBlood, bankID);
+		}
+		if (Platelet > 0) {
+			await plateletUpdate(billing, bloodGroup, Platelet, bankID);
+		}
+		if (Plasma > 0) {
+			await plasmaUpdate(billing, bloodGroup, Plasma, bankID);
+		}
+		if (PRBC > 0) {
+			await prbcUpdate(billing, bloodGroup, PRBC, bankID);
+		}
+		if (FFP > 0) {
+			await ffpUpdate(billing, bloodGroup, FFP, bankID);
+		}
+		if (Cryoprecipitate > 0) {
+			await cryoUpdate(billing, bloodGroup, Cryoprecipitate, bankID);
+		}
+		if (SPRBC > 0) {
+			await sprbcUpdate(billing, bloodGroup, SPRBC, bankID);
+		}
+		if (SDPlatele > 0) {
+			sdplateUpdate(billing, bloodGroup, SDPlatele, bankID);
+		}
+		if (SDPlasma > 0) {
+			await sdplasmaUpdate(billing, bloodGroup, SDPlasma, bankID);
+		}
+
+		// bookings.forEach((item) => {
+		// 	billing.bookings.push(item);
+		// });
+
+		await billing.save();
 		await request.delete();
 
-		return res.status(200).json({ msg: 'Request accepted You can Proced' });
+		return res.status(200).json(billing);
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');
 	}
 };
 
+// component status functions
+const wbcStatus = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.wbc['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.wbc['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.wbc['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.wbc['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.wbc['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.wbc['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.wbc['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.wbc['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const wholeStatus = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.whole['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.whole['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.whole['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.whole['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.whole['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.whole['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.whole['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.whole['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const plateletStatus = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.platelet['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.platelet['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.platelet['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.platelet['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.platelet['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.platelet['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.platelet['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.platelet['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const plasmaStatus = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.plasma['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.plasma['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.plasma['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.plasma['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.plasma['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.plasma['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.plasma['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.plasma['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const prbcStatus = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.rbc['A+Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.rbc['A-Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.rbc['B+Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.rbc['B-Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.rbc['AB+Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.rbc['AB-Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.rbc['O+Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.rbc['O-Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const ffpStatus = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.ffp['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.ffp['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.ffp['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.ffp['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.ffp['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.ffp['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.ffp['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.ffp['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const cryoStatus = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.cryo['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.cryo['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.cryo['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.cryo['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.cryo['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.cryo['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.cryo['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.cryo['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const sprbcStatus = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.sagm['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.sagm['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.sagm['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.sagm['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.sagm['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.sagm['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.sagm['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.sagm['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const sdplateStatus = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.sdplate['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.sdplate['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.sdplate['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.sdplate['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.sdplate['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.sdplate['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.sdplate['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.sdplate['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const sdplasmaStatus = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.sdplasma['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.sdplasma['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.sdplasma['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.sdplasma['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.sdplasma['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.sdplasma['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.sdplasma['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.sdplasma['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+
+// update Inventory
+const wbcUpdate = async (bgroup, bankID, count, billing) => {
+	try {
+		while (count != 0) {
+			const wbc = await wbcSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const { donor, segment, duration, ticket, bagNumber, createdOn } = wbc[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'WBC',
+				group: bgroup,
+				segment,
+				duration,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await wbcSchema.findByIdAndDelete(wbc[0].id);
+			count -= 1;
+		}
+		await billing.save();
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const wholeUpdate = async (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			inventory.whole['A+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'A-Ve') {
+			inventory.whole['A-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB+Ve') {
+			inventory.whole['AB+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB-Ve') {
+			inventory.whole['AB-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B+Ve') {
+			inventory.whole['B+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B-Ve') {
+			inventory.whole['B-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O+Ve') {
+			inventory.whole['O+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O-Ve') {
+			inventory.whole['O-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const plateletUpdate = async (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			inventory.platelet['A+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'A-Ve') {
+			inventory.platelet['A-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB+Ve') {
+			inventory.platelet['AB+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB-Ve') {
+			inventory.platelet['AB-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B+Ve') {
+			inventory.platelet['B+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B-Ve') {
+			inventory.platelet['B-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O+Ve') {
+			inventory.platelet['O+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O-Ve') {
+			inventory.platelet['O-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const plasmaUpdate = async (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			inventory.plasma['A+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'A-Ve') {
+			inventory.plasma['A-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB+Ve') {
+			inventory.plasma['AB+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB-Ve') {
+			inventory.plasma['AB-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B+Ve') {
+			inventory.plasma['B+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B-Ve') {
+			inventory.plasma['B-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O+Ve') {
+			inventory.plasma['O+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O-Ve') {
+			inventory.plasma['O-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const prbcUpdate = async (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			inventory.rbc['A+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'A-Ve') {
+			inventory.rbc['A-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB+Ve') {
+			inventory.rbc['AB+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB-Ve') {
+			inventory.rbc['AB-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B+Ve') {
+			inventory.rbc['B+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B-Ve') {
+			inventory.rbc['B-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O+Ve') {
+			inventory.rbc['O+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O-Ve') {
+			inventory.rbc['O-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const ffpUpdate = async (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			inventory.ffp['A+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'A-Ve') {
+			inventory.ffp['A-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB+Ve') {
+			inventory.ffp['AB+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB-Ve') {
+			inventory.ffp['AB-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B+Ve') {
+			inventory.ffp['B+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B-Ve') {
+			inventory.ffp['B-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O+Ve') {
+			inventory.ffp['O+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O-Ve') {
+			inventory.ffp['O-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const cryoUpdate = async (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			inventory.cryo['A+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'A-Ve') {
+			inventory.cryo['A-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB+Ve') {
+			inventory.cryo['AB+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB-Ve') {
+			inventory.cryo['AB-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B+Ve') {
+			inventory.cryo['B+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B-Ve') {
+			inventory.cryo['B-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O+Ve') {
+			inventory.cryo['O+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O-Ve') {
+			inventory.cryo['O-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const sprbcUpdate = async (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			inventory.sagm['A+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'A-Ve') {
+			inventory.sagm['A-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB+Ve') {
+			inventory.sagm['AB+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB-Ve') {
+			inventory.sagm['AB-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B+Ve') {
+			inventory.sagm['B+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B-Ve') {
+			inventory.sagm['B-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O+Ve') {
+			inventory.sagm['O+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O-Ve') {
+			inventory.sagm['O-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const sdplateUpdate = async (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			inventory.sdplate['A+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'A-Ve') {
+			inventory.sdplate['A-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB+Ve') {
+			inventory.sdplate['AB+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB-Ve') {
+			inventory.sdplate['AB-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B+Ve') {
+			inventory.sdplate['B+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B-Ve') {
+			inventory.sdplate['B-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O+Ve') {
+			inventory.sdplate['O+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O-Ve') {
+			inventory.sdplate['O-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const sdplasmaUpdate = async (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			inventory.sdplasma['A+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'A-Ve') {
+			inventory.sdplasma['A-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB+Ve') {
+			inventory.sdplasma['AB+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'AB-Ve') {
+			inventory.sdplasma['AB-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B+Ve') {
+			inventory.sdplasma['B+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'B-Ve') {
+			inventory.sdplasma['B-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O+Ve') {
+			inventory.sdplasma['O+Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+		if (bgroup == 'O-Ve') {
+			inventory.sdplasma['O-Ve'] -= count;
+			await inventory.save();
+			return;
+		}
+	} catch (err) {
+		console.error(err.message);
+	}
+};
 //  @route /api/admin/campsheduleRequests/:req_id
 // @desc DELETE reject camp shedule request
 // @access Private - admin access only

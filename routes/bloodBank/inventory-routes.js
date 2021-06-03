@@ -1,8 +1,8 @@
 const router = require('express').Router(),
 	inventoryController = require('../../controllers/bloodBank-controllers/inventoryControllers'),
-	auth = require('../../middleware/bloodBankAuth'),
-	inventoryUpdate = require('../../middleware/inventory');
+	updateInventory = require('../../middleware/inventory'),
+	auth = require('../../middleware/bloodBankAuth');
 
-router.get('/', auth, inventoryUpdate, inventoryController.getInventory);
+router.get('/', auth, updateInventory, inventoryController.getInventory);
 
 module.exports = router;
