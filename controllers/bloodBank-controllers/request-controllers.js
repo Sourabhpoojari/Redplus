@@ -109,7 +109,7 @@ const getBloodRequests = async (req, res, next) => {
 			'name',
 			'phone',
 			'profileImage',
-		]);
+		]).populate('hospital',['hospitalName']);
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
@@ -120,19 +120,43 @@ const getBloodRequests = async (req, res, next) => {
 	}
 };
 
-//  @route /api/bloodBank/requests/bloodRequests/:id
+//  @route /api/bloodBank/requests/userbloodRequests/:id
 // @desc  get request info
 // @access bloodbank
 const getBloodRequestById = async (req, res, next) => {
+	try {
+		const request = await BloodRequest.findById(req.params.req_id).populate('donor', [
+			'name',
+			'phone',
+			'profileImage',
+		]);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
+		}
+		 
+		//  const phoneno = await User.findOne(request.donor).select('phone').populate('profile',['profileImage']);
+		
+		return res.status(200).json(request);
+	} catch (err) {
+		console.log(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+//  @route /api/bloodBank/requests/hospitalbloodRequests/:id
+// @desc  get request info
+// @access bloodbank
+
+const getUserBloodRequestById = async (req, res, next) => {
 	try {
 		const request = await BloodRequest.findById(req.params.req_id);
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
-		 console.log(request.donor);
-		// const reqinfo = await User.findOne(request.donor);
-		// console.log(reqinfo);
-		return res.status(200).json(request);
+		 
+		 const phoneno = await User.findOne(request.hospital).populate('profile',['profileImage']);
+		
+		return res.status(200).json({request,phoneno});
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');

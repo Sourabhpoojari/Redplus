@@ -1080,6 +1080,9 @@ const sdplasma = (arr, i, bgroup, inventory) => {
 const bloodRequestForm = async (req, res, next) => {
 	try {
 		const {
+			patientName,
+			age,
+			hospitalName,
 			contactNumber,
 			bloodGroup,
 			WBC,
@@ -1098,10 +1101,6 @@ const bloodRequestForm = async (req, res, next) => {
 			return res.status(400).json({ errors: errors.array() });
 		}
 		
-		// let request = await BloodRequest.findOne({ hospital: req.hospital.id });
-		// if (request) {
-		// 	return res.status(422).send('Your Request is Already sent');
-		// }
 		const inventory = await Inventory.findOne({
 			bloodBankID: req.params.req_id,
 		});
@@ -1160,6 +1159,9 @@ const bloodRequestForm = async (req, res, next) => {
 		request = await new BloodRequest({
 			hospital: req.hospital.id,
 			bloodBank: req.params.req_id,
+			patientName,
+			age,
+			hospitalName,
 			contactNumber,
 			RequestDate: moment().format('DD-MM-YYYY'),
 			bloodGroup,

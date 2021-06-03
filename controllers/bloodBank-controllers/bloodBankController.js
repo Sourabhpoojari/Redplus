@@ -178,7 +178,7 @@ const getDonors = async (req, res, next) => {
 			return res.status(400).json({ msg: 'No Donor Found' });
 		}
 		let i;
-		const arr = [];
+		const arr = []; 
 
 		for (i = 0; i < donor.length; i++) {
 			const profile = await UserProfile.findOne({
