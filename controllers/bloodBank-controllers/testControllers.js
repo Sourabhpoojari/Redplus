@@ -309,7 +309,7 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 			bagNumber,
 			segment: segNumber,
 		});
-
+		console.log(bagNumber);
 		// moment
 		component.duration = moment.duration(42, 'days');
 		// assign expiry ticket
@@ -351,7 +351,7 @@ const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 			bagNumber,
 			segment: segNumber,
 		});
-
+		console.log(bagNumber);
 		// moment
 		component.duration = moment.duration(1, 'year');
 		// assign expiry ticket
