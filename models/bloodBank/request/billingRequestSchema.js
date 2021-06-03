@@ -54,6 +54,12 @@ const billingRequestSchema = mongoose.Schema({
 	SDPlasma: {
 		type: Number,
 	},
+	bookings: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Booking',
+		},
+	],
 });
 
 module.exports = mongoose.model('BillingRequest', billingRequestSchema);

@@ -178,6 +178,8 @@ const acceptBloodRequest = async (req, res, next) => {
 		let inventory = await Inventory.findOne({
 			bloodBankID: req.bloodBank.id,
 		});
+		const bankID = req.bloodBank.id;
+		let bookings = [];
 		// Check  inventory
 		if (WBC > 0) {
 			if (!wbcStatus(inventory, bloodGroup, WBC)) {
@@ -232,7 +234,7 @@ const acceptBloodRequest = async (req, res, next) => {
 
 		// update Inventory
 		if (WBC > 0) {
-			wbcUpdate(bloodGroup, WBC);
+			wbcUpdate(bloodGroup, bankID, WBC, bookings);
 		}
 		if (WholeBlood > 0) {
 			wholeUpdate(inventory, bloodGroup, WholeBlood);
@@ -261,7 +263,7 @@ const acceptBloodRequest = async (req, res, next) => {
 		if (SDPlasma > 0) {
 			sdplasmaUpdate(inventory, bloodGroup, SDPlasma);
 		}
-
+		console.log(bookings);
 		const billing = await new BillingRequest({
 			donor: request.donor,
 			bloodBank: req.bloodBank.id,
@@ -281,7 +283,10 @@ const acceptBloodRequest = async (req, res, next) => {
 			SDPlatele,
 			SDPlasma,
 		});
-
+		bookings.forEach((item) => {
+			billing.bookings.push(item);
+		});
+		console.log(billing);
 		await billing.save();
 		await request.delete();
 
@@ -773,48 +778,28 @@ const sdplasmaStatus = (inventory, bgroup, count) => {
 };
 
 // update Inventory
-const wbcUpdate = async (bgroup, count) => {
+const wbcUpdate = async (bgroup, bankID, count, bookings) => {
 	try {
-		if (bgroup == 'A+Ve') {
-			// inventory.wbc['A+Ve'] -= count;
-			// await inventory.save();
-
-			return;
-		}
-		if (bgroup == 'A-Ve') {
-			inventory.wbc['A-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB+Ve') {
-			inventory.wbc['AB+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB-Ve') {
-			inventory.wbc['AB-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B+Ve') {
-			inventory.wbc['B+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B-Ve') {
-			inventory.wbc['B-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O+Ve') {
-			inventory.wbc['O+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O-Ve') {
-			inventory.wbc['O-Ve'] -= count;
-			await inventory.save();
-			return;
+		while (count != 0) {
+			const wbc = await wbcSchema.find({ bankID, group: bgroup });
+			const { donor, segment, duration, ticket, bagNumber, createdOn } = wbc[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'WBC',
+				group: bgroup,
+				segment,
+				duration,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			console.log(booking.id);
+			bookings.push(booking.id);
+			console.log(bookings);
+			await booking.save();
+			await wbcSchema.findByIdAndDelete(wbc[0].id);
+			count -= 1;
 		}
 	} catch (err) {
 		console.error(err.message);
