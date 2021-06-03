@@ -1,25 +1,32 @@
-const { request } = require('express');
-
-const DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
+const { request } = require('express'),
+	DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
 	Profile = require('../../models/user/profileSchema'),
 	Health = require('../../models/user/healthInfoSchema'),
 	BloodRequest = require('../../models/bloodBank/request/bloodrequestSchema'),
 	BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
 	Booking = require('../../models/bloodBank/inventory/bookingSchema'),
 	wbcSchema = require('../../models/bloodBank/storage/wbc-schema'),
+	wholeSchema = require('../../models/bloodBank/storage/whole-schema'),
+	cryoSchema = require('../../models/bloodBank/storage/cryo-schema'),
+	ffpSchema = require('../../models/bloodBank/storage/ffp-schema'),
+	plasmaSchema = require('../../models/bloodBank/storage/plasma-schema'),
+	plateletSchema = require('../../models/bloodBank/storage/platelet-schema'),
+	prbcSchema = require('../../models/bloodBank/storage/rbc-schema'),
+	sagmSchema = require('../../models/bloodBank/storage/sagm-schema'),
+	sdplasmaSchema = require('../../models/bloodBank/storage/sdplasma-schema'),
+	sdplateSchema = require('../../models/bloodBank/storage/sdplate-schema'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
-	User = require('../../models/user/userSchema');
+	User = require('../../models/user/userSchema'),
+	Hospital=require('../../models/hospital/hospital/profile');
 
 //  @route /api/bloodBank/requests/donorRequests
 // @desc get Donor requests
 // @access Private - blood bank access only
 const getDonorRequests = async (req, res, next) => {
 	try {
-		const request = await DonorRequest.find().populate('donor', [
-			'name',
-			'phone',
-			'profileImage',
-		]);
+		const request = await DonorRequest.find({
+			bloodBank: req.bloodBank.id,
+		}).populate('donor', ['name', 'phone', 'profileImage']);
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
@@ -123,7 +130,7 @@ const getBloodRequests = async (req, res, next) => {
 //  @route /api/bloodBank/requests/userbloodRequests/:id
 // @desc  get request info
 // @access bloodbank
-const getBloodRequestById = async (req, res, next) => {
+const getUserBloodRequestById = async (req, res, next) => {
 	try {
 		const request = await BloodRequest.findById(req.params.req_id).populate('donor', [
 			'name',
@@ -133,9 +140,6 @@ const getBloodRequestById = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
-		 
-		//  const phoneno = await User.findOne(request.donor).select('phone').populate('profile',['profileImage']);
-		
 		return res.status(200).json(request);
 	} catch (err) {
 		console.log(err);
@@ -147,16 +151,15 @@ const getBloodRequestById = async (req, res, next) => {
 // @desc  get request info
 // @access bloodbank
 
-const getUserBloodRequestById = async (req, res, next) => {
+const getHospitalBloodRequestById = async (req, res, next) => {
 	try {
 		const request = await BloodRequest.findById(req.params.req_id);
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
 		 
-		 const phoneno = await User.findOne(request.hospital).populate('profile',['profileImage']);
-		
-		return res.status(200).json({request,phoneno});
+		 const hospitalinfo = await Hospital.findOne({hospital:request.hospital});
+		return res.status(200).json({request,hospitalinfo});
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');
@@ -1259,6 +1262,7 @@ exports.getDonorById = getDonorById;
 exports.acceptdonorRequest = acceptdonorRequest;
 exports.rejectDonorRequest = rejectDonorRequest;
 exports.getBloodRequests = getBloodRequests;
-exports.getBloodRequestById = getBloodRequestById;
+exports.getUserBloodRequestById = getUserBloodRequestById;
 exports.acceptBloodRequest = acceptBloodRequest;
 exports.rejectBloodRequest = rejectBloodRequest;
+exports.getHospitalBloodRequestById=getHospitalBloodRequestById;

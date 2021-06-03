@@ -2,6 +2,7 @@ const BloodBank = require('../../models/bloodBank/bloodBank/profile'),
 	HospitalLocation = require('../../models/hospital/hospital/profile'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
 	BloodRequest = require('../../models/bloodBank/request/bloodrequestSchema'),
+	Hospital=require('../../models/hospital/hospital/profile'),
 	{ validationResult } = require('express-validator'),
 	moment = require('moment');
 
@@ -1082,7 +1083,6 @@ const bloodRequestForm = async (req, res, next) => {
 		const {
 			patientName,
 			age,
-			hospitalName,
 			contactNumber,
 			bloodGroup,
 			WBC,
@@ -1155,7 +1155,9 @@ const bloodRequestForm = async (req, res, next) => {
 				return res.status(422).send('SDPlasma out of stock!');
 			}
 		}
-
+        
+		const hospitalinfo = await Hospital.findOne({hospital:req.hospital.id}).select('hospitalName');
+		 hospitalName =hospitalinfo.hospitalName;
 		request = await new BloodRequest({
 			hospital: req.hospital.id,
 			bloodBank: req.params.req_id,
@@ -1177,7 +1179,7 @@ const bloodRequestForm = async (req, res, next) => {
 			SDPlasma,
 		});
 	 request.isHospital=true;
-		await request.save();
+	await request.save();
 		return res.status(200).json(request);
 	} catch (err) {
 		console.error(err);
@@ -1228,6 +1230,7 @@ const wbcStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -1274,6 +1277,7 @@ const wholeStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -1320,6 +1324,7 @@ const plateletStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -1366,6 +1371,7 @@ const plasmaStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -1412,12 +1418,14 @@ const prbcStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
 };
 const ffpStatus = (inventory, bgroup, count) => {
 	try {
+		
 		if (bgroup == 'A+Ve') {
 			if (inventory.ffp['A+Ve'] < count) {
 				return false;
@@ -1458,6 +1466,7 @@ const ffpStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -1504,6 +1513,7 @@ const cryoStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -1550,6 +1560,7 @@ const sprbcStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -1596,6 +1607,7 @@ const sdplateStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -1642,6 +1654,7 @@ const sdplasmaStatus = (inventory, bgroup, count) => {
 				return false;
 			}
 		}
+		return true;
 	} catch (err) {
 		console.error(err.message);
 	}
