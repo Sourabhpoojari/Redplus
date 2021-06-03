@@ -179,7 +179,6 @@ const acceptBloodRequest = async (req, res, next) => {
 			bloodBankID: req.bloodBank.id,
 		});
 		const bankID = req.bloodBank.id;
-		let bookings = [];
 		// Check  inventory
 		if (WBC > 0) {
 			if (!wbcStatus(inventory, bloodGroup, WBC)) {
@@ -231,39 +230,6 @@ const acceptBloodRequest = async (req, res, next) => {
 				return res.status(422).send('SDPlasma out of stock!');
 			}
 		}
-
-		// update Inventory
-		if (WBC > 0) {
-			wbcUpdate(bloodGroup, bankID, WBC, bookings);
-		}
-		if (WholeBlood > 0) {
-			wholeUpdate(inventory, bloodGroup, WholeBlood);
-		}
-		if (Platelet > 0) {
-			plateletUpdate(inventory, bloodGroup, Platelet);
-		}
-		if (Plasma > 0) {
-			plasmaUpdate(inventory, bloodGroup, Plasma);
-		}
-		if (PRBC > 0) {
-			prbcUpdate(inventory, bloodGroup, PRBC);
-		}
-		if (FFP > 0) {
-			ffpUpdate(inventory, bloodGroup, FFP);
-		}
-		if (Cryoprecipitate > 0) {
-			cryoUpdate(inventory, bloodGroup, Cryoprecipitate);
-		}
-		if (SPRBC > 0) {
-			sprbcUpdate(inventory, bloodGroup, SPRBC);
-		}
-		if (SDPlatele > 0) {
-			sdplateUpdate(inventory, bloodGroup, SDPlatele);
-		}
-		if (SDPlasma > 0) {
-			sdplasmaUpdate(inventory, bloodGroup, SDPlasma);
-		}
-		console.log(bookings);
 		const billing = await new BillingRequest({
 			donor: request.donor,
 			bloodBank: req.bloodBank.id,
@@ -283,10 +249,43 @@ const acceptBloodRequest = async (req, res, next) => {
 			SDPlatele,
 			SDPlasma,
 		});
-		bookings.forEach((item) => {
-			billing.bookings.push(item);
-		});
-		console.log(billing);
+
+		// update Inventory
+		if (WBC > 0) {
+			await wbcUpdate(bloodGroup, bankID, WBC, billing);
+		}
+		if (WholeBlood > 0) {
+			await wholeUpdate(billing, bloodGroup, WholeBlood, bankID);
+		}
+		if (Platelet > 0) {
+			await plateletUpdate(billing, bloodGroup, Platelet, bankID);
+		}
+		if (Plasma > 0) {
+			await plasmaUpdate(billing, bloodGroup, Plasma, bankID);
+		}
+		if (PRBC > 0) {
+			await prbcUpdate(billing, bloodGroup, PRBC, bankID);
+		}
+		if (FFP > 0) {
+			await ffpUpdate(billing, bloodGroup, FFP, bankID);
+		}
+		if (Cryoprecipitate > 0) {
+			await cryoUpdate(billing, bloodGroup, Cryoprecipitate, bankID);
+		}
+		if (SPRBC > 0) {
+			await sprbcUpdate(billing, bloodGroup, SPRBC, bankID);
+		}
+		if (SDPlatele > 0) {
+			sdplateUpdate(billing, bloodGroup, SDPlatele, bankID);
+		}
+		if (SDPlasma > 0) {
+			await sdplasmaUpdate(billing, bloodGroup, SDPlasma, bankID);
+		}
+
+		// bookings.forEach((item) => {
+		// 	billing.bookings.push(item);
+		// });
+
 		await billing.save();
 		await request.delete();
 
@@ -514,7 +513,6 @@ const prbcStatus = (inventory, bgroup, count) => {
 		}
 		if (bgroup == 'AB+Ve') {
 			if (inventory.rbc['AB+Ve'] < count) {
-				console.log(inventory.rbc['AB+Ve']);
 				return false;
 			}
 			return true;
@@ -778,10 +776,12 @@ const sdplasmaStatus = (inventory, bgroup, count) => {
 };
 
 // update Inventory
-const wbcUpdate = async (bgroup, bankID, count, bookings) => {
+const wbcUpdate = async (bgroup, bankID, count, billing) => {
 	try {
 		while (count != 0) {
-			const wbc = await wbcSchema.find({ bankID, group: bgroup });
+			const wbc = await wbcSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
 			const { donor, segment, duration, ticket, bagNumber, createdOn } = wbc[0];
 			const booking = new Booking({
 				bankID,
@@ -794,13 +794,12 @@ const wbcUpdate = async (bgroup, bankID, count, bookings) => {
 				bagNumber,
 				createdOn,
 			});
-			console.log(booking.id);
-			bookings.push(booking.id);
-			console.log(bookings);
+			billing.bookings.push(booking.id);
 			await booking.save();
 			await wbcSchema.findByIdAndDelete(wbc[0].id);
 			count -= 1;
 		}
+		await billing.save();
 	} catch (err) {
 		console.error(err.message);
 	}
