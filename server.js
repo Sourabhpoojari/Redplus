@@ -28,7 +28,7 @@ app.use('/api/admin/', require('./routes/admin/admin-routes'));
 
 app.use('/api/admin/requests', require('./routes/admin/request-routes'));
 
-app.use('/api/admin/post',require('././routes/admin/post-routes'));
+app.use('/api/admin/post', require('././routes/admin/post-routes'));
 
 // bloodBank routes
 app.use('/api/bloodBank', require('./routes/bloodBank/bloodBank-routes'));
@@ -59,10 +59,14 @@ app.use(
 	'/api/bloodBank/pricing',
 	require('././routes/bloodBank/pricing-routes')
 );
+app.use('/api/bloodBank/billing', require('./routes/bloodBank/billing-routes'));
 
 //hospital routes
 app.use('/api/hospital', require('./routes/hospital/hospital-routes'));
 
-app.use('/api/hospital/findblood',require('./routes/hospital/findblood-routes'));
+app.use(
+	'/api/hospital/findblood',
+	require('./routes/hospital/findblood-routes')
+);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
