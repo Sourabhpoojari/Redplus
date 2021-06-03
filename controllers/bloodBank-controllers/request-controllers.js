@@ -1072,7 +1072,7 @@ const sdplasmaUpdate = async (billing, bgroup, count, bankID) => {
 // @access Private - admin access only
 const rejectBloodRequest = async (req, res, next) => {
 	try {
-		const request = await BloodReuests.findById(req.params.req_id);
+		const request = await BloodRequest.findById(req.params.req_id);
 		if (!request) {
 			return res
 				.status(400)
