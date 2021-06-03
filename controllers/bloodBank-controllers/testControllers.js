@@ -588,11 +588,14 @@ const sdplasma = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await SDPLASMA.findOne({
+			(await SDPLASMA.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await SDPLASMA.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
