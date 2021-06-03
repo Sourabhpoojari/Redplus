@@ -40,6 +40,7 @@ const primaryTest = async (req, res, next) => {
 	const { gender } = await Profile.findOne({ user: request.donor }).select(
 		'gender'
 	);
+	
 	//request = await DonorRequest.findOne({ donor: req.params.user_id });
 
 	if (!gender) {
@@ -48,33 +49,31 @@ const primaryTest = async (req, res, next) => {
 
 	if (gender == 'male')
 		if (weight < 50) {
-			await request.delete();
+			
 			return res.status(422).send('Weight must be greater than 50');
 		}
 	if (hb < 13 || hb > 20) {
-		await request.delete();
+		
 		return res.status(422).send('hb must be in the range 13-20');
 	}
 	if (gender == 'female') {
 		if (weight < 45) {
-			await request.delete();
 			return res.status(422).send('Weight must be greater than 45');
+			
 		}
 	}
 	if (hb < 12.5 || hb > 20) {
-		await request.delete();
 		return res.status(422).send('hb must be in the range 12.5-20');
+		
 	}
 	if (pulse < 60 || pulse > 100) {
-		await request.delete();
-		return res.status(422).send('Pulse must be in the range 60-100');
+		return res.status(422).send('Pulse must be in the range 60-100');	
 	}
 	if (bp < 100 || bp > 180) {
-		await request.delete();
 		return res.status(422).send('bp must be in the range 100-180');
+		
 	}
 	if (temp > 99.5) {
-		await request.delete();
 		return res.status(422).send('tempreture must be less than 99.5');
 	}
 	try {
@@ -89,7 +88,7 @@ const primaryTest = async (req, res, next) => {
 		};
 		//console.log(data);
 		primary = new primarytestSchema(data);
-		await primary.save();
+		
 		const donation = new Donation({
 			bloodBank: req.bloodBank.id,
 			user: request.donor,
@@ -97,6 +96,7 @@ const primaryTest = async (req, res, next) => {
 			donationDate: moment().format('DD-MM-YYYY'),
 		});
 		//console.log(donation);
+		await primary.save();
 		await donation.save();
 		return res.status(200).json({ request });
 	} catch (err) {
@@ -186,6 +186,7 @@ const getDonorById = async (req, res, next) => {
 	try {
 		let primary, donor;
 		primary = await PrimaryTestedDonor.findById(req.params.req_id);
+		console.log(primary);
 		donor = await Profile.findOne({ user: primary.user }).populate('user', [
 			'name',
 			'phone',
@@ -209,11 +210,14 @@ const whole = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await WHOLE.findOne({
+			(await WHOLE.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await WHOLE.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -251,11 +255,14 @@ const platelet = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await PLATELET.findOne({
+			(await PLATELET.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await PLATELET.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -293,11 +300,15 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await WBC.findOne({
+			
+			(await WBC.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await WBC.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -308,7 +319,7 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 			bagNumber,
 			segment: segNumber,
 		});
-
+		
 		// moment
 		component.duration = moment.duration(42, 'days');
 		// assign expiry ticket
@@ -335,11 +346,15 @@ const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await PLASMA.findOne({
+			
+			(await PLASMA.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await PLASMA.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -350,7 +365,7 @@ const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 			bagNumber,
 			segment: segNumber,
 		});
-
+		
 		// moment
 		component.duration = moment.duration(1, 'year');
 		// assign expiry ticket
@@ -377,11 +392,15 @@ const prbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await RBC.findOne({
+			
+			(await RBC.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await RBC.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -419,11 +438,15 @@ const ffp = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await FFP.findOne({
+			
+			(await FFP.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await FFP.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -461,11 +484,15 @@ const cryo = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await CRYOPRI.findOne({
+			
+			(await CRYOPRI.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await CRYOPRI.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -503,11 +530,16 @@ const sprbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await SAGM.findOne({
+			
+			(await SAGM.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await SAGM.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
+			
 		) {
 			return -1;
 		}
@@ -545,11 +577,14 @@ const sdplate = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await SDPLATE.findOne({
+			(await SDPLATE.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await SDPLATE.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -760,43 +795,43 @@ const testReportAndCredits = async (req, res, next) => {
 		//  ###############
 		components.map(async (component) => {
 			if (component == 'WholeBlood') {
-				credits += 20;
+				credits = 20;
 				WHOLEBLOOD_STATUS = 1;
 			}
 			if (component === 'Platelet') {
-				credits += 20;
+				credits = 20;
 				PLATELET_STATUS = 1;
 			}
 			if (component === 'WBC') {
-				credits += 20;
+				credits = 20;
 				WBC_STATUS = 1;
 			}
 			if (component === 'Plasma') {
-				credits += 20;
+				credits = 20;
 				PLASMA_STATUS = 1;
 			}
 			if (component === 'PRBC') {
-				credits += 20;
+				credits = 20;
 				PRBC_STATUS = 1;
 			}
 			if (component === 'FFP') {
-				credits += 20;
+				credits = 20;
 				FFP_STATUS = 1;
 			}
 			if (component === 'Cryoprecipitate') {
-				credits += 20;
+				credits = 20;
 				CRYO_STATUS = 1;
 			}
 			if (component === 'SPRBC') {
-				credits += 20;
+				credits = 20;
 				SPRBC_STATUS = 1;
 			}
 			if (component === 'SDPlatelet') {
-				credits += 20;
+				credits = 20;
 				SDPLATELET_STATUS = 1;
 			}
 			if (component === 'SDPlasma') {
-				credits += 20;
+				credits = 20;
 				SDPLASMA_STATUS = 1;
 			}
 		});

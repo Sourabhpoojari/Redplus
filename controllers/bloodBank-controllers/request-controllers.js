@@ -1,3 +1,5 @@
+const { request } = require('express');
+
 const DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
 	Profile = require('../../models/user/profileSchema'),
 	Health = require('../../models/user/healthInfoSchema'),
@@ -5,7 +7,8 @@ const DonorRequest = require('../../models/bloodBank/request/userRequestSchema')
 	BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
 	Booking = require('../../models/bloodBank/inventory/bookingSchema'),
 	wbcSchema = require('../../models/bloodBank/storage/wbc-schema'),
-	Inventory = require('../../models/bloodBank/inventory/inventorySchema');
+	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
+	User = require('../../models/user/userSchema');
 
 //  @route /api/bloodBank/requests/donorRequests
 // @desc get Donor requests
@@ -126,20 +129,10 @@ const getBloodRequestById = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
-		const donor = await Profile.findOne({ user: request.donor }).populate(
-			'user',
-			['phone']
-		);
-
-		// if (!donor) {
-		// 	return res.status(400).json({ errors: [{ msg: 'Profile not found!' }] });
-		// }
-		// let item = {};
-		// const inventory = await Inventory.findOne({
-		// 	bloodBankID: req.bloodBank.id,
-		// });
-
-		return res.status(200).json({ request, donor });
+		 console.log(request.donor);
+		// const reqinfo = await User.findOne(request.donor);
+		// console.log(reqinfo);
+		return res.status(200).json(request);
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');
