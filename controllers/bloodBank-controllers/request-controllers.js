@@ -7,6 +7,15 @@ const DonorRequest = require('../../models/bloodBank/request/userRequestSchema')
 	BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
 	Booking = require('../../models/bloodBank/inventory/bookingSchema'),
 	wbcSchema = require('../../models/bloodBank/storage/wbc-schema'),
+	wholeSchema = require('../../models/bloodBank/storage/whole-schema'),
+	cryoSchema = require('../../models/bloodBank/storage/cryo-schema'),
+	ffpSchema = require('../../models/bloodBank/storage/ffp-schema'),
+	plasmaSchema = require('../../models/bloodBank/storage/plasma-schema'),
+	plateletSchema = require('../../models/bloodBank/storage/platelet-schema'),
+	prbcSchema = require('../../models/bloodBank/storage/rbc-schema'),
+	sagmSchema = require('../../models/bloodBank/storage/sagm-schema'),
+	sdplasmaSchema = require('../../models/bloodBank/storage/sdplasma-schema'),
+	sdplateSchema = require('../../models/bloodBank/storage/sdplate-schema'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
 	User = require('../../models/user/userSchema');
 
@@ -129,7 +138,7 @@ const getBloodRequestById = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
-		 console.log(request.donor);
+		console.log(request.donor);
 		// const reqinfo = await User.findOne(request.donor);
 		// console.log(reqinfo);
 		return res.status(200).json(request);
@@ -797,416 +806,263 @@ const wbcUpdate = async (bgroup, bankID, count, billing) => {
 		console.error(err.message);
 	}
 };
-const wholeUpdate = async (inventory, bgroup, count) => {
+const wholeUpdate = async (billing, bgroup, count, bankID) => {
 	try {
-		if (bgroup == 'A+Ve') {
-			inventory.whole['A+Ve'] -= count;
-			await inventory.save();
-			return;
+		while (count != 0) {
+			const item = await wholeSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const { donor, segment, duration, ticket, bagNumber, createdOn } =
+				item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'WholeBlood',
+				group: bgroup,
+				segment,
+				duration,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await wholeSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
 		}
-		if (bgroup == 'A-Ve') {
-			inventory.whole['A-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB+Ve') {
-			inventory.whole['AB+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB-Ve') {
-			inventory.whole['AB-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B+Ve') {
-			inventory.whole['B+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B-Ve') {
-			inventory.whole['B-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O+Ve') {
-			inventory.whole['O+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O-Ve') {
-			inventory.whole['O-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
+		await billing.save();
 	} catch (err) {
 		console.error(err.message);
 	}
 };
-const plateletUpdate = async (inventory, bgroup, count) => {
+const plateletUpdate = async (billing, bgroup, count, bankID) => {
 	try {
-		if (bgroup == 'A+Ve') {
-			inventory.platelet['A+Ve'] -= count;
-			await inventory.save();
-			return;
+		while (count != 0) {
+			const item = await plateletSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const { donor, segment, duration, ticket, bagNumber, createdOn } =
+				item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'Platelet',
+				group: bgroup,
+				segment,
+				duration,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await plateletSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
 		}
-		if (bgroup == 'A-Ve') {
-			inventory.platelet['A-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB+Ve') {
-			inventory.platelet['AB+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB-Ve') {
-			inventory.platelet['AB-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B+Ve') {
-			inventory.platelet['B+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B-Ve') {
-			inventory.platelet['B-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O+Ve') {
-			inventory.platelet['O+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O-Ve') {
-			inventory.platelet['O-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
+		await billing.save();
 	} catch (err) {
 		console.error(err.message);
 	}
 };
-const plasmaUpdate = async (inventory, bgroup, count) => {
+const plasmaUpdate = async (billing, bgroup, count, bankID) => {
 	try {
-		if (bgroup == 'A+Ve') {
-			inventory.plasma['A+Ve'] -= count;
-			await inventory.save();
-			return;
+		while (count != 0) {
+			const item = await plasmaSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const { donor, segment, duration, ticket, bagNumber, createdOn } =
+				item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'Plasma',
+				group: bgroup,
+				segment,
+				duration,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await plasmaSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
 		}
-		if (bgroup == 'A-Ve') {
-			inventory.plasma['A-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB+Ve') {
-			inventory.plasma['AB+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB-Ve') {
-			inventory.plasma['AB-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B+Ve') {
-			inventory.plasma['B+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B-Ve') {
-			inventory.plasma['B-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O+Ve') {
-			inventory.plasma['O+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O-Ve') {
-			inventory.plasma['O-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
+		await billing.save();
 	} catch (err) {
 		console.error(err.message);
 	}
 };
-const prbcUpdate = async (inventory, bgroup, count) => {
+const prbcUpdate = async (billing, bgroup, count, bankID) => {
 	try {
-		if (bgroup == 'A+Ve') {
-			inventory.rbc['A+Ve'] -= count;
-			await inventory.save();
-			return;
+		while (count != 0) {
+			const item = await prbcSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const { donor, segment, duration, ticket, bagNumber, createdOn } =
+				item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'PRBC',
+				group: bgroup,
+				segment,
+				duration,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await prbcSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
 		}
-		if (bgroup == 'A-Ve') {
-			inventory.rbc['A-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB+Ve') {
-			inventory.rbc['AB+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB-Ve') {
-			inventory.rbc['AB-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B+Ve') {
-			inventory.rbc['B+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B-Ve') {
-			inventory.rbc['B-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O+Ve') {
-			inventory.rbc['O+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O-Ve') {
-			inventory.rbc['O-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
+		await billing.save();
 	} catch (err) {
 		console.error(err.message);
 	}
 };
-const ffpUpdate = async (inventory, bgroup, count) => {
+const ffpUpdate = async (billing, bgroup, count, bankID) => {
 	try {
-		if (bgroup == 'A+Ve') {
-			inventory.ffp['A+Ve'] -= count;
-			await inventory.save();
-			return;
+		while (count != 0) {
+			const item = await ffpSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const { donor, segment, duration, ticket, bagNumber, createdOn } =
+				item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'FFP',
+				group: bgroup,
+				segment,
+				duration,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await ffpSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
 		}
-		if (bgroup == 'A-Ve') {
-			inventory.ffp['A-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB+Ve') {
-			inventory.ffp['AB+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB-Ve') {
-			inventory.ffp['AB-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B+Ve') {
-			inventory.ffp['B+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B-Ve') {
-			inventory.ffp['B-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O+Ve') {
-			inventory.ffp['O+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O-Ve') {
-			inventory.ffp['O-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
+		await billing.save();
 	} catch (err) {
 		console.error(err.message);
 	}
 };
-const cryoUpdate = async (inventory, bgroup, count) => {
+const cryoUpdate = async (billing, bgroup, count, bankID) => {
 	try {
-		if (bgroup == 'A+Ve') {
-			inventory.cryo['A+Ve'] -= count;
-			await inventory.save();
-			return;
+		while (count != 0) {
+			const item = await cryoSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const { donor, segment, duration, ticket, bagNumber, createdOn } =
+				item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'Cryoprecipitate',
+				group: bgroup,
+				segment,
+				duration,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await cryoSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
 		}
-		if (bgroup == 'A-Ve') {
-			inventory.cryo['A-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB+Ve') {
-			inventory.cryo['AB+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB-Ve') {
-			inventory.cryo['AB-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B+Ve') {
-			inventory.cryo['B+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B-Ve') {
-			inventory.cryo['B-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O+Ve') {
-			inventory.cryo['O+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O-Ve') {
-			inventory.cryo['O-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
+		await billing.save();
 	} catch (err) {
 		console.error(err.message);
 	}
 };
-const sprbcUpdate = async (inventory, bgroup, count) => {
+const sprbcUpdate = async (billing, bgroup, count, bankID) => {
 	try {
-		if (bgroup == 'A+Ve') {
-			inventory.sagm['A+Ve'] -= count;
-			await inventory.save();
-			return;
+		while (count != 0) {
+			const item = await sagmSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const { donor, segment, duration, ticket, bagNumber, createdOn } =
+				item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'SPRBC',
+				group: bgroup,
+				segment,
+				duration,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await sagmSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
 		}
-		if (bgroup == 'A-Ve') {
-			inventory.sagm['A-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB+Ve') {
-			inventory.sagm['AB+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB-Ve') {
-			inventory.sagm['AB-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B+Ve') {
-			inventory.sagm['B+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B-Ve') {
-			inventory.sagm['B-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O+Ve') {
-			inventory.sagm['O+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O-Ve') {
-			inventory.sagm['O-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
+		await billing.save();
 	} catch (err) {
 		console.error(err.message);
 	}
 };
-const sdplateUpdate = async (inventory, bgroup, count) => {
+const sdplateUpdate = async (billing, bgroup, count, bankID) => {
 	try {
-		if (bgroup == 'A+Ve') {
-			inventory.sdplate['A+Ve'] -= count;
-			await inventory.save();
-			return;
+		while (count != 0) {
+			const item = await sdplateSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const { donor, segment, duration, ticket, bagNumber, createdOn } =
+				item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'SDPlate',
+				group: bgroup,
+				segment,
+				duration,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await sdplateSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
 		}
-		if (bgroup == 'A-Ve') {
-			inventory.sdplate['A-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB+Ve') {
-			inventory.sdplate['AB+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB-Ve') {
-			inventory.sdplate['AB-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B+Ve') {
-			inventory.sdplate['B+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B-Ve') {
-			inventory.sdplate['B-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O+Ve') {
-			inventory.sdplate['O+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O-Ve') {
-			inventory.sdplate['O-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
+		await billing.save();
 	} catch (err) {
 		console.error(err.message);
 	}
 };
-const sdplasmaUpdate = async (inventory, bgroup, count) => {
+const sdplasmaUpdate = async (billing, bgroup, count, bankID) => {
 	try {
-		if (bgroup == 'A+Ve') {
-			inventory.sdplasma['A+Ve'] -= count;
-			await inventory.save();
-			return;
+		while (count != 0) {
+			const item = await sdplasmaSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const { donor, segment, duration, ticket, bagNumber, createdOn } =
+				item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'SDPlasma',
+				group: bgroup,
+				segment,
+				duration,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await sdplasmaSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
 		}
-		if (bgroup == 'A-Ve') {
-			inventory.sdplasma['A-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB+Ve') {
-			inventory.sdplasma['AB+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'AB-Ve') {
-			inventory.sdplasma['AB-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B+Ve') {
-			inventory.sdplasma['B+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'B-Ve') {
-			inventory.sdplasma['B-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O+Ve') {
-			inventory.sdplasma['O+Ve'] -= count;
-			await inventory.save();
-			return;
-		}
-		if (bgroup == 'O-Ve') {
-			inventory.sdplasma['O-Ve'] -= count;
-			await inventory.save();
-			return;
-		}
+		await billing.save();
 	} catch (err) {
 		console.error(err.message);
 	}
