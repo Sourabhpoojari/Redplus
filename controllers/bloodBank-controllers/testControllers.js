@@ -641,7 +641,7 @@ const testCredit = async (
 ) => {
 	try {
 		if (gender == 'male') {
-			if (4.7 < rbcCount < 6.1) {
+			if (rbcrbcCount >= 6.1) {
 				credits += 25;
 			}
 			if (4.5 < wbcCount < 11) {

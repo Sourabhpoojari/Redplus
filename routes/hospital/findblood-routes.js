@@ -7,4 +7,6 @@ const findHospitalController = require('../../controllers/hospital-controllers/f
     
     router.get('/:component/:bgroup',auth,findHospitalController.getBloodBlanks);
 
+    router.post('/bloodRequestS/:req_id',auth,findHospitalController.bloodRequestForm);
+
 module.exports = router;
