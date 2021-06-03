@@ -210,11 +210,14 @@ const whole = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await WHOLE.findOne({
+			(await WHOLE.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await WHOLE.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -252,11 +255,14 @@ const platelet = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await PLATELET.findOne({
+			(await PLATELET.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await PLATELET.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -294,11 +300,15 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await WBC.findOne({
+			
+			(await WBC.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await WBC.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -336,11 +346,15 @@ const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await PLASMA.findOne({
+			
+			(await PLASMA.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await PLASMA.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -378,11 +392,15 @@ const prbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await RBC.findOne({
+			
+			(await RBC.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await RBC.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -420,11 +438,15 @@ const ffp = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await FFP.findOne({
+			
+			(await FFP.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await FFP.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -462,11 +484,15 @@ const cryo = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await CRYOPRI.findOne({
+			
+			(await CRYOPRI.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await CRYOPRI.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -504,11 +530,16 @@ const sprbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await SAGM.findOne({
+			
+			(await SAGM.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await SAGM.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
+			
 		) {
 			return -1;
 		}
@@ -546,11 +577,14 @@ const sdplate = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			await SDPLATE.findOne({
+			(await SDPLATE.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
+			})) ||
+			(await SDPLATE.findOne({
+				bankID: req.bloodBank.id,
 				segment: segNumber,
-			})
+			}))
 		) {
 			return -1;
 		}
@@ -644,34 +678,34 @@ const testCredit = async (
 ) => {
 	try {
 		if (gender == 'male') {
-			if (rbcrbcCount >= 6.1) {
+			if (rbcCount >= 4.7 && rbcCount <= 6.1) {
 				credits += 25;
 			}
-			if (4.5 < wbcCount < 11) {
+			if (wbcCount >= 4.5 && wbcCount <= 11) {
 				credits += 25;
 			}
-			if (13.5 < hemoglobinCount < 17.5) {
+			if (hemoglobinCount >= 13.5 && hemoglobinCount <= 17.5) {
 				credits += 25;
 			}
-			if (41 < hematocrit < 50) {
+			if (hematocrit >= 41 && hematocrit <= 50) {
 				credits += 25;
 			}
 		}
 		if (gender == 'female') {
-			if (4.2 < rbcCount < 5.4) {
+			if (rbcCount >= 4.2 && rbcCount <= 5.4) {
 				credits += 25;
 			}
-			if (4.5 < wbcCount < 11) {
+			if (wbcCount >= 4.5 && wbcCount <= 11) {
 				credits += 25;
 			}
-			if (12 < hemoglobinCount < 15.5) {
+			if (hemoglobinCount >= 12 && hemoglobinCount <= 15.5) {
 				credits += 25;
 			}
-			if (36 < hematocrit < 48) {
+			if (hematocrit >= 36 && hematocrit <= 48) {
 				credits += 25;
 			}
 		}
-		if (150000 < plateCount < 450000) {
+		if (plateCount >= 150000 && plateCount <= 450000) {
 			credits += 25;
 		}
 		if (bglucose == 140) {
