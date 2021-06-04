@@ -1,3 +1,4 @@
+const { request } = require('express');
 const BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
 	Booking = require('../../models/bloodBank/inventory/bookingSchema'),
 	wbcSchema = require('../../models/bloodBank/storage/wbc-schema'),
@@ -19,16 +20,12 @@ const getBillingRequests = async (req, res, next) => {
 		const requests = await BillingRequest.find({
 			bloodBank: req.bloodBank.id,
 		})
-			.populate('bookings')
+			
 			.populate('donor', ['profileImage', 'phone', 'name']);
 		if (!requests) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
-
-		const billingreq = await BillingRequest.find(requests.donor).populate('bookings')
-		.populate('donor', ['profileImage', 'phone', 'name']);
-		console.log(billingreq);
-		return res.status(200).json(requests.donor);
+		return res.status(200).json(requests);
 	} catch (err) {
 		console.error(err);
 		return res.status(500).send('Server error');
@@ -75,8 +72,7 @@ const rejectRequest = async (req, res, next) => {
 				});
 				await stock.save();
 			}
-
-			if (item.component == 'Platelet') {
+		if (item.component == 'Platelet') {
 				const stock = await new plateletSchema({
 					bankID: item.bankID,
 					donor: item.donor,
