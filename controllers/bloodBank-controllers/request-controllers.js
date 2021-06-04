@@ -1825,6 +1825,7 @@ const plasmaUpdateb = async (billing, bgroup, count, bankID) => {
 				bagNumber,
 				createdOn,
 			});
+			console.log(booking);
 			billing.bookings.push(booking.id);
 			await booking.save();
 			await plasmaSchema.findByIdAndDelete(item[0].id);

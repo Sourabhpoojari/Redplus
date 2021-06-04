@@ -20,7 +20,7 @@ const getBillingRequests = async (req, res, next) => {
 		const requests = await BillingRequest.find({
 			bloodBank: req.bloodBank.id,
 		})
-			
+			.populate('bookings')
 			.populate('donor', ['profileImage', 'phone', 'name']);
 		if (!requests) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
