@@ -16,7 +16,10 @@ const wbcSchema = mongoose.Schema({
 	segment: {
 		type: String,
 	},
-	duration: {
+	expiryDate: {
+		type: String,
+	},
+	donationDate: {
 		type: String,
 	},
 	ticket: {

@@ -24,12 +24,14 @@ const { request } = require('express'),
 // @access Private - blood bank access only
 const getDonorRequests = async (req, res, next) => {
 	try {
+		
 		const request = await DonorRequest.find({
-			bloodBank: req.bloodBank.id,
+			bloodBank: req.bloodBank.id
 		}).populate('donor', ['name', 'phone', 'profileImage']);
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
+		console.log(request);
 		return res.status(200).json({ request });
 	} catch (err) {
 		console.error(err.message);
@@ -179,7 +181,7 @@ const acceptBloodRequest = async (req, res, next) => {
 		}
 
 		const {
-			patientName,
+			pateintName,
 			hospitalName,
 			age,
 			bloodGroup,
@@ -254,7 +256,7 @@ const acceptBloodRequest = async (req, res, next) => {
 			donor: request.donor,
 			bloodBank: req.bloodBank.id,
 			RequestDate,
-			patientName,
+			pateintName,
 			hospitalName,
 			age,
 			bloodGroup,
