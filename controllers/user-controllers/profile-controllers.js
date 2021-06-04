@@ -25,8 +25,18 @@ const getProfile = async (req, res, next) => {
 			'user',
 			['phone']
 		);
-        let credits = await Credit.findOne({ user: req.user.id }).select('credits');
-        
+        const credits = await Credit.find({ user: req.user.id }).sort('-donationDate');
+
+		if(!credits){
+        	credits=0;
+        }
+		//sum of credits
+		let creditpoints=0,i;
+			for (i = 0; i < credits.length; i++) {
+				if(credits[i].expiryTicket){
+					creditpoints +=credits[i].credits;
+				}
+			}
         if(!credits){
         	credits=0;
         }
@@ -36,9 +46,10 @@ const getProfile = async (req, res, next) => {
 		} else {
 			
 
-			return res.json({profile,credits});
+			return res.json({profile,creditpoints});
 		}
-	} catch (err) {
+	}
+	 catch (err) {
 		console.error(err.message);
 		if (err.kind == 'ObjectId') {
 			return res.status(400).json({ msg: 'Profile not found!' });

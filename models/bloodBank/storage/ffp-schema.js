@@ -16,7 +16,10 @@ const ffpSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	duration: {
+	expiryDate: {
+		type: String,
+	},
+	donationDate: {
 		type: String,
 	},
 	ticket: {

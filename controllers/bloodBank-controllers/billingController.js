@@ -1,3 +1,4 @@
+const { request } = require('express');
 const BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
 	Booking = require('../../models/bloodBank/inventory/bookingSchema'),
 	wbcSchema = require('../../models/bloodBank/storage/wbc-schema'),
@@ -58,6 +59,7 @@ const rejectRequest = async (req, res, next) => {
 				});
 				await stock.save();
 			}
+
 			if (item.component == 'WholeBlood') {
 				const stock = await new wholeSchema({
 					bankID: item.bankID,
@@ -72,7 +74,7 @@ const rejectRequest = async (req, res, next) => {
 				});
 				await stock.save();
 			}
-			if (item.component == 'Platelet') {
+		if (item.component == 'Platelet') {
 				const stock = await new plateletSchema({
 					bankID: item.bankID,
 					donor: item.donor,
