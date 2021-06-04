@@ -1,5 +1,3 @@
-const { request } = require('express');
-
 const DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
 	Profile = require('../../models/user/profileSchema'),
 	Health = require('../../models/user/healthInfoSchema'),
@@ -780,14 +778,23 @@ const wbcUpdate = async (bgroup, bankID, count, billing) => {
 			const wbc = await wbcSchema
 				.find({ bankID, group: bgroup })
 				.sort('createdOn');
-			const { donor, segment, duration, ticket, bagNumber, createdOn } = wbc[0];
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = wbc[0];
 			const booking = new Booking({
 				bankID,
 				donor,
 				component: 'WBC',
 				group: bgroup,
 				segment,
-				duration,
+				expiryDate,
+				donationDate,
 				ticket,
 				bagNumber,
 				createdOn,
@@ -808,15 +815,23 @@ const wholeUpdate = async (billing, bgroup, count, bankID) => {
 			const item = await wholeSchema
 				.find({ bankID, group: bgroup })
 				.sort('createdOn');
-			const { donor, segment, duration, ticket, bagNumber, createdOn } =
-				item[0];
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
 			const booking = new Booking({
 				bankID,
 				donor,
 				component: 'WholeBlood',
 				group: bgroup,
 				segment,
-				duration,
+				expiryDate,
+				donationDate,
 				ticket,
 				bagNumber,
 				createdOn,
@@ -837,15 +852,23 @@ const plateletUpdate = async (billing, bgroup, count, bankID) => {
 			const item = await plateletSchema
 				.find({ bankID, group: bgroup })
 				.sort('createdOn');
-			const { donor, segment, duration, ticket, bagNumber, createdOn } =
-				item[0];
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
 			const booking = new Booking({
 				bankID,
 				donor,
 				component: 'Platelet',
 				group: bgroup,
 				segment,
-				duration,
+				expiryDate,
+				donationDate,
 				ticket,
 				bagNumber,
 				createdOn,
@@ -866,15 +889,23 @@ const plasmaUpdate = async (billing, bgroup, count, bankID) => {
 			const item = await plasmaSchema
 				.find({ bankID, group: bgroup })
 				.sort('createdOn');
-			const { donor, segment, duration, ticket, bagNumber, createdOn } =
-				item[0];
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
 			const booking = new Booking({
 				bankID,
 				donor,
 				component: 'Plasma',
 				group: bgroup,
 				segment,
-				duration,
+				expiryDate,
+				donationDate,
 				ticket,
 				bagNumber,
 				createdOn,
@@ -895,15 +926,23 @@ const prbcUpdate = async (billing, bgroup, count, bankID) => {
 			const item = await prbcSchema
 				.find({ bankID, group: bgroup })
 				.sort('createdOn');
-			const { donor, segment, duration, ticket, bagNumber, createdOn } =
-				item[0];
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
 			const booking = new Booking({
 				bankID,
 				donor,
 				component: 'PRBC',
 				group: bgroup,
 				segment,
-				duration,
+				expiryDate,
+				donationDate,
 				ticket,
 				bagNumber,
 				createdOn,
@@ -924,15 +963,23 @@ const ffpUpdate = async (billing, bgroup, count, bankID) => {
 			const item = await ffpSchema
 				.find({ bankID, group: bgroup })
 				.sort('createdOn');
-			const { donor, segment, duration, ticket, bagNumber, createdOn } =
-				item[0];
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
 			const booking = new Booking({
 				bankID,
 				donor,
 				component: 'FFP',
 				group: bgroup,
 				segment,
-				duration,
+				expiryDate,
+				donationDate,
 				ticket,
 				bagNumber,
 				createdOn,
@@ -953,15 +1000,23 @@ const cryoUpdate = async (billing, bgroup, count, bankID) => {
 			const item = await cryoSchema
 				.find({ bankID, group: bgroup })
 				.sort('createdOn');
-			const { donor, segment, duration, ticket, bagNumber, createdOn } =
-				item[0];
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
 			const booking = new Booking({
 				bankID,
 				donor,
 				component: 'Cryoprecipitate',
 				group: bgroup,
 				segment,
-				duration,
+				expiryDate,
+				donationDate,
 				ticket,
 				bagNumber,
 				createdOn,
@@ -982,15 +1037,23 @@ const sprbcUpdate = async (billing, bgroup, count, bankID) => {
 			const item = await sagmSchema
 				.find({ bankID, group: bgroup })
 				.sort('createdOn');
-			const { donor, segment, duration, ticket, bagNumber, createdOn } =
-				item[0];
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
 			const booking = new Booking({
 				bankID,
 				donor,
 				component: 'SPRBC',
 				group: bgroup,
 				segment,
-				duration,
+				expiryDate,
+				donationDate,
 				ticket,
 				bagNumber,
 				createdOn,
@@ -1011,15 +1074,23 @@ const sdplateUpdate = async (billing, bgroup, count, bankID) => {
 			const item = await sdplateSchema
 				.find({ bankID, group: bgroup })
 				.sort('createdOn');
-			const { donor, segment, duration, ticket, bagNumber, createdOn } =
-				item[0];
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
 			const booking = new Booking({
 				bankID,
 				donor,
 				component: 'SDPlate',
 				group: bgroup,
 				segment,
-				duration,
+				expiryDate,
+				donationDate,
 				ticket,
 				bagNumber,
 				createdOn,
@@ -1040,15 +1111,23 @@ const sdplasmaUpdate = async (billing, bgroup, count, bankID) => {
 			const item = await sdplasmaSchema
 				.find({ bankID, group: bgroup })
 				.sort('createdOn');
-			const { donor, segment, duration, ticket, bagNumber, createdOn } =
-				item[0];
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
 			const booking = new Booking({
 				bankID,
 				donor,
 				component: 'SDPlasma',
 				group: bgroup,
 				segment,
-				duration,
+				expiryDate,
+				donationDate,
 				ticket,
 				bagNumber,
 				createdOn,

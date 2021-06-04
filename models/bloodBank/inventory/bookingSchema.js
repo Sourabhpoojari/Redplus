@@ -20,7 +20,10 @@ const bookingSchema = mongoose.Schema({
 		type: String,
 		unique: true,
 	},
-	duration: {
+	expiryDate: {
+		type: String,
+	},
+	donationDate: {
 		type: String,
 	},
 	ticket: {
