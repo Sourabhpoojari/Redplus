@@ -57,6 +57,19 @@ const rejectRequest = async (req, res, next) => {
 				});
 				await stock.save();
 			}
+			if (item.component == 'WholeBlood') {
+				const stock = await new wholeSchema({
+					bankID: item.bankID,
+					donor: item.donor,
+					group: item.group,
+					segment: item.segment,
+					duration: item.duration,
+					ticket: item.ticket,
+					bagNumber: item.bagNumber,
+					createdOn: item.createdOn,
+				});
+				await stock.save();
+			}
 			if (item.component == 'Platelet') {
 				const stock = await new plateletSchema({
 					bankID: item.bankID,
