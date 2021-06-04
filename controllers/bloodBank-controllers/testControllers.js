@@ -40,7 +40,7 @@ const primaryTest = async (req, res, next) => {
 	const { gender } = await Profile.findOne({ user: request.donor }).select(
 		'gender'
 	);
-	
+
 	//request = await DonorRequest.findOne({ donor: req.params.user_id });
 
 	if (!gender) {
@@ -49,29 +49,24 @@ const primaryTest = async (req, res, next) => {
 
 	if (gender == 'male')
 		if (weight < 50) {
-			
 			return res.status(422).send('Weight must be greater than 50');
 		}
 	if (hb < 13 || hb > 20) {
-		
 		return res.status(422).send('hb must be in the range 13-20');
 	}
 	if (gender == 'female') {
 		if (weight < 45) {
 			return res.status(422).send('Weight must be greater than 45');
-			
 		}
 	}
 	if (hb < 12.5 || hb > 20) {
 		return res.status(422).send('hb must be in the range 12.5-20');
-		
 	}
 	if (pulse < 60 || pulse > 100) {
-		return res.status(422).send('Pulse must be in the range 60-100');	
+		return res.status(422).send('Pulse must be in the range 60-100');
 	}
 	if (bp < 100 || bp > 180) {
 		return res.status(422).send('bp must be in the range 100-180');
-		
 	}
 	if (temp > 99.5) {
 		return res.status(422).send('tempreture must be less than 99.5');
@@ -88,7 +83,7 @@ const primaryTest = async (req, res, next) => {
 		};
 		//console.log(data);
 		primary = new primarytestSchema(data);
-		
+
 		const donation = new Donation({
 			bloodBank: req.bloodBank.id,
 			user: request.donor,
@@ -300,7 +295,6 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			
 			(await WBC.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
@@ -319,7 +313,7 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 			bagNumber,
 			segment: segNumber,
 		});
-		
+
 		// moment
 		component.duration = moment.duration(42, 'days');
 		// assign expiry ticket
@@ -346,7 +340,6 @@ const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			
 			(await PLASMA.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
@@ -365,7 +358,7 @@ const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 			bagNumber,
 			segment: segNumber,
 		});
-		
+
 		// moment
 		component.duration = moment.duration(1, 'year');
 		// assign expiry ticket
@@ -392,7 +385,6 @@ const prbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			
 			(await RBC.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
@@ -438,7 +430,6 @@ const ffp = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			
 			(await FFP.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
@@ -484,7 +475,6 @@ const cryo = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			
 			(await CRYOPRI.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
@@ -500,12 +490,12 @@ const cryo = async (req, report, bgroup, segNumber, bagNumber) => {
 			bankID: req.bloodBank.id,
 			donor: report.user,
 			group: bgroup,
+			donationDate: moment().format('DD-MM-YYYY'),
+			expiryDate: moment().add(1, 'y').format('DD-MM-YYYY'),
 			bagNumber,
 			segment: segNumber,
 		});
 
-		// moment
-		component.duration = moment.duration(1, 'year');
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -530,7 +520,6 @@ const sprbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			
 			(await SAGM.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
@@ -539,7 +528,6 @@ const sprbc = async (req, report, bgroup, segNumber, bagNumber) => {
 				bankID: req.bloodBank.id,
 				segment: segNumber,
 			}))
-			
 		) {
 			return -1;
 		}
