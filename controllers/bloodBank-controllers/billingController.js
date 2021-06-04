@@ -24,7 +24,11 @@ const getBillingRequests = async (req, res, next) => {
 		if (!requests) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
-		return res.status(200).json(requests);
+
+		const billingreq = await BillingRequest.find(requests.donor).populate('bookings')
+		.populate('donor', ['profileImage', 'phone', 'name']);
+		console.log(billingreq);
+		return res.status(200).json(requests.donor);
 	} catch (err) {
 		console.error(err);
 		return res.status(500).send('Server error');
@@ -57,6 +61,21 @@ const rejectRequest = async (req, res, next) => {
 				});
 				await stock.save();
 			}
+
+			if (item.component == 'WholeBlood') {
+				const stock = await new wholeSchema({
+					bankID: item.bankID,
+					donor: item.donor,
+					group: item.group,
+					segment: item.segment,
+					duration: item.duration,
+					ticket: item.ticket,
+					bagNumber: item.bagNumber,
+					createdOn: item.createdOn,
+				});
+				await stock.save();
+			}
+
 			if (item.component == 'Platelet') {
 				const stock = await new plateletSchema({
 					bankID: item.bankID,

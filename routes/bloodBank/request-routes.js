@@ -32,6 +32,14 @@ router.post(
 	updateInventory,
 	requestController.acceptBloodRequest
 );
+
+router.post(
+	'/acceptHospitalBloodRequest/:req_id',
+	isBloodBank,
+	updateInventory,
+	requestController.acceptHospitalBloodRequest
+);
+
 router.delete(
 	'/rejectBloodRequest/:req_id',
 	isBloodBank,

@@ -1103,9 +1103,9 @@ const testReportAndCredits = async (req, res, next) => {
 		donation.report = report.id;
 		await donation.save();
 		//let testreport;
-
+		// const profilev= await Profile.findOne({donor:request.donor});
+		// console.log(profilev);
 		await request.delete();
-
 		return res.status(200).json(report);
 	} catch (err) {
 		console.error(err);

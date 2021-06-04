@@ -9,6 +9,18 @@ const billingRequestSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'BloodBank',
 	},
+	hospital:{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Hospital',
+	},
+	isHospital:{
+		type:Boolean,
+		default:false,
+	},
+	status:{
+		type:Boolean,
+		default:false,
+	},
 	RequestDate: {
 		type: String,
 	},
