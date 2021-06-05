@@ -27,6 +27,9 @@ const billingSchema = mongoose.Schema({
 	hospitalName: {
 		type: String,
 	},
+	patientName: {
+		type: String,
+	},
 	age: {
 		type: Number,
 	},
@@ -37,8 +40,8 @@ const billingSchema = mongoose.Schema({
 		{
 			component: { type: String },
 			price: { type: Number },
-			quantity: { type: Number },
-			totalCost: { type: Number },
+			expiryDate: { type: String },
+			bagNumber: { type: String },
 		},
 	],
 	subTotal: {
@@ -50,13 +53,7 @@ const billingSchema = mongoose.Schema({
 	grandTotal: {
 		type: Number,
 	},
-	segment: { type: String },
-	expiryDate: {
-		type: String,
-	},
-	bagNumber: {
-		type: String,
-	},
+
 	createdOn: {
 		type: Date,
 		default: Date.now(),
