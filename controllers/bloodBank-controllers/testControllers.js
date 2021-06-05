@@ -1104,12 +1104,14 @@ const testReportAndCredits = async (req, res, next) => {
 		report.bp.systrolic = systrolic;
 		report.bp.diastolic = diastolic;
 		report.diseases = diseases;
-		await report.save();
+		//await report.save();
 		donation.report = report.id;
-		await donation.save();
+		//await donation.save();
 		//let testreport;
-		// 
-		await request.delete();
+		let profile = await Profile.findOne({donor:request.donor}).select('credits');
+		profile=donation.credits;
+		console.log(profile);
+		//await request.delete();
 		return res.status(200).json(report);
 	} catch (err) {
 		console.error(err);

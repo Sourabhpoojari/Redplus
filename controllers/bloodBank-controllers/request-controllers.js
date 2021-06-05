@@ -181,7 +181,7 @@ const acceptBloodRequest = async (req, res, next) => {
 		}
 
 		const {
-			pateintName,
+			patientName,
 			hospitalName,
 			age,
 			bloodGroup,
@@ -256,7 +256,7 @@ const acceptBloodRequest = async (req, res, next) => {
 			donor: request.donor,
 			bloodBank: req.bloodBank.id,
 			RequestDate,
-			pateintName,
+			patientName,
 			hospitalName,
 			age,
 			bloodGroup,
