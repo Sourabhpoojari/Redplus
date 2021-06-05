@@ -22,17 +22,27 @@ router.delete(
 );
 
 router.get('/bloodRequests', isBloodBank, requestController.getBloodRequests);
+
 router.get(
-	'/bloodRequests/:req_id',
+	'/BloodRequests/:req_id',
 	isBloodBank,
 	requestController.getBloodRequestById
 );
+
 router.post(
 	'/acceptBloodRequest/:req_id',
 	isBloodBank,
 	updateInventory,
 	requestController.acceptBloodRequest
 );
+
+router.post(
+	'/acceptHospitalBloodRequest/:req_id',
+	isBloodBank,
+	updateInventory,
+	requestController.acceptHospitalBloodRequest
+);
+
 router.delete(
 	'/rejectBloodRequest/:req_id',
 	isBloodBank,

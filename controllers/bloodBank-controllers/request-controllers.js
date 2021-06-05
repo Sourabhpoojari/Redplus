@@ -1,5 +1,3 @@
-const { request } = require('express');
-
 const DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
 	Profile = require('../../models/user/profileSchema'),
 	Health = require('../../models/user/healthInfoSchema'),
@@ -17,7 +15,7 @@ const DonorRequest = require('../../models/bloodBank/request/userRequestSchema')
 	sdplasmaSchema = require('../../models/bloodBank/storage/sdplasma-schema'),
 	sdplateSchema = require('../../models/bloodBank/storage/sdplate-schema'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
-	User = require('../../models/user/userSchema');
+	Hospital = require('../../models/hospital/hospital/profile');
 
 //  @route /api/bloodBank/requests/donorRequests
 // @desc get Donor requests
@@ -30,6 +28,7 @@ const getDonorRequests = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
+		console.log(request);
 		return res.status(200).json({ request });
 	} catch (err) {
 		console.error(err.message);
@@ -112,9 +111,9 @@ const rejectDonorRequest = async (req, res, next) => {
 // @access Private - blood bank access only
 const getBloodRequests = async (req, res, next) => {
 	try {
-		const request = await BloodRequest.find({
-			bloodBank: req.bloodBank.id,
-		}).populate('donor', ['name', 'phone', 'profileImage']);
+		const request = await BloodRequest.find()
+			.populate('donor', ['name', 'phone', 'profileImage'])
+			.populate('hospital', ['hospitalName']);
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
@@ -125,18 +124,18 @@ const getBloodRequests = async (req, res, next) => {
 	}
 };
 
-//  @route /api/bloodBank/requests/bloodRequests/:id
+//  @route /api/bloodBank/requests/userbloodRequests/:id
 // @desc  get request info
 // @access bloodbank
 const getBloodRequestById = async (req, res, next) => {
 	try {
-		const request = await BloodRequest.findById(req.params.req_id);
+		const request = await BloodRequest.findById(req.params.req_id).populate(
+			'donor',
+			['name', 'phone', 'profileImage']
+		);
 		if (!request) {
-			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
-		console.log(request.donor);
-		// const reqinfo = await User.findOne(request.donor);
-		// console.log(reqinfo);
 		return res.status(200).json(request);
 	} catch (err) {
 		console.log(err);
@@ -144,7 +143,7 @@ const getBloodRequestById = async (req, res, next) => {
 	}
 };
 
-//  @route /api/bloodbank/request/acceptdonationrequest/:req_id
+//  @route /api/bloodbank/request/acceptBloodRequest/:req_id
 // @desc POST accept donation shedule request
 // @access Private - bloodbank access only
 const acceptBloodRequest = async (req, res, next) => {
@@ -157,7 +156,7 @@ const acceptBloodRequest = async (req, res, next) => {
 		}
 
 		const {
-			pateintName,
+			patientName,
 			hospitalName,
 			age,
 			bloodGroup,
@@ -232,7 +231,7 @@ const acceptBloodRequest = async (req, res, next) => {
 			donor: request.donor,
 			bloodBank: req.bloodBank.id,
 			RequestDate,
-			pateintName,
+			patientName,
 			hospitalName,
 			age,
 			bloodGroup,
@@ -780,6 +779,1011 @@ const wbcUpdate = async (bgroup, bankID, count, billing) => {
 			const wbc = await wbcSchema
 				.find({ bankID, group: bgroup })
 				.sort('createdOn');
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = wbc[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'WBC',
+				group: bgroup,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await wbcSchema.findByIdAndDelete(wbc[0].id);
+			count -= 1;
+		}
+		await billing.save();
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const wholeUpdate = async (billing, bgroup, count, bankID) => {
+	try {
+		while (count != 0) {
+			const item = await wholeSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'WholeBlood',
+				group: bgroup,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await wholeSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
+		}
+		await billing.save();
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const plateletUpdate = async (billing, bgroup, count, bankID) => {
+	try {
+		while (count != 0) {
+			const item = await plateletSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'Platelet',
+				group: bgroup,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await plateletSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
+		}
+		await billing.save();
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const plasmaUpdate = async (billing, bgroup, count, bankID) => {
+	try {
+		while (count != 0) {
+			const item = await plasmaSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'Plasma',
+				group: bgroup,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await plasmaSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
+		}
+		await billing.save();
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const prbcUpdate = async (billing, bgroup, count, bankID) => {
+	try {
+		while (count != 0) {
+			const item = await prbcSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'PRBC',
+				group: bgroup,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await prbcSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
+		}
+		await billing.save();
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const ffpUpdate = async (billing, bgroup, count, bankID) => {
+	try {
+		while (count != 0) {
+			const item = await ffpSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'FFP',
+				group: bgroup,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await ffpSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
+		}
+		await billing.save();
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const cryoUpdate = async (billing, bgroup, count, bankID) => {
+	try {
+		while (count != 0) {
+			const item = await cryoSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'Cryoprecipitate',
+				group: bgroup,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await cryoSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
+		}
+		await billing.save();
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const sprbcUpdate = async (billing, bgroup, count, bankID) => {
+	try {
+		while (count != 0) {
+			const item = await sagmSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'SPRBC',
+				group: bgroup,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await sagmSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
+		}
+		await billing.save();
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const sdplateUpdate = async (billing, bgroup, count, bankID) => {
+	try {
+		while (count != 0) {
+			const item = await sdplateSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'SDPlate',
+				group: bgroup,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await sdplateSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
+		}
+		await billing.save();
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const sdplasmaUpdate = async (billing, bgroup, count, bankID) => {
+	try {
+		while (count != 0) {
+			const item = await sdplasmaSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
+			const {
+				donor,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			} = item[0];
+			const booking = new Booking({
+				bankID,
+				donor,
+				component: 'SDPlasma',
+				group: bgroup,
+				segment,
+				expiryDate,
+				donationDate,
+				ticket,
+				bagNumber,
+				createdOn,
+			});
+			billing.bookings.push(booking.id);
+			await booking.save();
+			await sdplasmaSchema.findByIdAndDelete(item[0].id);
+			count -= 1;
+		}
+		await billing.save();
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+
+//  @route /api/bloodbank/request/accepthospitalbloodRequest/:req_id
+// @desc POST accept donation shedule request
+// @access Private - bloodbank access only
+const acceptHospitalBloodRequest = async (req, res, next) => {
+	try {
+		const request = await BloodRequest.findById(req.params.req_id);
+		if (!request) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Blood Request not found!' }] });
+		}
+		if (!request.isHospital) {
+			return res.status(400).json({ msg: 'Not a hospital request' });
+		}
+		const {
+			patientName,
+			hospitalName,
+			age,
+			contactNumber,
+			bloodGroup,
+			RequestDate,
+			WBC,
+			WholeBlood,
+			Platelet,
+			Plasma,
+			PRBC,
+			FFP,
+			Cryoprecipitate,
+			SPRBC,
+			SDPlatele,
+			SDPlasma,
+		} = request;
+		let inventory = await Inventory.findOne({
+			bloodBankID: req.bloodBank.id,
+		});
+		const bankID = req.bloodBank.id;
+		// Check  inventory
+		if (WBC > 0) {
+			if (!wbcStatusb(inventory, bloodGroup, WBC)) {
+				return res.status(422).send('WBC out of stock!');
+			}
+		}
+		if (WholeBlood > 0) {
+			if (!wholeStatusb(inventory, bloodGroup, WholeBlood)) {
+				return res.status(422).send('WholeBlood out of stock!');
+			}
+		}
+		if (Platelet > 0) {
+			if (!plateletStatusb(inventory, bloodGroup, Platelet)) {
+				return res.status(422).send('Platelet out of stock!');
+			}
+		}
+		if (Plasma > 0) {
+			if (!plasmaStatusb(inventory, bloodGroup, Plasma)) {
+				return res.status(422).send('Plasma out of stock!');
+			}
+		}
+		if (PRBC > 0) {
+			if (!prbcStatusb(inventory, bloodGroup, PRBC)) {
+				return res.status(422).send('PRBC out of stock!');
+			}
+		}
+		if (FFP > 0) {
+			if (!ffpStatusb(inventory, bloodGroup, FFP)) {
+				return res.status(422).send('FFP out of stock!');
+			}
+		}
+		if (Cryoprecipitate > 0) {
+			if (!cryoStatusb(inventory, bloodGroup, Cryoprecipitate)) {
+				return res.status(422).send('Cryoprecipitate out of stock!');
+			}
+		}
+		if (SPRBC > 0) {
+			if (!sprbcStatusb(inventory, bloodGroup, SPRBC)) {
+				return res.status(422).send('SPRBC out of stock!');
+			}
+		}
+		if (SDPlatele > 0) {
+			if (!sdplateStatusb(inventory, bloodGroup, SDPlatele)) {
+				return res.status(422).send('SDPlatele out of stock!');
+			}
+		}
+		if (SDPlasma > 0) {
+			if (!sdplasmaStatusb(inventory, bloodGroup, SDPlasma)) {
+				return res.status(422).send('SDPlasma out of stock!');
+			}
+		}
+		const billing = await new BillingRequest({
+			hospital: request.hospital,
+			bloodBank: req.bloodBank.id,
+			RequestDate,
+			contactNumber,
+			patientName,
+			hospitalName,
+			age,
+			bloodGroup,
+			WBC,
+			WholeBlood,
+			Platelet,
+			Plasma,
+			PRBC,
+			FFP,
+			Cryoprecipitate,
+			SPRBC,
+			SDPlatele,
+			SDPlasma,
+		});
+
+		// update Inventory
+		if (WBC > 0) {
+			await wbcUpdateb(bloodGroup, bankID, WBC, billing);
+		}
+		if (WholeBlood > 0) {
+			await wholeUpdateb(billing, bloodGroup, WholeBlood, bankID);
+		}
+		if (Platelet > 0) {
+			await plateletUpdateb(billing, bloodGroup, Platelet, bankID);
+		}
+		if (Plasma > 0) {
+			await plasmaUpdateb(billing, bloodGroup, Plasma, bankID);
+		}
+		if (PRBC > 0) {
+			await prbcUpdateb(billing, bloodGroup, PRBC, bankID);
+		}
+		if (FFP > 0) {
+			await ffpUpdateb(billing, bloodGroup, FFP, bankID);
+		}
+		if (Cryoprecipitate > 0) {
+			await cryoUpdateb(billing, bloodGroup, Cryoprecipitate, bankID);
+		}
+		if (SPRBC > 0) {
+			await sprbcUpdateb(billing, bloodGroup, SPRBC, bankID);
+		}
+		if (SDPlatele > 0) {
+			sdplateUpdateb(billing, bloodGroup, SDPlatele, bankID);
+		}
+		if (SDPlasma > 0) {
+			await sdplasmaUpdateb(billing, bloodGroup, SDPlasma, bankID);
+		}
+
+		// bookings.forEach((item) => {
+		// 	billing.bookings.push(item);
+		// });
+		billing.isHospital = true;
+		await billing.save();
+		await request.delete();
+
+		return res.status(200).json(billing);
+	} catch (err) {
+		console.log(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+// component status functions
+const wbcStatusb = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.wbc['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.wbc['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.wbc['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.wbc['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.wbc['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.wbc['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.wbc['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.wbc['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const wholeStatusb = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.whole['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.whole['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.whole['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.whole['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.whole['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.whole['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.whole['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.whole['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const plateletStatusb = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.platelet['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.platelet['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.platelet['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.platelet['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.platelet['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.platelet['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.platelet['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.platelet['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const plasmaStatusb = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.plasma['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.plasma['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.plasma['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.plasma['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.plasma['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.plasma['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.plasma['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.plasma['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const prbcStatusb = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.rbc['A+Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.rbc['A-Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.rbc['B+Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.rbc['B-Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.rbc['AB+Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.rbc['AB-Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.rbc['O+Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.rbc['O-Ve'] < count) {
+				return false;
+			}
+			return true;
+		}
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const ffpStatusb = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.ffp['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.ffp['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.ffp['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.ffp['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.ffp['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.ffp['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.ffp['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.ffp['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const cryoStatusb = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.cryo['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.cryo['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.cryo['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.cryo['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.cryo['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.cryo['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.cryo['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.cryo['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const sprbcStatusb = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.sagm['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.sagm['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.sagm['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.sagm['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.sagm['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.sagm['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.sagm['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.sagm['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const sdplateStatusb = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.sdplate['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.sdplate['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.sdplate['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.sdplate['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.sdplate['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.sdplate['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.sdplate['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.sdplate['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+const sdplasmaStatusb = (inventory, bgroup, count) => {
+	try {
+		if (bgroup == 'A+Ve') {
+			if (inventory.sdplasma['A+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'A-Ve') {
+			if (inventory.sdplasma['A-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B+Ve') {
+			if (inventory.sdplasma['B+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'B-Ve') {
+			if (inventory.sdplasma['B-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB+Ve') {
+			if (inventory.sdplasma['AB+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'AB-Ve') {
+			if (inventory.sdplasma['AB-Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O+Ve') {
+			if (inventory.sdplasma['O+Ve'] < count) {
+				return false;
+			}
+		}
+		if (bgroup == 'O-Ve') {
+			if (inventory.sdplasma['O-Ve'] < count) {
+				return false;
+			}
+		}
+		return true;
+	} catch (err) {
+		console.error(err.message);
+	}
+};
+
+// update Inventory
+const wbcUpdateb = async (bgroup, bankID, count, billing) => {
+	try {
+		while (count != 0) {
+			const wbc = await wbcSchema
+				.find({ bankID, group: bgroup })
+				.sort('createdOn');
 			const { donor, segment, duration, ticket, bagNumber, createdOn } = wbc[0];
 			const booking = new Booking({
 				bankID,
@@ -802,7 +1806,7 @@ const wbcUpdate = async (bgroup, bankID, count, billing) => {
 		console.error(err.message);
 	}
 };
-const wholeUpdate = async (billing, bgroup, count, bankID) => {
+const wholeUpdateb = async (billing, bgroup, count, bankID) => {
 	try {
 		while (count != 0) {
 			const item = await wholeSchema
@@ -831,7 +1835,7 @@ const wholeUpdate = async (billing, bgroup, count, bankID) => {
 		console.error(err.message);
 	}
 };
-const plateletUpdate = async (billing, bgroup, count, bankID) => {
+const plateletUpdateb = async (billing, bgroup, count, bankID) => {
 	try {
 		while (count != 0) {
 			const item = await plateletSchema
@@ -860,7 +1864,7 @@ const plateletUpdate = async (billing, bgroup, count, bankID) => {
 		console.error(err.message);
 	}
 };
-const plasmaUpdate = async (billing, bgroup, count, bankID) => {
+const plasmaUpdateb = async (billing, bgroup, count, bankID) => {
 	try {
 		while (count != 0) {
 			const item = await plasmaSchema
@@ -879,6 +1883,7 @@ const plasmaUpdate = async (billing, bgroup, count, bankID) => {
 				bagNumber,
 				createdOn,
 			});
+			console.log(booking);
 			billing.bookings.push(booking.id);
 			await booking.save();
 			await plasmaSchema.findByIdAndDelete(item[0].id);
@@ -889,7 +1894,7 @@ const plasmaUpdate = async (billing, bgroup, count, bankID) => {
 		console.error(err.message);
 	}
 };
-const prbcUpdate = async (billing, bgroup, count, bankID) => {
+const prbcUpdateb = async (billing, bgroup, count, bankID) => {
 	try {
 		while (count != 0) {
 			const item = await prbcSchema
@@ -918,7 +1923,7 @@ const prbcUpdate = async (billing, bgroup, count, bankID) => {
 		console.error(err.message);
 	}
 };
-const ffpUpdate = async (billing, bgroup, count, bankID) => {
+const ffpUpdateb = async (billing, bgroup, count, bankID) => {
 	try {
 		while (count != 0) {
 			const item = await ffpSchema
@@ -947,7 +1952,7 @@ const ffpUpdate = async (billing, bgroup, count, bankID) => {
 		console.error(err.message);
 	}
 };
-const cryoUpdate = async (billing, bgroup, count, bankID) => {
+const cryoUpdateb = async (billing, bgroup, count, bankID) => {
 	try {
 		while (count != 0) {
 			const item = await cryoSchema
@@ -976,7 +1981,7 @@ const cryoUpdate = async (billing, bgroup, count, bankID) => {
 		console.error(err.message);
 	}
 };
-const sprbcUpdate = async (billing, bgroup, count, bankID) => {
+const sprbcUpdateb = async (billing, bgroup, count, bankID) => {
 	try {
 		while (count != 0) {
 			const item = await sagmSchema
@@ -1005,7 +2010,7 @@ const sprbcUpdate = async (billing, bgroup, count, bankID) => {
 		console.error(err.message);
 	}
 };
-const sdplateUpdate = async (billing, bgroup, count, bankID) => {
+const sdplateUpdateb = async (billing, bgroup, count, bankID) => {
 	try {
 		while (count != 0) {
 			const item = await sdplateSchema
@@ -1034,7 +2039,7 @@ const sdplateUpdate = async (billing, bgroup, count, bankID) => {
 		console.error(err.message);
 	}
 };
-const sdplasmaUpdate = async (billing, bgroup, count, bankID) => {
+const sdplasmaUpdateb = async (billing, bgroup, count, bankID) => {
 	try {
 		while (count != 0) {
 			const item = await sdplasmaSchema
@@ -1063,6 +2068,7 @@ const sdplasmaUpdate = async (billing, bgroup, count, bankID) => {
 		console.error(err.message);
 	}
 };
+
 //  @route /api/admin/campsheduleRequests/:req_id
 // @desc DELETE reject camp shedule request
 // @access Private - admin access only
@@ -1089,4 +2095,5 @@ exports.rejectDonorRequest = rejectDonorRequest;
 exports.getBloodRequests = getBloodRequests;
 exports.getBloodRequestById = getBloodRequestById;
 exports.acceptBloodRequest = acceptBloodRequest;
+exports.acceptHospitalBloodRequest = acceptHospitalBloodRequest;
 exports.rejectBloodRequest = rejectBloodRequest;

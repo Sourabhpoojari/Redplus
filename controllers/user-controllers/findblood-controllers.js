@@ -3,7 +3,6 @@ const BloodBank = require('../../models/bloodBank/bloodBank/profile'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
 	BloodRequest = require('../../models/bloodBank/request/bloodrequestSchema'),
 	{ validationResult } = require('express-validator'),
-	Profile = require('../../models/user/profileSchema'),
 	moment = require('moment');
 
 //  @route /api/user/findblood
@@ -1097,10 +1096,7 @@ const bloodRequestForm = async (req, res, next) => {
 		if (!errors.isEmpty()) {
 			return res.status(400).json({ errors: errors.array() });
 		}
-		// const profile = await Profile.findOne({ user: req.user.id });
-		// if (!profile) {
-		// 	return res.status(404).send('Please complete your Profile');
-		// }
+		
 		let request = await BloodRequest.findOne({ donor: req.user.id });
 		if (request) {
 			return res.status(422).send('Your Request is Already sent');
@@ -1108,10 +1104,6 @@ const bloodRequestForm = async (req, res, next) => {
 		const inventory = await Inventory.findOne({
 			bloodBankID: req.params.req_id,
 		});
-		if (!inventory) {
-			console.log(req.params.req_id);
-			return res.status(404).send('Inventory not found!');
-		}
 		// Check  inventory
 		if (WBC > 0) {
 			if (!wbcStatus(inventory, bloodGroup, WBC)) {
@@ -1237,7 +1229,7 @@ const wbcStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err);
+		console.error(err.message);
 	}
 };
 const wholeStatus = (inventory, bgroup, count) => {
@@ -1284,7 +1276,7 @@ const wholeStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err);
+		console.error(err.message);
 	}
 };
 const plateletStatus = (inventory, bgroup, count) => {
@@ -1300,9 +1292,7 @@ const plateletStatus = (inventory, bgroup, count) => {
 			}
 		}
 		if (bgroup == 'B+Ve') {
-			console.log(inventory);
 			if (inventory.platelet['B+Ve'] < count) {
-				console.log(inventory.platelet['B+Ve']);
 				return false;
 			}
 		}
@@ -1317,6 +1307,7 @@ const plateletStatus = (inventory, bgroup, count) => {
 			}
 		}
 		if (bgroup == 'AB-Ve') {
+			
 			if (inventory.platelet['AB-Ve'] < count) {
 				return false;
 			}
@@ -1333,7 +1324,7 @@ const plateletStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err);
+		console.error(err.message);
 	}
 };
 const plasmaStatus = (inventory, bgroup, count) => {
@@ -1380,7 +1371,7 @@ const plasmaStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err);
+		console.error(err.message);
 	}
 };
 const prbcStatus = (inventory, bgroup, count) => {
@@ -1389,53 +1380,45 @@ const prbcStatus = (inventory, bgroup, count) => {
 			if (inventory.rbc['A+Ve'] < count) {
 				return false;
 			}
-			return true;
 		}
 		if (bgroup == 'A-Ve') {
 			if (inventory.rbc['A-Ve'] < count) {
 				return false;
 			}
-			return true;
 		}
 		if (bgroup == 'B+Ve') {
 			if (inventory.rbc['B+Ve'] < count) {
 				return false;
 			}
-			return true;
 		}
 		if (bgroup == 'B-Ve') {
 			if (inventory.rbc['B-Ve'] < count) {
 				return false;
 			}
-			return true;
 		}
 		if (bgroup == 'AB+Ve') {
 			if (inventory.rbc['AB+Ve'] < count) {
-				console.log(inventory.rbc['AB+Ve']);
 				return false;
 			}
-			return true;
 		}
 		if (bgroup == 'AB-Ve') {
 			if (inventory.rbc['AB-Ve'] < count) {
 				return false;
 			}
-			return true;
 		}
 		if (bgroup == 'O+Ve') {
 			if (inventory.rbc['O+Ve'] < count) {
 				return false;
 			}
-			return true;
 		}
 		if (bgroup == 'O-Ve') {
 			if (inventory.rbc['O-Ve'] < count) {
 				return false;
 			}
-			return true;
 		}
+		return true;
 	} catch (err) {
-		console.error(err);
+		console.error(err.message);
 	}
 };
 const ffpStatus = (inventory, bgroup, count) => {
@@ -1482,7 +1465,7 @@ const ffpStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err);
+		console.error(err.message);
 	}
 };
 const cryoStatus = (inventory, bgroup, count) => {
@@ -1529,7 +1512,7 @@ const cryoStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err);
+		console.error(err.message);
 	}
 };
 const sprbcStatus = (inventory, bgroup, count) => {
@@ -1576,7 +1559,7 @@ const sprbcStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err);
+		console.error(err.message);
 	}
 };
 const sdplateStatus = (inventory, bgroup, count) => {
@@ -1623,7 +1606,7 @@ const sdplateStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err);
+		console.error(err.message);
 	}
 };
 const sdplasmaStatus = (inventory, bgroup, count) => {
@@ -1670,7 +1653,7 @@ const sdplasmaStatus = (inventory, bgroup, count) => {
 		}
 		return true;
 	} catch (err) {
-		console.error(err);
+		console.error(err.message);
 	}
 };
 

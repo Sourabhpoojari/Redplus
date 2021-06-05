@@ -116,7 +116,7 @@ const logIn = async (req, res, next) => {
 		jwt.sign(
 			payload,
 			config.get('jwtSecret'),
-			{ expiresIn: 3600 },
+			{ expiresIn: '7d' },
 			(err, token) => {
 				if (err) throw err;
 				res.status(200).json({ token });
@@ -173,12 +173,15 @@ const getBloodBankById = async (req, res, next) => {
 // @access Private - authorized bloodbank access only
 const getDonors = async (req, res, next) => {
 	try {
-		const donor = await Donation.find({ bloodBank: req.bloodBank.id }).populate('user',['phone']);
+		const donor = await Donation.find({ bloodBank: req.bloodBank.id }).populate(
+			'user',
+			['phone']
+		);
 		if (!donor) {
 			return res.status(400).json({ msg: 'No Donor Found' });
 		}
 		let i;
-		const arr = [];
+		const arr = []; 
 
 		for (i = 0; i < donor.length; i++) {
 			const profile = await UserProfile.findOne({
@@ -187,7 +190,7 @@ const getDonors = async (req, res, next) => {
 			const donorinfo = { donor: donor[i], profile };
 			arr.push(donorinfo);
 		}
-		
+
 		return res.status(200).json(arr);
 	} catch (err) {
 		console.log(err);
@@ -201,25 +204,23 @@ const getDonors = async (req, res, next) => {
 
 const getDonorsById = async (req, res, next) => {
 	try {
-		
-		const donation = await Donation.findOne({user:req.params.id})
-		.populate('primaryTest')
-		.populate('report');
-	
-	if (!donation) {
-		return res.status(400).json({ msg: 'Donation not found' });
-	}
-	
-	const profile = await UserProfile.findOne({ user: donation.user }).populate(
-		'user',
-		['phone']
-	);
+		const donation = await Donation.findOne({ user: req.params.id })
+			.populate('primaryTest')
+			.populate('report');
 
-	return res.status(200).json({
-		donation,
-		userInfo: profile,
-	});
-		
+		if (!donation) {
+			return res.status(400).json({ msg: 'Donation not found' });
+		}
+
+		const profile = await UserProfile.findOne({ user: donation.user }).populate(
+			'user',
+			['phone']
+		);
+
+		return res.status(200).json({
+			donation,
+			userInfo: profile,
+		});
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');

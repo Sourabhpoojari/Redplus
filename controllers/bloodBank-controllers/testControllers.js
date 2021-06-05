@@ -224,13 +224,13 @@ const whole = async (req, report, bgroup, segNumber, bagNumber) => {
 		component = await new WHOLE({
 			bankID: req.bloodBank.id,
 			donor: report.user,
+			donationDate: moment().format('DD-MM-YYYY'),
+			expiryDate: moment().add(35, 'd').format('DD-MM-YYYY'),
 			group: bgroup,
 			bagNumber,
 			segment: segNumber,
 		});
 
-		// moment
-		component.duration = moment.duration(35, 'days');
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -269,13 +269,13 @@ const platelet = async (req, report, bgroup, segNumber, bagNumber) => {
 		component = await new PLATELET({
 			bankID: req.bloodBank.id,
 			donor: report.user,
+			donationDate: moment().format('DD-MM-YYYY'),
+			expiryDate: moment().add(5, 'd').format('DD-MM-YYYY'),
 			group: bgroup,
 			bagNumber,
 			segment: segNumber,
 		});
 
-		// moment
-		component.duration = moment.duration(5, 'days');
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -315,13 +315,13 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 		component = await new WBC({
 			bankID: req.bloodBank.id,
 			donor: report.user,
+			donationDate: moment().format('DD-MM-YYYY'),
+			expiryDate: moment().add(42, 'd').format('DD-MM-YYYY'),
 			group: bgroup,
 			bagNumber,
 			segment: segNumber,
 		});
 		
-		// moment
-		component.duration = moment.duration(42, 'days');
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -361,13 +361,13 @@ const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 		component = await new PLASMA({
 			bankID: req.bloodBank.id,
 			donor: report.user,
+			donationDate: moment().format('DD-MM-YYYY'),
+			expiryDate: moment().add(1, 'y').format('DD-MM-YYYY'),
 			group: bgroup,
 			bagNumber,
 			segment: segNumber,
 		});
 		
-		// moment
-		component.duration = moment.duration(1, 'year');
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -407,13 +407,13 @@ const prbc = async (req, report, bgroup, segNumber, bagNumber) => {
 		component = await new RBC({
 			bankID: req.bloodBank.id,
 			donor: report.user,
+			donationDate: moment().format('DD-MM-YYYY'),
+			expiryDate: moment().add(42, 'd').format('DD-MM-YYYY'),
 			group: bgroup,
 			bagNumber,
 			segment: segNumber,
 		});
 
-		// moment
-		component.duration = moment.duration(42, 'days');
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -453,13 +453,14 @@ const ffp = async (req, report, bgroup, segNumber, bagNumber) => {
 		component = await new FFP({
 			bankID: req.bloodBank.id,
 			donor: report.user,
+			donationDate: moment().format('DD-MM-YYYY'),
+			expiryDate: moment().add(1, 'y').format('DD-MM-YYYY'),
 			group: bgroup,
 			bagNumber,
 			segment: segNumber,
 		});
 
-		// moment
-		component.duration = moment.duration(1, 'year');
+		
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -499,13 +500,14 @@ const cryo = async (req, report, bgroup, segNumber, bagNumber) => {
 		component = await new CRYOPRI({
 			bankID: req.bloodBank.id,
 			donor: report.user,
+			donationDate: moment().format('DD-MM-YYYY'),
+			expiryDate: moment().add(1, 'y').format('DD-MM-YYYY'),
 			group: bgroup,
 			bagNumber,
 			segment: segNumber,
 		});
 
-		// moment
-		component.duration = moment.duration(1, 'year');
+		
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -546,13 +548,14 @@ const sprbc = async (req, report, bgroup, segNumber, bagNumber) => {
 		component = await new SAGM({
 			bankID: req.bloodBank.id,
 			donor: report.user,
+			donationDate: moment().format('DD-MM-YYYY'),
+			expiryDate: moment().add(1, 'y').format('DD-MM-YYYY'),
 			group: bgroup,
 			segment: segNumber,
 			bagNumber,
 		});
 
-		// moment
-		component.duration = moment.duration(1, 'year');
+		
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -591,13 +594,14 @@ const sdplate = async (req, report, bgroup, segNumber, bagNumber) => {
 		component = await new SDPLATE({
 			bankID: req.bloodBank.id,
 			donor: report.user,
+			donationDate: moment().format('DD-MM-YYYY'),
+			expiryDate: moment().add(5, 'd').format('DD-MM-YYYY'),
 			group: bgroup,
 			segment: segNumber,
 			bagNumber,
 		});
 
-		// moment
-		component.duration = moment.duration(5, 'days');
+		
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -636,13 +640,14 @@ const sdplasma = async (req, report, bgroup, segNumber, bagNumber) => {
 		component = await new SDPLASMA({
 			bankID: req.bloodBank.id,
 			donor: report.user,
+			donationDate: moment().format('DD-MM-YYYY'),
+			expiryDate: moment().add(1, 'y').format('DD-MM-YYYY'),
 			group: bgroup,
 			bagNumber,
 			segment: segNumber,
 		});
 
-		// moment
-		component.duration = moment.duration(1, 'year');
+		
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -1103,9 +1108,8 @@ const testReportAndCredits = async (req, res, next) => {
 		donation.report = report.id;
 		await donation.save();
 		//let testreport;
-
+		// 
 		await request.delete();
-
 		return res.status(200).json(report);
 	} catch (err) {
 		console.error(err);
