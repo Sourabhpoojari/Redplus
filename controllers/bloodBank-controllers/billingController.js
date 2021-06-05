@@ -77,7 +77,7 @@ const getRequestById = async (req, res, next) => {
 				}
 				if (item.component == 'WholeBlood') {
 					data.price = price.WholeBlood;
-					sum += price.WBC;
+					sum += price.WholeBlood;
 				}
 				if (item.component == 'Platelet') {
 					data.price = price.Platelet;
