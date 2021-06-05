@@ -1,10 +1,9 @@
-const { request } = require('express'),
-	DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
+const DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
 	Profile = require('../../models/user/profileSchema'),
 	Health = require('../../models/user/healthInfoSchema'),
 	BloodRequest = require('../../models/bloodBank/request/bloodrequestSchema'),
 	BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
-	Booking = require('../../models/bloodBank/inventory/bookingSchema'),  
+	Booking = require('../../models/bloodBank/inventory/bookingSchema'),
 	wbcSchema = require('../../models/bloodBank/storage/wbc-schema'),
 	wholeSchema = require('../../models/bloodBank/storage/whole-schema'),
 	cryoSchema = require('../../models/bloodBank/storage/cryo-schema'),
@@ -16,17 +15,15 @@ const { request } = require('express'),
 	sdplasmaSchema = require('../../models/bloodBank/storage/sdplasma-schema'),
 	sdplateSchema = require('../../models/bloodBank/storage/sdplate-schema'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
-	User = require('../../models/user/userSchema'),
-	Hospital=require('../../models/hospital/hospital/profile');
+	Hospital = require('../../models/hospital/hospital/profile');
 
 //  @route /api/bloodBank/requests/donorRequests
 // @desc get Donor requests
 // @access Private - blood bank access only
 const getDonorRequests = async (req, res, next) => {
 	try {
-		
 		const request = await DonorRequest.find({
-			bloodBank: req.bloodBank.id
+			bloodBank: req.bloodBank.id,
 		}).populate('donor', ['name', 'phone', 'profileImage']);
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
@@ -114,11 +111,9 @@ const rejectDonorRequest = async (req, res, next) => {
 // @access Private - blood bank access only
 const getBloodRequests = async (req, res, next) => {
 	try {
-		const request = await BloodRequest.find().populate('donor', [
-			'name',
-			'phone',
-			'profileImage',
-		]).populate('hospital',['hospitalName']);
+		const request = await BloodRequest.find()
+			.populate('donor', ['name', 'phone', 'profileImage'])
+			.populate('hospital', ['hospitalName']);
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
@@ -132,36 +127,16 @@ const getBloodRequests = async (req, res, next) => {
 //  @route /api/bloodBank/requests/userbloodRequests/:id
 // @desc  get request info
 // @access bloodbank
-const getUserBloodRequestById = async (req, res, next) => {
+const getBloodRequestById = async (req, res, next) => {
 	try {
-		const request = await BloodRequest.findById(req.params.req_id).populate('donor', [
-			'name',
-			'phone',
-			'profileImage',
-		]);
+		const request = await BloodRequest.findById(req.params.req_id).populate(
+			'donor',
+			['name', 'phone', 'profileImage']
+		);
 		if (!request) {
-			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
 		return res.status(200).json(request);
-	} catch (err) {
-		console.log(err);
-		return res.status(500).send('Server error');
-	}
-};
-
-//  @route /api/bloodBank/requests/hospitalbloodRequests/:id
-// @desc  get request info
-// @access bloodbank
-
-const getHospitalBloodRequestById = async (req, res, next) => {
-	try {
-		const request = await BloodRequest.findById(req.params.req_id);
-		if (!request) {
-			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
-		}
-		 
-		 const hospitalinfo = await Hospital.findOne({hospital:request.hospital});
-		return res.status(200).json({request,hospitalinfo});
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');
@@ -307,7 +282,7 @@ const acceptBloodRequest = async (req, res, next) => {
 		// bookings.forEach((item) => {
 		// 	billing.bookings.push(item);
 		// });
-		
+
 		await billing.save();
 		await request.delete();
 
@@ -1173,7 +1148,6 @@ const sdplasmaUpdate = async (billing, bgroup, count, bankID) => {
 // @desc POST accept donation shedule request
 // @access Private - bloodbank access only
 const acceptHospitalBloodRequest = async (req, res, next) => {
-	
 	try {
 		const request = await BloodRequest.findById(req.params.req_id);
 		if (!request) {
@@ -1181,142 +1155,142 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 				.status(400)
 				.json({ errors: [{ msg: 'Blood Request not found!' }] });
 		}
-		if(request.isHospital){
-		const {
-			pateintName,
-			hospitalName,
-			age,
-			contactNumber,
-			bloodGroup,
-			RequestDate,
-			WBC,
-			WholeBlood,
-			Platelet,
-			Plasma,
-			PRBC,
-			FFP,
-			Cryoprecipitate,
-			SPRBC,
-			SDPlatele,
-			SDPlasma,
-		} = request;
-		let inventory = await Inventory.findOne({
-			bloodBankID: req.bloodBank.id,
-		});
-		const bankID = req.bloodBank.id;
-		// Check  inventory
-		if (WBC > 0) {
-			if (!wbcStatusb(inventory, bloodGroup, WBC)) {
-				return res.status(422).send('WBC out of stock!');
+		if (request.isHospital) {
+			const {
+				pateintName,
+				hospitalName,
+				age,
+				contactNumber,
+				bloodGroup,
+				RequestDate,
+				WBC,
+				WholeBlood,
+				Platelet,
+				Plasma,
+				PRBC,
+				FFP,
+				Cryoprecipitate,
+				SPRBC,
+				SDPlatele,
+				SDPlasma,
+			} = request;
+			let inventory = await Inventory.findOne({
+				bloodBankID: req.bloodBank.id,
+			});
+			const bankID = req.bloodBank.id;
+			// Check  inventory
+			if (WBC > 0) {
+				if (!wbcStatusb(inventory, bloodGroup, WBC)) {
+					return res.status(422).send('WBC out of stock!');
+				}
 			}
-		}
-		if (WholeBlood > 0) {
-			if (!wholeStatusb(inventory, bloodGroup, WholeBlood)) {
-				return res.status(422).send('WholeBlood out of stock!');
+			if (WholeBlood > 0) {
+				if (!wholeStatusb(inventory, bloodGroup, WholeBlood)) {
+					return res.status(422).send('WholeBlood out of stock!');
+				}
 			}
-		}
-		if (Platelet > 0) {
-			if (!plateletStatusb(inventory, bloodGroup, Platelet)) {
-				return res.status(422).send('Platelet out of stock!');
+			if (Platelet > 0) {
+				if (!plateletStatusb(inventory, bloodGroup, Platelet)) {
+					return res.status(422).send('Platelet out of stock!');
+				}
 			}
-		}
-		if (Plasma > 0) {
-			if (!plasmaStatusb(inventory, bloodGroup, Plasma)) {
-				return res.status(422).send('Plasma out of stock!');
+			if (Plasma > 0) {
+				if (!plasmaStatusb(inventory, bloodGroup, Plasma)) {
+					return res.status(422).send('Plasma out of stock!');
+				}
 			}
-		}
-		if (PRBC > 0) {
-			if (!prbcStatusb(inventory, bloodGroup, PRBC)) {
-				return res.status(422).send('PRBC out of stock!');
+			if (PRBC > 0) {
+				if (!prbcStatusb(inventory, bloodGroup, PRBC)) {
+					return res.status(422).send('PRBC out of stock!');
+				}
 			}
-		}
-		if (FFP > 0) {
-			if (!ffpStatusb(inventory, bloodGroup, FFP)) {
-				return res.status(422).send('FFP out of stock!');
+			if (FFP > 0) {
+				if (!ffpStatusb(inventory, bloodGroup, FFP)) {
+					return res.status(422).send('FFP out of stock!');
+				}
 			}
-		}
-		if (Cryoprecipitate > 0) {
-			if (!cryoStatusb(inventory, bloodGroup, Cryoprecipitate)) {
-				return res.status(422).send('Cryoprecipitate out of stock!');
+			if (Cryoprecipitate > 0) {
+				if (!cryoStatusb(inventory, bloodGroup, Cryoprecipitate)) {
+					return res.status(422).send('Cryoprecipitate out of stock!');
+				}
 			}
-		}
-		if (SPRBC > 0) {
-			if (!sprbcStatusb(inventory, bloodGroup, SPRBC)) {
-				return res.status(422).send('SPRBC out of stock!');
+			if (SPRBC > 0) {
+				if (!sprbcStatusb(inventory, bloodGroup, SPRBC)) {
+					return res.status(422).send('SPRBC out of stock!');
+				}
 			}
-		}
-		if (SDPlatele > 0) {
-			if (!sdplateStatusb(inventory, bloodGroup, SDPlatele)) {
-				return res.status(422).send('SDPlatele out of stock!');
+			if (SDPlatele > 0) {
+				if (!sdplateStatusb(inventory, bloodGroup, SDPlatele)) {
+					return res.status(422).send('SDPlatele out of stock!');
+				}
 			}
-		}
-		if (SDPlasma > 0) {
-			if (!sdplasmaStatusb(inventory, bloodGroup, SDPlasma)) {
-				return res.status(422).send('SDPlasma out of stock!');
+			if (SDPlasma > 0) {
+				if (!sdplasmaStatusb(inventory, bloodGroup, SDPlasma)) {
+					return res.status(422).send('SDPlasma out of stock!');
+				}
 			}
-		}
-		const billing = await new BillingRequest({
-			hospital: request.hospital,
-			bloodBank: req.bloodBank.id,
-			RequestDate,
-			contactNumber,
-			pateintName,
-			hospitalName,
-			age,
-			bloodGroup,
-			WBC,
-			WholeBlood,
-			Platelet,
-			Plasma,
-			PRBC,
-			FFP,
-			Cryoprecipitate,
-			SPRBC,
-			SDPlatele,
-			SDPlasma,
-		});
+			const billing = await new BillingRequest({
+				hospital: request.hospital,
+				bloodBank: req.bloodBank.id,
+				RequestDate,
+				contactNumber,
+				pateintName,
+				hospitalName,
+				age,
+				bloodGroup,
+				WBC,
+				WholeBlood,
+				Platelet,
+				Plasma,
+				PRBC,
+				FFP,
+				Cryoprecipitate,
+				SPRBC,
+				SDPlatele,
+				SDPlasma,
+			});
 
-		// update Inventory
-		if (WBC > 0) {
-			await wbcUpdateb(bloodGroup, bankID, WBC, billing);
-		}
-		if (WholeBlood > 0) {
-			await wholeUpdateb(billing, bloodGroup, WholeBlood, bankID);
-		}
-		if (Platelet > 0) {
-			await plateletUpdateb(billing, bloodGroup, Platelet, bankID);
-		}
-		if (Plasma > 0) {
-			await plasmaUpdateb(billing, bloodGroup, Plasma, bankID);
-		}
-		if (PRBC > 0) {
-			await prbcUpdateb(billing, bloodGroup, PRBC, bankID);
-		}
-		if (FFP > 0) {
-			await ffpUpdateb(billing, bloodGroup, FFP, bankID);
-		}
-		if (Cryoprecipitate > 0) {
-			await cryoUpdateb(billing, bloodGroup, Cryoprecipitate, bankID);
-		}
-		if (SPRBC > 0) {
-			await sprbcUpdateb(billing, bloodGroup, SPRBC, bankID);
-		}
-		if (SDPlatele > 0) {
-			sdplateUpdateb(billing, bloodGroup, SDPlatele, bankID);
-		}
-		if (SDPlasma > 0) {
-			await sdplasmaUpdateb(billing, bloodGroup, SDPlasma, bankID);
-		}
+			// update Inventory
+			if (WBC > 0) {
+				await wbcUpdateb(bloodGroup, bankID, WBC, billing);
+			}
+			if (WholeBlood > 0) {
+				await wholeUpdateb(billing, bloodGroup, WholeBlood, bankID);
+			}
+			if (Platelet > 0) {
+				await plateletUpdateb(billing, bloodGroup, Platelet, bankID);
+			}
+			if (Plasma > 0) {
+				await plasmaUpdateb(billing, bloodGroup, Plasma, bankID);
+			}
+			if (PRBC > 0) {
+				await prbcUpdateb(billing, bloodGroup, PRBC, bankID);
+			}
+			if (FFP > 0) {
+				await ffpUpdateb(billing, bloodGroup, FFP, bankID);
+			}
+			if (Cryoprecipitate > 0) {
+				await cryoUpdateb(billing, bloodGroup, Cryoprecipitate, bankID);
+			}
+			if (SPRBC > 0) {
+				await sprbcUpdateb(billing, bloodGroup, SPRBC, bankID);
+			}
+			if (SDPlatele > 0) {
+				sdplateUpdateb(billing, bloodGroup, SDPlatele, bankID);
+			}
+			if (SDPlasma > 0) {
+				await sdplasmaUpdateb(billing, bloodGroup, SDPlasma, bankID);
+			}
 
-		// bookings.forEach((item) => {
-		// 	billing.bookings.push(item);
-		// });
-		billing.isHospital=true;
-		await billing.save();
-		await request.delete();
+			// bookings.forEach((item) => {
+			// 	billing.bookings.push(item);
+			// });
+			billing.isHospital = true;
+			await billing.save();
+			await request.delete();
 
-		return res.status(200).json(billing);
-	}
+			return res.status(200).json(billing);
+		}
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');
@@ -2094,7 +2068,6 @@ const sdplasmaUpdateb = async (billing, bgroup, count, bankID) => {
 	}
 };
 
-
 //  @route /api/admin/campsheduleRequests/:req_id
 // @desc DELETE reject camp shedule request
 // @access Private - admin access only
@@ -2119,8 +2092,7 @@ exports.getDonorById = getDonorById;
 exports.acceptdonorRequest = acceptdonorRequest;
 exports.rejectDonorRequest = rejectDonorRequest;
 exports.getBloodRequests = getBloodRequests;
-exports.getUserBloodRequestById = getUserBloodRequestById;
+exports.getBloodRequestById = getBloodRequestById;
 exports.acceptBloodRequest = acceptBloodRequest;
-exports.acceptHospitalBloodRequest=acceptHospitalBloodRequest;
+exports.acceptHospitalBloodRequest = acceptHospitalBloodRequest;
 exports.rejectBloodRequest = rejectBloodRequest;
-exports.getHospitalBloodRequestById=getHospitalBloodRequestById;
