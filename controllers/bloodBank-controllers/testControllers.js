@@ -210,15 +210,16 @@ const whole = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			(await WHOLE.findOne({
+			console.log((await WHOLE.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 			})) ||
 			(await WHOLE.findOne({
 				bankID: req.bloodBank.id,
 				segment: segNumber,
-			}))
+			})))
 		) {
+			console.log("whole")
 			return -1;
 		}
 		component = await new WHOLE({
@@ -255,15 +256,16 @@ const platelet = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			(await PLATELET.findOne({
+			console.log((await PLATELET.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 			})) ||
 			(await PLATELET.findOne({
 				bankID: req.bloodBank.id,
 				segment: segNumber,
-			}))
+			})))
 		) {
+			console.log("platelet");
 			return -1;
 		}
 		component = await new PLATELET({
@@ -301,15 +303,16 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	try {
 		if (
 			
-			(await WBC.findOne({
+			console.log((await WBC.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 			})) ||
 			(await WBC.findOne({
 				bankID: req.bloodBank.id,
 				segment: segNumber,
-			}))
+			})))
 		) {
+			console.log("WBC")
 			return -1;
 		}
 		component = await new WBC({
@@ -347,15 +350,16 @@ const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 	try {
 		if (
 			
-			(await PLASMA.findOne({
+			console.log((await PLASMA.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 			})) ||
 			(await PLASMA.findOne({
 				bankID: req.bloodBank.id,
 				segment: segNumber,
-			}))
+			})))
 		) {
+			console.log("plasma");
 			return -1;
 		}
 		component = await new PLASMA({
@@ -393,15 +397,16 @@ const prbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	try {
 		if (
 			
-			(await RBC.findOne({
+			console.log((await RBC.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 			})) ||
 			(await RBC.findOne({
 				bankID: req.bloodBank.id,
 				segment: segNumber,
-			}))
+			})))
 		) {
+			console.log("prbc");
 			return -1;
 		}
 		component = await new RBC({
@@ -439,15 +444,16 @@ const ffp = async (req, report, bgroup, segNumber, bagNumber) => {
 	try {
 		if (
 			
-			(await FFP.findOne({
+			console.log((await FFP.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 			})) ||
 			(await FFP.findOne({
 				bankID: req.bloodBank.id,
 				segment: segNumber,
-			}))
+			})))
 		) {
+			console.log("ffp");
 			return -1;
 		}
 		component = await new FFP({
@@ -486,15 +492,16 @@ const cryo = async (req, report, bgroup, segNumber, bagNumber) => {
 	try {
 		if (
 			
-			(await CRYOPRI.findOne({
+			console.log((await CRYOPRI.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 			})) ||
 			(await CRYOPRI.findOne({
 				bankID: req.bloodBank.id,
 				segment: segNumber,
-			}))
+			})))
 		) {
+			console.log("cryo");
 			return -1;
 		}
 		component = await new CRYOPRI({
@@ -533,16 +540,17 @@ const sprbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	try {
 		if (
 			
-			(await SAGM.findOne({
+			console.log((await SAGM.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 			})) ||
 			(await SAGM.findOne({
 				bankID: req.bloodBank.id,
 				segment: segNumber,
-			}))
+			})))
 			
 		) {
+			console.log("sprbc")
 			return -1;
 		}
 		component = await new SAGM({
@@ -580,15 +588,16 @@ const sdplate = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			(await SDPLATE.findOne({
+			console.log((await SDPLATE.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 			})) ||
 			(await SDPLATE.findOne({
 				bankID: req.bloodBank.id,
 				segment: segNumber,
-			}))
+			})))
 		) {
+			console.log("sdplate");
 			return -1;
 		}
 		component = await new SDPLATE({
@@ -626,15 +635,16 @@ const sdplasma = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
-			(await SDPLASMA.findOne({
+			console.log((await SDPLASMA.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
 			})) ||
 			(await SDPLASMA.findOne({
 				bankID: req.bloodBank.id,
 				segment: segNumber,
-			}))
+			})))
 		) {
+			console.log("sdplasmaa");
 			return -1;
 		}
 		component = await new SDPLASMA({
@@ -1075,6 +1085,10 @@ const testReportAndCredits = async (req, res, next) => {
 				bloodBank: req.bloodBank.id,
 			}).sort('-donatedOn'),
 			donation = donationArray[0];
+		let profile = await Profile.findOne({donor:request.donor});
+		profile.credits = profile.credits + credits;
+		console.log(profile.credits);
+		await profile.save();
 		if (credits) donation.credits = credits;
 		// add expiry for credits
 		donation.expiryTicket = jwt.sign(
@@ -1108,9 +1122,7 @@ const testReportAndCredits = async (req, res, next) => {
 		donation.report = report.id;
 		await donation.save();
 		//let testreport;
-		let profile = await Profile.findOne({donor:request.donor}).select('credits');
-		profile += donation.credits;
-		profile.save();
+		
 		await request.delete();
 		return res.status(200).json(report);
 	} catch (err) {
