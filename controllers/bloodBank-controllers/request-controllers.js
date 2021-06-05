@@ -28,7 +28,6 @@ const getDonorRequests = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
-		console.log(request);
 		return res.status(200).json({ request });
 	} catch (err) {
 		console.error(err.message);
