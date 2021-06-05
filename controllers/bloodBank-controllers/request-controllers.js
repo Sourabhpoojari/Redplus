@@ -142,7 +142,7 @@ const getBloodRequestById = async (req, res, next) => {
 	}
 };
 
-//  @route /api/bloodbank/request/acceptdonationrequest/:req_id
+//  @route /api/bloodbank/request/acceptBloodRequest/:req_id
 // @desc POST accept donation shedule request
 // @access Private - bloodbank access only
 const acceptBloodRequest = async (req, res, next) => {
@@ -1154,142 +1154,143 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 				.status(400)
 				.json({ errors: [{ msg: 'Blood Request not found!' }] });
 		}
-		if (request.isHospital) {
-			const {
-				pateintName,
-				hospitalName,
-				age,
-				contactNumber,
-				bloodGroup,
-				RequestDate,
-				WBC,
-				WholeBlood,
-				Platelet,
-				Plasma,
-				PRBC,
-				FFP,
-				Cryoprecipitate,
-				SPRBC,
-				SDPlatele,
-				SDPlasma,
-			} = request;
-			let inventory = await Inventory.findOne({
-				bloodBankID: req.bloodBank.id,
-			});
-			const bankID = req.bloodBank.id;
-			// Check  inventory
-			if (WBC > 0) {
-				if (!wbcStatusb(inventory, bloodGroup, WBC)) {
-					return res.status(422).send('WBC out of stock!');
-				}
-			}
-			if (WholeBlood > 0) {
-				if (!wholeStatusb(inventory, bloodGroup, WholeBlood)) {
-					return res.status(422).send('WholeBlood out of stock!');
-				}
-			}
-			if (Platelet > 0) {
-				if (!plateletStatusb(inventory, bloodGroup, Platelet)) {
-					return res.status(422).send('Platelet out of stock!');
-				}
-			}
-			if (Plasma > 0) {
-				if (!plasmaStatusb(inventory, bloodGroup, Plasma)) {
-					return res.status(422).send('Plasma out of stock!');
-				}
-			}
-			if (PRBC > 0) {
-				if (!prbcStatusb(inventory, bloodGroup, PRBC)) {
-					return res.status(422).send('PRBC out of stock!');
-				}
-			}
-			if (FFP > 0) {
-				if (!ffpStatusb(inventory, bloodGroup, FFP)) {
-					return res.status(422).send('FFP out of stock!');
-				}
-			}
-			if (Cryoprecipitate > 0) {
-				if (!cryoStatusb(inventory, bloodGroup, Cryoprecipitate)) {
-					return res.status(422).send('Cryoprecipitate out of stock!');
-				}
-			}
-			if (SPRBC > 0) {
-				if (!sprbcStatusb(inventory, bloodGroup, SPRBC)) {
-					return res.status(422).send('SPRBC out of stock!');
-				}
-			}
-			if (SDPlatele > 0) {
-				if (!sdplateStatusb(inventory, bloodGroup, SDPlatele)) {
-					return res.status(422).send('SDPlatele out of stock!');
-				}
-			}
-			if (SDPlasma > 0) {
-				if (!sdplasmaStatusb(inventory, bloodGroup, SDPlasma)) {
-					return res.status(422).send('SDPlasma out of stock!');
-				}
-			}
-			const billing = await new BillingRequest({
-				hospital: request.hospital,
-				bloodBank: req.bloodBank.id,
-				RequestDate,
-				contactNumber,
-				pateintName,
-				hospitalName,
-				age,
-				bloodGroup,
-				WBC,
-				WholeBlood,
-				Platelet,
-				Plasma,
-				PRBC,
-				FFP,
-				Cryoprecipitate,
-				SPRBC,
-				SDPlatele,
-				SDPlasma,
-			});
-
-			// update Inventory
-			if (WBC > 0) {
-				await wbcUpdateb(bloodGroup, bankID, WBC, billing);
-			}
-			if (WholeBlood > 0) {
-				await wholeUpdateb(billing, bloodGroup, WholeBlood, bankID);
-			}
-			if (Platelet > 0) {
-				await plateletUpdateb(billing, bloodGroup, Platelet, bankID);
-			}
-			if (Plasma > 0) {
-				await plasmaUpdateb(billing, bloodGroup, Plasma, bankID);
-			}
-			if (PRBC > 0) {
-				await prbcUpdateb(billing, bloodGroup, PRBC, bankID);
-			}
-			if (FFP > 0) {
-				await ffpUpdateb(billing, bloodGroup, FFP, bankID);
-			}
-			if (Cryoprecipitate > 0) {
-				await cryoUpdateb(billing, bloodGroup, Cryoprecipitate, bankID);
-			}
-			if (SPRBC > 0) {
-				await sprbcUpdateb(billing, bloodGroup, SPRBC, bankID);
-			}
-			if (SDPlatele > 0) {
-				sdplateUpdateb(billing, bloodGroup, SDPlatele, bankID);
-			}
-			if (SDPlasma > 0) {
-				await sdplasmaUpdateb(billing, bloodGroup, SDPlasma, bankID);
-			}
-
-			// bookings.forEach((item) => {
-			// 	billing.bookings.push(item);
-			// });
-			billing.isHospital = true;
-			await billing.save();
-			await request.delete();
-
-			return res.status(200).json(billing);
+		if (!request.isHospital) {
+			return res.status(400).json({ msg: 'Not a hospital request' });
 		}
+		const {
+			patientName,
+			hospitalName,
+			age,
+			contactNumber,
+			bloodGroup,
+			RequestDate,
+			WBC,
+			WholeBlood,
+			Platelet,
+			Plasma,
+			PRBC,
+			FFP,
+			Cryoprecipitate,
+			SPRBC,
+			SDPlatele,
+			SDPlasma,
+		} = request;
+		let inventory = await Inventory.findOne({
+			bloodBankID: req.bloodBank.id,
+		});
+		const bankID = req.bloodBank.id;
+		// Check  inventory
+		if (WBC > 0) {
+			if (!wbcStatusb(inventory, bloodGroup, WBC)) {
+				return res.status(422).send('WBC out of stock!');
+			}
+		}
+		if (WholeBlood > 0) {
+			if (!wholeStatusb(inventory, bloodGroup, WholeBlood)) {
+				return res.status(422).send('WholeBlood out of stock!');
+			}
+		}
+		if (Platelet > 0) {
+			if (!plateletStatusb(inventory, bloodGroup, Platelet)) {
+				return res.status(422).send('Platelet out of stock!');
+			}
+		}
+		if (Plasma > 0) {
+			if (!plasmaStatusb(inventory, bloodGroup, Plasma)) {
+				return res.status(422).send('Plasma out of stock!');
+			}
+		}
+		if (PRBC > 0) {
+			if (!prbcStatusb(inventory, bloodGroup, PRBC)) {
+				return res.status(422).send('PRBC out of stock!');
+			}
+		}
+		if (FFP > 0) {
+			if (!ffpStatusb(inventory, bloodGroup, FFP)) {
+				return res.status(422).send('FFP out of stock!');
+			}
+		}
+		if (Cryoprecipitate > 0) {
+			if (!cryoStatusb(inventory, bloodGroup, Cryoprecipitate)) {
+				return res.status(422).send('Cryoprecipitate out of stock!');
+			}
+		}
+		if (SPRBC > 0) {
+			if (!sprbcStatusb(inventory, bloodGroup, SPRBC)) {
+				return res.status(422).send('SPRBC out of stock!');
+			}
+		}
+		if (SDPlatele > 0) {
+			if (!sdplateStatusb(inventory, bloodGroup, SDPlatele)) {
+				return res.status(422).send('SDPlatele out of stock!');
+			}
+		}
+		if (SDPlasma > 0) {
+			if (!sdplasmaStatusb(inventory, bloodGroup, SDPlasma)) {
+				return res.status(422).send('SDPlasma out of stock!');
+			}
+		}
+		const billing = await new BillingRequest({
+			hospital: request.hospital,
+			bloodBank: req.bloodBank.id,
+			RequestDate,
+			contactNumber,
+			patientName,
+			hospitalName,
+			age,
+			bloodGroup,
+			WBC,
+			WholeBlood,
+			Platelet,
+			Plasma,
+			PRBC,
+			FFP,
+			Cryoprecipitate,
+			SPRBC,
+			SDPlatele,
+			SDPlasma,
+		});
+
+		// update Inventory
+		if (WBC > 0) {
+			await wbcUpdateb(bloodGroup, bankID, WBC, billing);
+		}
+		if (WholeBlood > 0) {
+			await wholeUpdateb(billing, bloodGroup, WholeBlood, bankID);
+		}
+		if (Platelet > 0) {
+			await plateletUpdateb(billing, bloodGroup, Platelet, bankID);
+		}
+		if (Plasma > 0) {
+			await plasmaUpdateb(billing, bloodGroup, Plasma, bankID);
+		}
+		if (PRBC > 0) {
+			await prbcUpdateb(billing, bloodGroup, PRBC, bankID);
+		}
+		if (FFP > 0) {
+			await ffpUpdateb(billing, bloodGroup, FFP, bankID);
+		}
+		if (Cryoprecipitate > 0) {
+			await cryoUpdateb(billing, bloodGroup, Cryoprecipitate, bankID);
+		}
+		if (SPRBC > 0) {
+			await sprbcUpdateb(billing, bloodGroup, SPRBC, bankID);
+		}
+		if (SDPlatele > 0) {
+			sdplateUpdateb(billing, bloodGroup, SDPlatele, bankID);
+		}
+		if (SDPlasma > 0) {
+			await sdplasmaUpdateb(billing, bloodGroup, SDPlasma, bankID);
+		}
+
+		// bookings.forEach((item) => {
+		// 	billing.bookings.push(item);
+		// });
+		billing.isHospital = true;
+		await billing.save();
+		await request.delete();
+
+		return res.status(200).json(billing);
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');

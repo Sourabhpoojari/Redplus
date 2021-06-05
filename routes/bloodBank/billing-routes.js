@@ -3,6 +3,7 @@ const router = require('express').Router(),
 	updateInventory = require('../../middleware/inventory'),
 	billingController = require('../../controllers/bloodBank-controllers/billingController');
 
-router.get('/', auth, billingController.getBillingRequests);
+router.get('/', auth, updateInventory, billingController.getBillingRequests);
+router.get('/:id', auth, billingController.getRequestById);
 router.delete('/:id', auth, updateInventory, billingController.rejectRequest);
 module.exports = router;
