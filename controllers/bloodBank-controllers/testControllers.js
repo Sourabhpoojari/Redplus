@@ -1085,7 +1085,10 @@ const testReportAndCredits = async (req, res, next) => {
 				bloodBank: req.bloodBank.id,
 			}).sort('-donatedOn'),
 			donation = donationArray[0];
+
+		//profile updation Credit and Blood Group
 		let profile = await Profile.findOne({donor:request.donor});
+		profile.bloodGroup = bgroup;
 		profile.credits = profile.credits + credits;
 		console.log(profile.credits);
 		await profile.save();
