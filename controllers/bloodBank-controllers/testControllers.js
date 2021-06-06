@@ -1058,6 +1058,13 @@ const testReportAndCredits = async (req, res, next) => {
 			}).sort('-donatedOn'),
 			donation = donationArray[0];
 		if (credits) donation.credits = credits;
+
+		//profile updation Credit and Blood Group
+		let profile = await Profile.findOne({ user: request.user });
+		profile.bloodGroup = bgroup;
+		profile.credits = profile.credits + credits;
+		await profile.save();
+
 		// add expiry for credits
 		donation.expiryTicket = jwt.sign(
 			{
@@ -1089,13 +1096,6 @@ const testReportAndCredits = async (req, res, next) => {
 		await report.save();
 		donation.report = report.id;
 		await donation.save();
-
-		//profile updation Credit and Blood Group
-		let profile = await Profile.findOne({ donor: request.donor });
-		profile.bloodGroup = bgroup;
-		profile.credits = profile.credits + credits;
-		await profile.save();
-		//"WholeBlood","Platelet","WBC","Plasma","PRBC","FFP","Cryoprecipitate","SPRBC","SDPlatelet","SDPlasma"
 		await request.delete();
 		return res.status(200).json(report);
 	} catch (err) {
