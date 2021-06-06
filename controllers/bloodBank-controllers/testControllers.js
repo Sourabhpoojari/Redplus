@@ -1138,6 +1138,7 @@ const testReportAndCredits = async (req, res, next) => {
 		console.log(profile.credits);
 		await profile.save();
 		//"WholeBlood","Platelet","WBC","Plasma","PRBC","FFP","Cryoprecipitate","SPRBC","SDPlatelet","SDPlasma"
+		
 		await request.delete();
 		return res.status(200).json(report);
 	} catch (err) {

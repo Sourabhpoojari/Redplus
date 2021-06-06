@@ -24,18 +24,13 @@ const getProfile = async (req, res, next) => {
 			'user',
 			['phone']
 		);
-        
-		
-		
+
 		if (!profile) {
 			return res.status(400).json({ msg: 'Profile not found!' });
 		} else {
-			
-
 			return res.json(profile);
 		}
-	}
-	 catch (err) {
+	} catch (err) {
 		console.error(err.message);
 		if (err.kind == 'ObjectId') {
 			return res.status(400).json({ msg: 'Profile not found!' });
@@ -99,12 +94,10 @@ const createProfile = async (req, res, next) => {
 		return res.status(422).json({ errors: errors });
 	}
 
-     
 	if (!validator.isValidNumber(aadhaar)) {
 		return res.status(422).send('Invalid aadhar number');
-        
 	}
-    
+
 	let profile;
 	try {
 		const profileFields = {
@@ -130,7 +123,7 @@ const createProfile = async (req, res, next) => {
 				phone: bPhone,
 			};
 		}
-        
+
 		if (profileImage) {
 			let user = await User.findById(req.user.id);
 			user.profileImage = profileImage;

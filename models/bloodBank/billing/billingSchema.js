@@ -49,6 +49,7 @@ const billingSchema = mongoose.Schema({
 	},
 	credits: {
 		type: Number,
+		default: 0,
 	},
 	grandTotal: {
 		type: Number,
