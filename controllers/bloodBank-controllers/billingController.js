@@ -1,5 +1,6 @@
 const BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
 	Profile = require('../../models/user/profileSchema'),
+	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
 	User = require('../../models/user/userSchema'),
 	Billing = require('../../models/bloodBank/billing/billingSchema'),
 	Pricing = require('../../models/bloodBank/bloodBank/pricingSchema'),
@@ -55,6 +56,9 @@ const getRequestById = async (req, res, next) => {
 
 		let bill = await Billing.findOne({ request: req.params.id });
 		if (!bill) {
+			const profile = await BloodBankProfile.findOne({
+				bloodBank: req.bloodBank.id,
+			});
 			const price = await Pricing.findOne({ bloodBank: req.bloodBank.id });
 			bill = await new Billing({
 				request: req.params.id,
@@ -65,6 +69,7 @@ const getRequestById = async (req, res, next) => {
 				patientName,
 				age,
 				bloodGroup,
+				bloodBankProfile: profile.id,
 			});
 			let sum = 0;
 			bookings.forEach((item) => {
@@ -297,16 +302,20 @@ const getCredits = async (req, res, next) => {
 	try {
 		const user = await User.findOne({ phone: req.params.phone });
 		const credits = await Profile.findOne({ user: user.id }).select('credits');
-		if (!user || !profile) {
+		if (!user || !credits) {
 			return res.status(404).json({ msg: 'User not found' });
 		}
-		console.log(credits);
 		return res.status(200).json(credits);
 	} catch (err) {
 		console.error(err);
 		return res.status(500).send('Server error');
 	}
 };
+
+//  @route POST /api/bloodBank/billing/:id/useCredits/:phone
+// @desc  use credits
+// @access Private blood bank access only
+const useCredits = async (req, res, next) => {};
 
 exports.getBillingRequests = getBillingRequests;
 exports.rejectRequest = rejectRequest;

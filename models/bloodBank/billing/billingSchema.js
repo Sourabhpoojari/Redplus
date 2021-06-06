@@ -17,6 +17,10 @@ const billingSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Hospital',
 	},
+	bloodBankProfile: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'BloodBankProfile',
+	},
 	isHospital: {
 		type: Boolean,
 		default: false,

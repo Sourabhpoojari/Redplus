@@ -784,43 +784,43 @@ const testReportAndCredits = async (req, res, next) => {
 		//  ###############
 		components.map(async (component) => {
 			if (component == 'WholeBlood') {
-				credits = 20;
+				credits += 20;
 				WHOLEBLOOD_STATUS = 1;
 			}
 			if (component === 'Platelet') {
-				credits = 20;
+				credits += 20;
 				PLATELET_STATUS = 1;
 			}
 			if (component === 'WBC') {
-				credits = 20;
+				credits += 20;
 				WBC_STATUS = 1;
 			}
 			if (component === 'Plasma') {
-				credits = 20;
+				credits += 20;
 				PLASMA_STATUS = 1;
 			}
 			if (component === 'PRBC') {
-				credits = 20;
+				credits += 20;
 				PRBC_STATUS = 1;
 			}
 			if (component === 'FFP') {
-				credits = 20;
+				credits += 20;
 				FFP_STATUS = 1;
 			}
 			if (component === 'Cryoprecipitate') {
-				credits = 20;
+				credits += 20;
 				CRYO_STATUS = 1;
 			}
 			if (component === 'SPRBC') {
-				credits = 20;
+				credits += 20;
 				SPRBC_STATUS = 1;
 			}
 			if (component === 'SDPlatelet') {
-				credits = 20;
+				credits += 20;
 				SDPLATELET_STATUS = 1;
 			}
 			if (component === 'SDPlasma') {
-				credits = 20;
+				credits += 20;
 				SDPLASMA_STATUS = 1;
 			}
 		});
