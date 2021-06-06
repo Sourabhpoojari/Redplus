@@ -17,6 +17,10 @@ const billingSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Hospital',
 	},
+	bloodBankProfile: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'BloodBankProfile',
+	},
 	isHospital: {
 		type: Boolean,
 		default: false,
@@ -49,6 +53,7 @@ const billingSchema = mongoose.Schema({
 	},
 	credits: {
 		type: Number,
+		default: 0,
 	},
 	grandTotal: {
 		type: Number,

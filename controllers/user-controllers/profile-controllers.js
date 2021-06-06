@@ -5,8 +5,7 @@ const Profile = require('../../models/user/profileSchema'),
 	{ validationResult } = require('express-validator'),
 	CLOUDINARY_API_KEY = config.get('CLOUDINARY_API_KEY'),
 	User = require('../../models/user/userSchema'),
-	CLOUDINARY_SECRET = config.get('CLOUDINARY_SECRET'),
-    Credit = require('../../models/user/donationSchema');
+	CLOUDINARY_SECRET = config.get('CLOUDINARY_SECRET');
 
 // set-up cloudinary
 cloudinary.config({
@@ -25,31 +24,13 @@ const getProfile = async (req, res, next) => {
 			'user',
 			['phone']
 		);
-        const credits = await Credit.find({ user: req.user.id }).sort('-donationDate');
 
-		if(!credits){
-        	credits=0;
-        }
-		//sum of credits
-		let creditpoints=0,i;
-			for (i = 0; i < credits.length; i++) {
-				if(credits[i].expiryTicket){
-					creditpoints +=credits[i].credits;
-				}
-			}
-        if(!credits){
-        	credits=0;
-        }
-		
 		if (!profile) {
 			return res.status(400).json({ msg: 'Profile not found!' });
 		} else {
-			
-
-			return res.json({profile,creditpoints});
+			return res.json(profile);
 		}
-	}
-	 catch (err) {
+	} catch (err) {
 		console.error(err.message);
 		if (err.kind == 'ObjectId') {
 			return res.status(400).json({ msg: 'Profile not found!' });
@@ -113,12 +94,10 @@ const createProfile = async (req, res, next) => {
 		return res.status(422).json({ errors: errors });
 	}
 
-     
 	if (!validator.isValidNumber(aadhaar)) {
 		return res.status(422).send('Invalid aadhar number');
-        
 	}
-    
+
 	let profile;
 	try {
 		const profileFields = {
@@ -144,7 +123,7 @@ const createProfile = async (req, res, next) => {
 				phone: bPhone,
 			};
 		}
-        
+
 		if (profileImage) {
 			let user = await User.findById(req.user.id);
 			user.profileImage = profileImage;

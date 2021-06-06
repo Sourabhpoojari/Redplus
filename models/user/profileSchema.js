@@ -43,6 +43,14 @@ const profileSchema = mongoose.Schema({
 	bloodGroup: {
 		type: String,
 	},
+	credits: {
+		type: Number,
+		default: 0,
+	},
+	isCreditUsageVerified: {
+		type: Boolean,
+		default: false,
+	},
 	createdOn: {
 		type: Date,
 		default: Date.now(),

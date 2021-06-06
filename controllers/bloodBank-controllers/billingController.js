@@ -1,4 +1,7 @@
 const BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
+	Profile = require('../../models/user/profileSchema'),
+	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
+	User = require('../../models/user/userSchema'),
 	Billing = require('../../models/bloodBank/billing/billingSchema'),
 	Pricing = require('../../models/bloodBank/bloodBank/pricingSchema'),
 	Booking = require('../../models/bloodBank/inventory/bookingSchema'),
@@ -10,6 +13,12 @@ const BillingRequest = require('../../models/bloodBank/request/billingRequestSch
 	plateletSchema = require('../../models/bloodBank/storage/platelet-schema'),
 	prbcSchema = require('../../models/bloodBank/storage/rbc-schema'),
 	sagmSchema = require('../../models/bloodBank/storage/sagm-schema'),
+	config = require('config'),
+	accountSid = config.get('TWILIO_ACCOUNT_SID1'),
+	authToken = config.get('TWILIO_AUTH_TOKEN'),
+	sid = config.get('TWILIO_SID'),
+	{ validationResult } = require('express-validator'),
+	client = require('twilio')(accountSid, authToken),
 	sdplasmaSchema = require('../../models/bloodBank/storage/sdplasma-schema'),
 	moment = require('moment'),
 	sdplateSchema = require('../../models/bloodBank/storage/sdplate-schema');
@@ -53,6 +62,9 @@ const getRequestById = async (req, res, next) => {
 
 		let bill = await Billing.findOne({ request: req.params.id });
 		if (!bill) {
+			const profile = await BloodBankProfile.findOne({
+				bloodBank: req.bloodBank.id,
+			});
 			const price = await Pricing.findOne({ bloodBank: req.bloodBank.id });
 			bill = await new Billing({
 				request: req.params.id,
@@ -63,6 +75,7 @@ const getRequestById = async (req, res, next) => {
 				patientName,
 				age,
 				bloodGroup,
+				bloodBankProfile: profile.id,
 			});
 			let sum = 0;
 			bookings.forEach((item) => {
@@ -301,6 +314,151 @@ const rejectRequest = async (req, res, next) => {
 	}
 };
 
+//  @route /api/bloodBank/billing/:id/getCredits/:phone
+// @desc  get credits
+// @access Private blood bank access only
+const getCredits = async (req, res, next) => {
+	try {
+		const user = await User.findOne({ phone: req.params.phone });
+		const credits = await Profile.findOne({ user: user.id }).select('credits');
+		if (!user || !credits) {
+			return res.status(404).json({ msg: 'User not found' });
+		}
+		return res.status(200).json(credits);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+//  @route POST /api/bloodBank/billing/:id/useCredits
+// @desc  use credits
+// @access Private blood bank access only
+const sendOtp = async (req, res, next) => {
+	const { phone } = req.body;
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+	try {
+		const user = await User.findOne({ phone });
+		const { credits } = await Profile.findOne({ user: user.id }).select(
+			'credits'
+		);
+		if (credits == 0) {
+			return res
+				.status(400)
+				.json({ msg: "You don't have enough credits to use" });
+		}
+		client.verify
+			.services(sid)
+			.verifications.create({ to: phone, channel: 'sms' })
+			.then((verification) => {
+				console.log(verification);
+
+				return res.status(200).json(verification.status);
+			})
+			.catch((err) => {
+				console.error(err);
+				return res.status(408).send('OTP Problem');
+			});
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+//  @route POST /api/bloodBank/billing/:id/verifyOtp
+// @desc  verify otp to use credits
+// @access Private blood bank access only
+const verifyOtp = async (req, res, next) => {
+	const { phone, code } = req.body;
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+	try {
+		const user = await User.findOne({ phone });
+		let profile = await Profile.findOne({ user: user.id });
+		client.verify
+			.services(sid)
+			.verificationChecks.create({ to: phone, code: code })
+			.then((verification_check) => {
+				if (verification_check.status == 'approved') {
+					profile.isCreditUsageVerified = true;
+					profile.save();
+					return res.status(200).json(verification_check.status);
+				}
+				return res.status(408).send('Incorrect OTP');
+			})
+			.catch((err) => {
+				console.error(err);
+				return res.status(408).send('Incorrect OTP');
+			});
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+//  @route POST /api/bloodBank/billing/:id
+// @desc  verify otp to use credits
+// @access Private blood bank access only
+const useCredits = async (req, res, next) => {
+	const { phone } = req.body;
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+	try {
+		let credits = 0;
+		const user = await User.findOne({ phone });
+		let profile = await Profile.findOne({ user: user.id });
+		let bill = await Billing.findOne({
+			request: req.params.id,
+			bloodBank: req.bloodBank.id,
+		});
+		const request = await BillingRequest.findById(req.params.id);
+		if (!profile.isCreditUsageVerified) {
+			return res.status(401).json({ msg: 'Authorization denied' });
+		}
+		if (profile.credits == 0) {
+			return res
+				.status(400)
+				.json({ msg: "You don't have enough credits to use" });
+		}
+		if (profile.credits > 500) {
+			credits = 500;
+		} else {
+			credits = profile.credits;
+		}
+		if (bill.subTotal >= credits) {
+			bill.grandTotal = bill.subTotal - credits;
+		} else {
+			bill.grandTotal = 0;
+			credits = bill.subTotal;
+		}
+		profile.credits -= credits;
+		bill.credits = credits;
+		profile.isCreditUsageVerified = false;
+		await profile.save();
+		await bill.save();
+		const { bookings } = request;
+		bookings.forEach(async (item) => {
+			await Booking.findByIdAndDelete(item);
+		});
+		await request.delete();
+		return res.status(200).json(bill);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 exports.getBillingRequests = getBillingRequests;
 exports.rejectRequest = rejectRequest;
 exports.getRequestById = getRequestById;
+exports.getCredits = getCredits;
+exports.sendOtp = sendOtp;
+exports.verifyOtp = verifyOtp;
+exports.useCredits = useCredits;
