@@ -321,7 +321,7 @@ const getCredits = async (req, res, next) => {
 //  @route POST /api/bloodBank/billing/:id/useCredits
 // @desc  use credits
 // @access Private blood bank access only
-const useCredits = async (req, res, next) => {
+const sendOtp = async (req, res, next) => {
 	const { phone } = req.body;
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
@@ -388,13 +388,63 @@ const verifyOtp = async (req, res, next) => {
 	}
 };
 
-//  @route POST /api/bloodBank/billing/:id/verifyOtp
+//  @route POST /api/bloodBank/billing/:id
 // @desc  verify otp to use credits
 // @access Private blood bank access only
+const useCredits = async (req, res, next) => {
+	const { phone } = req.body;
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+	try {
+		let credits = 0;
+		const user = await User.findOne({ phone });
+		let profile = await Profile.findOne({ user: user.id });
+		let bill = await Billing.findOne({
+			request: req.params.id,
+			bloodBank: req.bloodBank.id,
+		});
+		const request = await BillingRequest.findById(req.params.id);
+		if (!profile.isCreditUsageVerified) {
+			return res.status(401).json({ msg: 'Authorization denied' });
+		}
+		if (profile.credits == 0) {
+			return res
+				.status(400)
+				.json({ msg: "You don't have enough credits to use" });
+		}
+		if (profile.credits > 500) {
+			credits = 500;
+		} else {
+			credits = profile.credits;
+		}
+		if (bill.subTotal >= credits) {
+			bill.grandTotal = bill.subTotal - credits;
+		} else {
+			bill.grandTotal = 0;
+			credits = bill.subTotal;
+		}
+		profile.credits -= credits;
+		bill.credits = credits;
+		await profile.save();
+		await bill.save();
+		const { bookings } = request;
+		bookings.forEach(async (item) => {
+			await Booking.findByIdAndDelete(item);
+		});
+		await request.delete();
+		return res.status(200).json(bill);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
 
 exports.getBillingRequests = getBillingRequests;
 exports.rejectRequest = rejectRequest;
 exports.getRequestById = getRequestById;
 exports.getCredits = getCredits;
-exports.useCredits = useCredits;
+exports.sendOtp = sendOtp;
 exports.verifyOtp = verifyOtp;
+exports.useCredits = useCredits;

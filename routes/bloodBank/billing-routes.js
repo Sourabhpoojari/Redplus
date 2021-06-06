@@ -14,7 +14,7 @@ router.post(
 		.isLength({ min: 13, max: 13 })
 		.isMobilePhone(),
 	auth,
-	billingController.useCredits
+	billingController.sendOtp
 );
 router.post(
 	'/:id/verifyOtp',
@@ -24,6 +24,14 @@ router.post(
 	check('code', 'Enter valid otp').isLength({ min: 6, max: 6 }),
 	auth,
 	billingController.verifyOtp
+);
+router.post(
+	'/:id',
+	check('phone', 'Enter a valid phone number')
+		.isLength({ min: 13, max: 13 })
+		.isMobilePhone(),
+	auth,
+	billingController.useCredits
 );
 
 module.exports = router;
