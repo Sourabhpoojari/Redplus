@@ -6,4 +6,5 @@ const router = require('express').Router(),
 router.get('/', auth, updateInventory, billingController.getBillingRequests);
 router.get('/:id', auth, billingController.getRequestById);
 router.delete('/:id', auth, updateInventory, billingController.rejectRequest);
+router.get('/:id/getCredits/:phone', auth, billingController.getCredits);
 module.exports = router;

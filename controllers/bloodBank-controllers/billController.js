@@ -24,15 +24,13 @@ const getBills = async (req, res, next) => {
 // @access Private
 const getBillById = async (req, res, next) => {
 	try {
-		const bill = await Billing.findById(req.params.id).populate('donor', [
-			'profileImage',
-			'phone',
-			'name',
-		]);
+		const bill = await Billing.findById(req.params.id)
+			.populate('donor', ['profileImage', 'phone', 'name'])
+			.populate('bloodBankProfile');
 		if (!bill) {
 			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
-		return res.status(500).send('Server error');
+		return res.status(200).json(bill);
 	} catch (err) {
 		console.error(err);
 		return res.status(500).send('Server error');
