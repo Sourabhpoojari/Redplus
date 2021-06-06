@@ -238,7 +238,6 @@ const whole = async (req, report, bgroup, segNumber, bagNumber) => {
 				expiresIn: '35d',
 			}
 		);
-		console.log(component);
 		await component.save();
 	} catch (err) {
 		console.error(err);
@@ -328,7 +327,6 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 				expiresIn: '42d',
 			}
 		);
-		console.log(component);
 		await component.save();
 	} catch (err) {
 		console.error(err);
@@ -1091,12 +1089,13 @@ const testReportAndCredits = async (req, res, next) => {
 		await report.save();
 		donation.report = report.id;
 		await donation.save();
-		//let testreport;
-		let profile = await Profile.findOne({ donor: request.donor }).select(
-			'credits'
-		);
-		profile += donation.credits;
-		profile.save();
+
+		//profile updation Credit and Blood Group
+		let profile = await Profile.findOne({ donor: request.donor });
+		profile.bloodGroup = bgroup;
+		profile.credits = profile.credits + credits;
+		await profile.save();
+		//"WholeBlood","Platelet","WBC","Plasma","PRBC","FFP","Cryoprecipitate","SPRBC","SDPlatelet","SDPlasma"
 		await request.delete();
 		return res.status(200).json(report);
 	} catch (err) {

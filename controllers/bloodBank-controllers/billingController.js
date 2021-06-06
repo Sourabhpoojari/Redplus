@@ -388,6 +388,10 @@ const verifyOtp = async (req, res, next) => {
 	}
 };
 
+//  @route POST /api/bloodBank/billing/:id/verifyOtp
+// @desc  verify otp to use credits
+// @access Private blood bank access only
+
 exports.getBillingRequests = getBillingRequests;
 exports.rejectRequest = rejectRequest;
 exports.getRequestById = getRequestById;
