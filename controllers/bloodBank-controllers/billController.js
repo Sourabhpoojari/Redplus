@@ -32,7 +32,7 @@ const getBillById = async (req, res, next) => {
 		if (!bill) {
 			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
-		return res.status(500).send('Server error');
+		return res.status(200).json(bill);
 	} catch (err) {
 		console.error(err);
 		return res.status(500).send('Server error');

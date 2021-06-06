@@ -1,4 +1,6 @@
 const BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
+	Profile = require('../../models/user/profileSchema'),
+	User = require('../../models/user/userSchema'),
 	Billing = require('../../models/bloodBank/billing/billingSchema'),
 	Pricing = require('../../models/bloodBank/bloodBank/pricingSchema'),
 	Booking = require('../../models/bloodBank/inventory/bookingSchema'),
@@ -288,6 +290,25 @@ const rejectRequest = async (req, res, next) => {
 	}
 };
 
+//  @route /api/bloodBank/billing/:id/getCredits/:phone
+// @desc  get credits
+// @access Private blood bank access only
+const getCredits = async (req, res, next) => {
+	try {
+		const user = await User.findOne({ phone: req.params.phone });
+		const credits = await Profile.findOne({ user: user.id }).select('credits');
+		if (!user || !profile) {
+			return res.status(404).json({ msg: 'User not found' });
+		}
+		console.log(credits);
+		return res.status(200).json(credits);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 exports.getBillingRequests = getBillingRequests;
 exports.rejectRequest = rejectRequest;
 exports.getRequestById = getRequestById;
+exports.getCredits = getCredits;
