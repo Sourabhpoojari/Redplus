@@ -13,6 +13,12 @@ const BillingRequest = require('../../models/bloodBank/request/billingRequestSch
 	plateletSchema = require('../../models/bloodBank/storage/platelet-schema'),
 	prbcSchema = require('../../models/bloodBank/storage/rbc-schema'),
 	sagmSchema = require('../../models/bloodBank/storage/sagm-schema'),
+	config = require('config'),
+	accountSid = config.get('TWILIO_ACCOUNT_SID1'),
+	authToken = config.get('TWILIO_AUTH_TOKEN'),
+	sid = config.get('TWILIO_SID'),
+	{ validationResult } = require('express-validator'),
+	client = require('twilio')(accountSid, authToken),
 	sdplasmaSchema = require('../../models/bloodBank/storage/sdplasma-schema'),
 	moment = require('moment'),
 	sdplateSchema = require('../../models/bloodBank/storage/sdplate-schema');
@@ -312,12 +318,79 @@ const getCredits = async (req, res, next) => {
 	}
 };
 
-//  @route POST /api/bloodBank/billing/:id/useCredits/:phone
+//  @route POST /api/bloodBank/billing/:id/useCredits
 // @desc  use credits
 // @access Private blood bank access only
-const useCredits = async (req, res, next) => {};
+const useCredits = async (req, res, next) => {
+	const { phone } = req.body;
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+	try {
+		const user = await User.findOne({ phone });
+		const { credits } = await Profile.findOne({ user: user.id }).select(
+			'credits'
+		);
+		if (credits == 0) {
+			return res
+				.status(400)
+				.json({ msg: "You don't have enough credits to use" });
+		}
+		client.verify
+			.services(sid)
+			.verifications.create({ to: phone, channel: 'sms' })
+			.then((verification) => {
+				console.log(verification);
+
+				return res.status(200).json(verification.status);
+			})
+			.catch((err) => {
+				console.error(err);
+				return res.status(408).send('OTP Problem');
+			});
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+//  @route POST /api/bloodBank/billing/:id/verifyOtp
+// @desc  verify otp to use credits
+// @access Private blood bank access only
+const verifyOtp = async (req, res, next) => {
+	const { phone, code } = req.body;
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+	try {
+		const user = await User.findOne({ phone });
+		let profile = await Profile.findOne({ user: user.id });
+		client.verify
+			.services(sid)
+			.verificationChecks.create({ to: phone, code: code })
+			.then((verification_check) => {
+				if (verification_check.status == 'approved') {
+					profile.isCreditUsageVerified = true;
+					profile.save();
+					return res.status(200).json(verification_check.status);
+				}
+				return res.status(408).send('Incorrect OTP');
+			})
+			.catch((err) => {
+				console.error(err);
+				return res.status(408).send('Incorrect OTP');
+			});
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
 
 exports.getBillingRequests = getBillingRequests;
 exports.rejectRequest = rejectRequest;
 exports.getRequestById = getRequestById;
 exports.getCredits = getCredits;
+exports.useCredits = useCredits;
+exports.verifyOtp = verifyOtp;

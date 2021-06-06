@@ -665,7 +665,7 @@ const testCredit = async (
 	credits
 ) => {
 	try {
-		if (gender == 'male') {
+		if (gender == 'Male') {
 			if (rbcCount >= 4.7 && rbcCount <= 6.1) {
 				credits += 25;
 			}
@@ -679,7 +679,7 @@ const testCredit = async (
 				credits += 25;
 			}
 		}
-		if (gender == 'female') {
+		if (gender == 'Female') {
 			if (rbcCount >= 4.2 && rbcCount <= 5.4) {
 				credits += 25;
 			}
