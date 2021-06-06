@@ -427,6 +427,7 @@ const useCredits = async (req, res, next) => {
 		}
 		profile.credits -= credits;
 		bill.credits = credits;
+		profile.isCreditUsageVerified = false;
 		await profile.save();
 		await bill.save();
 		const { bookings } = request;
