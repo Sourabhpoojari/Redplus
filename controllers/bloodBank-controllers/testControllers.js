@@ -704,21 +704,21 @@ const testCredit = async (
 	credits
 ) => {
 	try {
-		if (gender == 'male') {
-			if (rbcCount >= 4.7 && rbcCount <= 6.1) {
+		if (gender == 'Male') {
+			if (rbcCount >= 4.7 &&  rbcCount <= 6.1) {
+				credits += 25;	
+			}
+			if (wbcCount >= 4.5 &&  wbcCount <= 11) {
 				credits += 25;
 			}
-			if (wbcCount >= 4.5 && wbcCount <= 11) {
+			if (hemoglobinCount >= 13.5 && hemoglobinCount <= 17.5)  {
 				credits += 25;
 			}
-			if (hemoglobinCount >= 13.5 && hemoglobinCount <= 17.5) {
-				credits += 25;
-			}
-			if (hematocrit >= 41 && hematocrit <= 50) {
+			if (hematocrit >= 41 && hematocrit <= 50)  {
 				credits += 25;
 			}
 		}
-		if (gender == 'female') {
+		if (gender == 'Female') {
 			if (rbcCount >= 4.2 && rbcCount <= 5.4) {
 				credits += 25;
 			}
@@ -732,11 +732,13 @@ const testCredit = async (
 				credits += 25;
 			}
 		}
-		if (plateCount >= 150000 && plateCount <= 450000) {
+		if (plateCount >= 150000 && plateCount <= 450000 )
+		 {
 			credits += 25;
+			
 		}
 		if (bglucose == 140) {
-			credits += 25;
+			credits += 25;	
 		}
 		if (diastolic == 80 && systrolic == 120) {
 			credits += 25;
@@ -823,43 +825,43 @@ const testReportAndCredits = async (req, res, next) => {
 		//  ###############
 		components.map(async (component) => {
 			if (component == 'WholeBlood') {
-				credits = 20;
+				credits += 20;
 				WHOLEBLOOD_STATUS = 1;
 			}
 			if (component === 'Platelet') {
-				credits = 20;
+				credits += 20;
 				PLATELET_STATUS = 1;
 			}
 			if (component === 'WBC') {
-				credits = 20;
+				credits += 20;
 				WBC_STATUS = 1;
 			}
 			if (component === 'Plasma') {
-				credits = 20;
+				credits += 20;
 				PLASMA_STATUS = 1;
 			}
 			if (component === 'PRBC') {
-				credits = 20;
+				credits += 20;
 				PRBC_STATUS = 1;
 			}
 			if (component === 'FFP') {
-				credits = 20;
+				credits += 20;
 				FFP_STATUS = 1;
 			}
 			if (component === 'Cryoprecipitate') {
-				credits = 20;
+				credits += 20;
 				CRYO_STATUS = 1;
 			}
 			if (component === 'SPRBC') {
-				credits = 20;
+				credits += 20;
 				SPRBC_STATUS = 1;
 			}
 			if (component === 'SDPlatelet') {
-				credits = 20;
+				credits += 20;
 				SDPLATELET_STATUS = 1;
 			}
 			if (component === 'SDPlasma') {
-				credits = 20;
+				credits += 20;
 				SDPLASMA_STATUS = 1;
 			}
 		});
@@ -1099,6 +1101,14 @@ const testReportAndCredits = async (req, res, next) => {
 			}).sort('-donatedOn'),
 			donation = donationArray[0];
 		if (credits) donation.credits = credits;
+		
+
+		//profile updation Credit and Blood Group
+		let profile = await Profile.findOne({user:request.user});
+		profile.bloodGroup = bgroup;
+		profile.credits = profile.credits + credits;
+		await profile.save();
+		
 		// add expiry for credits
 		donation.expiryTicket = jwt.sign(
 			{
@@ -1131,12 +1141,7 @@ const testReportAndCredits = async (req, res, next) => {
 		donation.report = report.id;
 		await donation.save();
 		
-		//profile updation Credit and Blood Group
-		let profile = await Profile.findOne({donor:request.donor});
-		profile.bloodGroup = bgroup;
-		profile.credits = profile.credits + credits;
-		console.log(profile.credits);
-		await profile.save();
+		
 		//"WholeBlood","Platelet","WBC","Plasma","PRBC","FFP","Cryoprecipitate","SPRBC","SDPlatelet","SDPlasma"
 		
 		await request.delete();
