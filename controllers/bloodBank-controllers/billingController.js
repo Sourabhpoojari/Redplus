@@ -55,7 +55,9 @@ const getRequestById = async (req, res, next) => {
 			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
 		if (request.isHospital) {
-			return res.status(400).json({ msg: 'Hospital request found!!!' });
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Hospital request found!!!' }] });
 		}
 		const { hospitalName, patientName, age, bloodGroup, bookings, donor } =
 			request;
@@ -306,10 +308,19 @@ const rejectRequest = async (req, res, next) => {
 // @access Private blood bank access only
 const getCredits = async (req, res, next) => {
 	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if (request.isHospital) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Hospital request found!!!' }] });
+		}
 		const user = await User.findOne({ phone: req.params.phone });
 		const credits = await Profile.findOne({ user: user.id }).select('credits');
 		if (!user || !credits) {
-			return res.status(404).json({ msg: 'User not found' });
+			return res.status(404).json({ errors: [{ msg: 'User not found' }] });
 		}
 		return res.status(200).json(credits);
 	} catch (err) {
@@ -328,6 +339,15 @@ const sendOtp = async (req, res, next) => {
 		return res.status(400).json({ errors: errors.array() });
 	}
 	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if (request.isHospital) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Hospital request found!!!' }] });
+		}
 		const user = await User.findOne({ phone });
 		const { credits } = await Profile.findOne({ user: user.id }).select(
 			'credits'
@@ -335,7 +355,7 @@ const sendOtp = async (req, res, next) => {
 		if (credits == 0) {
 			return res
 				.status(400)
-				.json({ msg: "You don't have enough credits to use" });
+				.json({ errors: [{ msg: "You don't have enough credits to use" }] });
 		}
 		client.verify
 			.services(sid)
@@ -365,6 +385,15 @@ const verifyOtp = async (req, res, next) => {
 		return res.status(400).json({ errors: errors.array() });
 	}
 	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if (request.isHospital) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Hospital request found!!!' }] });
+		}
 		const user = await User.findOne({ phone });
 		let profile = await Profile.findOne({ user: user.id });
 		client.verify
@@ -406,13 +435,23 @@ const useCredits = async (req, res, next) => {
 			bloodBank: req.bloodBank.id,
 		});
 		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if (request.isHospital) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Hospital request found!!!' }] });
+		}
 		if (!profile.isCreditUsageVerified) {
-			return res.status(401).json({ msg: 'Authorization denied' });
+			return res
+				.status(401)
+				.json({ errors: [{ msg: 'Authorization denied' }] });
 		}
 		if (profile.credits == 0) {
 			return res
 				.status(400)
-				.json({ msg: "You don't have enough credits to use" });
+				.json({ errors: [{ msg: "You don't have enough credits to use" }] });
 		}
 		if (profile.credits > 500) {
 			credits = 500;
@@ -442,6 +481,27 @@ const useCredits = async (req, res, next) => {
 	}
 };
 
+//  @route POST /api/bloodBank/billing/:id/skip
+// @desc  Create bill without credits
+// @access Private blood bank access only
+const skipCredits = async (req, res, next) => {
+	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		const { bookings } = request;
+		bookings.forEach(async (item) => {
+			await Booking.findByIdAndDelete(item);
+		});
+		await request.delete();
+		return res.status(200).json({ msg: 'Billing Successfull' });
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 exports.getBillingRequests = getBillingRequests;
 exports.rejectRequest = rejectRequest;
 exports.getRequestById = getRequestById;
@@ -449,3 +509,4 @@ exports.getCredits = getCredits;
 exports.sendOtp = sendOtp;
 exports.verifyOtp = verifyOtp;
 exports.useCredits = useCredits;
+exports.skipCredits = skipCredits;

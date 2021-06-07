@@ -33,5 +33,6 @@ router.post(
 	auth,
 	billingController.useCredits
 );
+router.post('/:id/skip', auth, billingController.skipCredits);
 
 module.exports = router;
