@@ -21,10 +21,6 @@ const billingRequestSchema = mongoose.Schema({
 		type: Boolean,
 		default: false,
 	},
-	rejectStatus: {
-		type: Boolean,
-		default: false,
-	},
 	RequestDate: {
 		type: String,
 	},
