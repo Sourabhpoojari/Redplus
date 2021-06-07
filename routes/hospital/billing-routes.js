@@ -3,5 +3,6 @@ const BillingControllers= require('../../controllers/hospital-controllers/billin
 	auth = require('../../middleware/hospitalAuth');
 
 router.get('/getBillings',auth,BillingControllers.getHospitalBillingRequests);
+router.get('/getBillings/:id',auth,BillingControllers.gethospitalBillingRequestById);
 
 module.exports=router;
