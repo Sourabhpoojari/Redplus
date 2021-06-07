@@ -17,6 +17,14 @@ router.post(
 	billingController.sendOtp
 );
 router.post(
+	'/:id/useCreditsByBenificiary',
+	check('phone', 'Enter a valid phone number')
+		.isLength({ min: 13, max: 13 })
+		.isMobilePhone(),
+	auth,
+	billingController.sendBenificiaryOtp
+);
+router.post(
 	'/:id/verifyOtp',
 	check('phone', 'Enter a valid phone number')
 		.isLength({ min: 13, max: 13 })
@@ -24,6 +32,15 @@ router.post(
 	check('code', 'Enter valid otp').isLength({ min: 6, max: 6 }),
 	auth,
 	billingController.verifyOtp
+);
+router.post(
+	'/:id/verifyBenificiaryOtp',
+	check('phone', 'Enter a valid phone number')
+		.isLength({ min: 13, max: 13 })
+		.isMobilePhone(),
+	check('code', 'Enter valid otp').isLength({ min: 6, max: 6 }),
+	auth,
+	billingController.verifyBenificiaryOtp
 );
 router.post(
 	'/:id',

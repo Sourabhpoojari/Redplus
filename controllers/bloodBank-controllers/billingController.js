@@ -361,8 +361,6 @@ const sendOtp = async (req, res, next) => {
 			.services(sid)
 			.verifications.create({ to: phone, channel: 'sms' })
 			.then((verification) => {
-				console.log(verification);
-
 				return res.status(200).json(verification.status);
 			})
 			.catch((err) => {
@@ -375,6 +373,53 @@ const sendOtp = async (req, res, next) => {
 	}
 };
 
+//  @route POST /api/bloodBank/billing/:id/useCreditsByBenificiary
+// @desc  use credits by benificiary
+// @access Private blood bank access only
+const sendBenificiaryOtp = async (req, res, next) => {
+	const { phone } = req.body;
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if (request.isHospital) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Hospital request found!!!' }] });
+		}
+		const user = await User.findOne({ phone });
+		const profile = await Profile.findOne({ user: user.id });
+		if (profile.credits == 0) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: "You don't have enough credits to use" }] });
+		}
+		if (!profile.benificiary.phone) {
+			return res
+				.status(404)
+				.json({ errors: [{ msg: 'No Benificary Found!!' }] });
+		}
+		const bPhone = profile.benificiary.phone;
+		client.verify
+			.services(sid)
+			.verifications.create({ to: bPhone, channel: 'sms' })
+			.then((verification) => {
+				return res.status(200).json(verification.status);
+			})
+			.catch((err) => {
+				console.error(err);
+				return res.status(408).send('OTP Problem');
+			});
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
 //  @route POST /api/bloodBank/billing/:id/verifyOtp
 // @desc  verify otp to use credits
 // @access Private blood bank access only
@@ -399,6 +444,53 @@ const verifyOtp = async (req, res, next) => {
 		client.verify
 			.services(sid)
 			.verificationChecks.create({ to: phone, code: code })
+			.then((verification_check) => {
+				if (verification_check.status == 'approved') {
+					profile.isCreditUsageVerified = true;
+					profile.save();
+					return res.status(200).json(verification_check.status);
+				}
+				return res.status(408).send('Incorrect OTP');
+			})
+			.catch((err) => {
+				console.error(err);
+				return res.status(408).send('Incorrect OTP');
+			});
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+//  @route POST /api/bloodBank/billing/:id/verifyBenificiaryOtp
+// @desc  verify otp to use credits
+// @access Private blood bank access only
+const verifyBenificiaryOtp = async (req, res, next) => {
+	const { phone, code } = req.body;
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if (request.isHospital) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Hospital request found!!!' }] });
+		}
+		const user = await User.findOne({ phone });
+		let profile = await Profile.findOne({ user: user.id });
+		if (!profile.benificiary.phone) {
+			return res
+				.status(404)
+				.json({ errors: [{ msg: 'No Benificary Found!!' }] });
+		}
+		const bPhone = profile.benificiary.phone;
+		client.verify
+			.services(sid)
+			.verificationChecks.create({ to: bPhone, code: code })
 			.then((verification_check) => {
 				if (verification_check.status == 'approved') {
 					profile.isCreditUsageVerified = true;
@@ -510,3 +602,5 @@ exports.sendOtp = sendOtp;
 exports.verifyOtp = verifyOtp;
 exports.useCredits = useCredits;
 exports.skipCredits = skipCredits;
+exports.sendBenificiaryOtp = sendBenificiaryOtp;
+exports.verifyBenificiaryOtp = verifyBenificiaryOtp;
