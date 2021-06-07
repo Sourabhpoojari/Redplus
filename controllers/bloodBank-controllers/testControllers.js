@@ -116,7 +116,10 @@ const postBagNumber = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).send('No request Found');
 		}
-		let report = await BloodTestReport.findOne({ bagNumber: bagNumber });
+		let report = await BloodTestReport.findOne({
+			bloodBank: req.bloodBank.id,
+			bagNumber: bagNumber,
+		});
 		if (report) {
 			return res
 				.status(302)
