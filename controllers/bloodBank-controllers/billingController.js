@@ -150,6 +150,10 @@ const rejectRequest = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'Request not found!' }] });
 		}
+		const bill = await Billing.findOne({ request: req.params.id });
+		if (bill) {
+			await bill.delete();
+		}
 		const { bookings } = request;
 		bookings.forEach(async (item) => {
 			if (item.component == 'WBC') {
