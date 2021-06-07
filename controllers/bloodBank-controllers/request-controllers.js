@@ -1233,6 +1233,7 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 		const billing = await new BillingRequest({
 			hospital: request.hospital,
 			bloodBank: req.bloodBank.id,
+			isHospital:true,
 			RequestDate,
 			contactNumber,
 			patientName,
@@ -1250,7 +1251,7 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 			SDPlatele,
 			SDPlasma,
 		});
-
+		
 		// update Inventory
 		if (WBC > 0) {
 			await wbcUpdate(billing,bloodGroup, WBC, billing,bankID);
@@ -1286,9 +1287,9 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 		// bookings.forEach((item) => {
 		// 	billing.bookings.push(item);
 		// });
-		billing.isHospital = true;
+		
 		await billing.save();
-		await request.delete();
+		//await request.delete();
 
 		return res.status(200).json(billing);
 	} catch (err) {
