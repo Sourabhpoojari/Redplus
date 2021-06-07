@@ -30,15 +30,13 @@ const { request } = require('express'),
 const getHospitalBillingRequests = async (req, res, next) => {
 	try {
 		const requests = await BillingRequest.find({
-			hospital: req.hospital.id,
+			hospital: req.hospital.id,isHospital:true
 		}).populate('bookings');
-        if(!request.isHospital){
-            return res.status(404).json({ errors: [{ msg: 'No Hospital requests found!' }] });
-        }
-		if (!requests) {
+       
+		if (!requests || requests.length == 0) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
-
+		console.log(requests);
 
 		let i;
 		const arr = [];
@@ -141,7 +139,6 @@ const gethospitalBillingRequestById =async(req,res,next)=>{
 				}
 				bill.components.push(data);
 			});
-			console.log(bill);
 			bill.subTotal = sum;
 			bill.grandTotal = sum;
 			bill.isHospital=true;
