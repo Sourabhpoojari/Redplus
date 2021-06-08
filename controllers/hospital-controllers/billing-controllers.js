@@ -36,7 +36,6 @@ const getHospitalBillingRequests = async (req, res, next) => {
 		if (!requests || requests.length == 0) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
-		console.log(requests);
 
 		let i;
 		const arr = [];
@@ -327,6 +326,15 @@ const rejectRequest = async (req, res, next) => {
 // @access Private hospital access only
 const getCredits = async (req, res, next) => {
 	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if (!request.isHospital) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Not a Hospital request!!!' }] });
+		}
 		const user = await User.findOne({ phone: req.params.phone });
 		const credits = await Profile.findOne({ user: user.id }).select('credits');
 		if (!user || !credits) {
@@ -340,9 +348,9 @@ const getCredits = async (req, res, next) => {
 };
 
 
-//  @route POST /api/bloodBank/billing/:id/useCredits
+//  @route POST /api/hospital/billing/:id/useCredits
 // @desc  use credits
-// @access Private blood bank access only
+// @access Private hospital access only
 const sendOtp = async (req, res, next) => {
 	const { phone } = req.body;
 	const errors = validationResult(req);
@@ -350,6 +358,15 @@ const sendOtp = async (req, res, next) => {
 		return res.status(400).json({ errors: errors.array() });
 	}
 	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if (!request.isHospital) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Not a Hospital request!!!' }] });
+		}
 		const user = await User.findOne({ phone });
 		const { credits } = await Profile.findOne({ user: user.id }).select(
 			'credits'
@@ -378,6 +395,54 @@ const sendOtp = async (req, res, next) => {
 };
 
 
+//  @route POST /api/hospital/billing/:id/useCreditsByBenificiary
+// @desc  use credits by benificiary
+// @access Private Hospital access only
+const sendBenificiaryOtp = async (req, res, next) => {
+	const { phone } = req.body;
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if (!request.isHospital) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Not aHospital request !!!' }] });
+		}
+		const user = await User.findOne({ phone });
+		const profile = await Profile.findOne({ user: user.id });
+		if (profile.credits == 0) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: "You don't have enough credits to use" }] });
+		}
+		if (!profile.benificiary.phone) {
+			return res
+				.status(404)
+				.json({ errors: [{ msg: 'No Benificary Found!!' }] });
+		}
+		const bPhone = profile.benificiary.phone;
+		client.verify
+			.services(sid)
+			.verifications.create({ to: bPhone, channel: 'sms' })
+			.then((verification) => {
+				return res.status(200).json(verification.status);
+			})
+			.catch((err) => {
+				console.error(err);
+				return res.status(408).send('OTP Problem');
+			});
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 //  @route POST /api/hospital/billing/:id/verifyOtp
 // @desc  verify otp to use credits
 // @access Private hospital access only
@@ -388,6 +453,15 @@ const verifyOtp = async (req, res, next) => {
 		return res.status(400).json({ errors: errors.array() });
 	}
 	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if (request.isHospital) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Hospital request found!!!' }] });
+		}
 		const user = await User.findOne({ phone });
 		let profile = await Profile.findOne({ user: user.id });
 		client.verify
@@ -412,9 +486,57 @@ const verifyOtp = async (req, res, next) => {
 };
 
 
-// @route POST /api/bloodBank/billing/:id
+//  @route POST /api/hospital/billing/:id/verifyBenificiaryOtp
 // @desc  verify otp to use credits
-// @access Private blood bank access only
+// @access Private hospital access only
+const verifyBenificiaryOtp = async (req, res, next) => {
+	const { phone, code } = req.body;
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({ errors: errors.array() });
+	}
+	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if (!request.isHospital) {
+			return res
+				.status(400)
+				.json({ errors: [{ msg: 'Not a Hospital request!!!' }] });
+		}
+		const user = await User.findOne({ phone });
+		let profile = await Profile.findOne({ user: user.id });
+		if (!profile.benificiary.phone) {
+			return res
+				.status(404)
+				.json({ errors: [{ msg: 'No Benificary Found!!' }] });
+		}
+		const bPhone = profile.benificiary.phone;
+		client.verify
+			.services(sid)
+			.verificationChecks.create({ to: bPhone, code: code })
+			.then((verification_check) => {
+				if (verification_check.status == 'approved') {
+					profile.isCreditUsageVerified = true;
+					profile.save();
+					return res.status(200).json(verification_check.status);
+				}
+				return res.status(408).send('Incorrect OTP');
+			})
+			.catch((err) => {
+				console.error(err);
+				return res.status(408).send('Incorrect OTP');
+			});
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+// @route POST /api/hospital/billing/:id
+// @desc  verify otp to use credits
+// @access Private hospital access only
 const useCredits = async (req, res, next) => {
 	const { phone } = req.body;
 	const errors = validationResult(req);
@@ -468,6 +590,31 @@ const useCredits = async (req, res, next) => {
 };
 
 
+//  @route POST /api/hospital/billing/:id/skip
+// @desc  Create bill without credits
+// @access Private hospital access only
+const skipCredits = async (req, res, next) => {
+	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if(!request.isHospital){
+			return res.status(404).json({ errors: [{ msg: 'Not a Hospital request!!!' }] });
+		}
+		const { bookings } = request;
+		bookings.forEach(async (item) => {
+			await Booking.findByIdAndDelete(item);
+		});
+		request.status=true;
+		await request.save();
+		return res.status(200).json({ msg: 'Billing Successfull' });
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 exports.getHospitalBillingRequests=getHospitalBillingRequests;
 exports.gethospitalBillingRequestById=gethospitalBillingRequestById;
 exports.rejectRequest=rejectRequest;
@@ -475,3 +622,6 @@ exports.getCredits=getCredits;
 exports.sendOtp=sendOtp;
 exports.verifyOtp=verifyOtp;
 exports.useCredits=useCredits; 
+exports.sendBenificiaryOtp=sendBenificiaryOtp;
+exports.verifyBenificiaryOtp=verifyBenificiaryOtp;
+exports.skipCredits=skipCredits;
