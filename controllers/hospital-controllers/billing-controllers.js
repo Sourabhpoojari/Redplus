@@ -330,7 +330,7 @@ const getCredits = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
-		if (!request.isHospital) {
+		if (request.isHospital == false) {
 			return res
 				.status(400)
 				.json({ errors: [{ msg: 'Not a Hospital request!!!' }] });
@@ -362,7 +362,7 @@ const sendOtp = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
-		if (!request.isHospital) {
+		if (request.isHospital == false) {
 			return res
 				.status(400)
 				.json({ errors: [{ msg: 'Not a Hospital request!!!' }] });
@@ -409,7 +409,7 @@ const sendBenificiaryOtp = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
-		if (!request.isHospital) {
+		if (request.isHospital == false) {
 			return res
 				.status(400)
 				.json({ errors: [{ msg: 'Not aHospital request !!!' }] });
@@ -457,10 +457,10 @@ const verifyOtp = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
-		if (request.isHospital) {
+		if (request.isHospital==false) {
 			return res
 				.status(400)
-				.json({ errors: [{ msg: 'Hospital request found!!!' }] });
+				.json({ errors: [{ msg: 'Not a Hospital request !!!' }] });
 		}
 		const user = await User.findOne({ phone });
 		let profile = await Profile.findOne({ user: user.id });
@@ -500,7 +500,7 @@ const verifyBenificiaryOtp = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
-		if (!request.isHospital) {
+		if (!request.isHospital==false) {
 			return res
 				.status(400)
 				.json({ errors: [{ msg: 'Not a Hospital request!!!' }] });
@@ -599,7 +599,7 @@ const skipCredits = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
-		if(!request.isHospital){
+		if(request.isHospital==false){
 			return res.status(404).json({ errors: [{ msg: 'Not a Hospital request!!!' }] });
 		}
 		const { bookings } = request;
@@ -608,7 +608,7 @@ const skipCredits = async (req, res, next) => {
 		});
 		request.status=true;
 		await request.save();
-		return res.status(200).json(request);
+		return res.status(200).json();
 	} catch (err) {
 		console.error(err);
 		return res.status(500).send('Server error');
