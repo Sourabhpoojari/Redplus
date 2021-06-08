@@ -30,7 +30,7 @@ const { request } = require('express'),
 const getHospitalBillingRequests = async (req, res, next) => {
 	try {
 		const requests = await BillingRequest.find({
-			hospital: req.hospital.id,isHospital:true
+			hospital: req.hospital.id,isHospital:true,status:false
 		}).populate('bookings');
        
 		if (!requests || requests.length == 0) {
@@ -608,7 +608,24 @@ const skipCredits = async (req, res, next) => {
 		});
 		request.status=true;
 		await request.save();
-		return res.status(200).json({ msg: 'Billing Successfull' });
+		return res.status(200).json(request);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+//  @route GET /api/hospital/getbill/:id
+// @desc  Create bill without credits
+// @access Private hospital access only
+const getBill = async (req, res, next) => {
+	try {
+		const reqinfo = await BillingRequest.findById(req.params.id).select('request');
+		const bill = await Billing.findOne({request:reqinfo.id});
+		if (bill.isHospital==false || !reqinfo) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		return res.status(200).json(bill);
 	} catch (err) {
 		console.error(err);
 		return res.status(500).send('Server error');
@@ -625,3 +642,4 @@ exports.useCredits=useCredits;
 exports.sendBenificiaryOtp=sendBenificiaryOtp;
 exports.verifyBenificiaryOtp=verifyBenificiaryOtp;
 exports.skipCredits=skipCredits;
+exports.getBill=getBill;

@@ -55,5 +55,5 @@ router.post(
 );
 
 router.post('/:id/skip', auth, BillingControllers.skipCredits);
-
+router.get('/getbill/:id',auth,BillingControllers.getBill);
 module.exports=router;
