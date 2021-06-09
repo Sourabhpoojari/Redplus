@@ -52,27 +52,27 @@ const createProfile = async (req, res, next) => {
 		dateOfBirth,
 		aadhaar,
 		bloodGroup,
-		bName,
+		bname,
 		relation,
-		bPhone,
+		bphone,
 		profileImage,
 	} = req.body;
 
 	let errors = validationResult(req);
 	errors = errors.array();
 
-	if (bName || relation || bPhone) {
-		if (!bPhone || bPhone.length !== 13) {
+	if (bname || relation || bphone) {
+		if (!bphone || bphone.length !== 13) {
 			errors.push({
-				value: bPhone,
+				value: bphone,
 				msg: 'Enter a valid Benificiary Phone Number',
 				param: 'bPhone',
 				location: 'body',
 			});
 		}
-		if (!bName) {
+		if (!bname) {
 			errors.push({
-				value: bName,
+				value: bname,
 				msg: 'Benificiary Name is required',
 				param: 'bName',
 				location: 'body',
@@ -116,11 +116,11 @@ const createProfile = async (req, res, next) => {
 			const result = await cloudinary.uploader.upload(req.file.path);
 			profileFields.profileImage = result.secure_url;
 		}
-		if (bName) {
+		if (bname) {
 			profileFields.benificiary = {
-				bname: bName,
+				bname: bname,
 				relation,
-				bphone: bPhone,
+				bphone: bphone,
 			};
 		}
 
