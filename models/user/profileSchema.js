@@ -56,13 +56,13 @@ const profileSchema = mongoose.Schema({
 		default: Date.now(),
 	},
 	benificiary: {
-		name: {
+		bname: {
 			type: String,
 		},
 		relation: {
 			type: String,
 		},
-		phone: {
+		bphone: {
 			type: String,
 		},
 	},

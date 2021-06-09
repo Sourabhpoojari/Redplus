@@ -118,9 +118,9 @@ const createProfile = async (req, res, next) => {
 		}
 		if (bName) {
 			profileFields.benificiary = {
-				name: bName,
+				bname: bName,
 				relation,
-				phone: bPhone,
+				bphone: bPhone,
 			};
 		}
 
