@@ -598,6 +598,33 @@ const skipCredits = async (req, res, next) => {
 	}
 };
 
+
+//  @route get /api/bloodBank/billing/:id/finalizedHospitalBill
+// @desc  Create get Finalized Bill
+// @access Private blood bank access only
+const  finalizedHospitalBill= async (req, res, next) => {
+	try {
+		const request = await BillingRequest.findById(req.params.id);
+		if (!request) {
+			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
+		}
+		if(request.status==false){
+			return res.status(404).json({ errors: [{ msg: 'Hospital Not Finalized the Bill!' }] });
+		}
+		const bill = await Billing.findOne({request:req.params.id});
+		if (bill.isHospital==false) {
+			return res.status(404).json({ errors: [{ msg: 'Not a Hospital request!' }] });
+		}
+		await request.delete();
+		return res.status(200).json(bill);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+
+
 exports.getBillingRequests = getBillingRequests;
 exports.rejectRequest = rejectRequest;
 exports.getRequestById = getRequestById;
@@ -608,3 +635,4 @@ exports.useCredits = useCredits;
 exports.skipCredits = skipCredits;
 exports.sendBenificiaryOtp = sendBenificiaryOtp;
 exports.verifyBenificiaryOtp = verifyBenificiaryOtp;
+exports.finalizedHospitalBill=finalizedHospitalBill;

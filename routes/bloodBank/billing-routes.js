@@ -51,5 +51,5 @@ router.post(
 	billingController.useCredits
 );
 router.post('/:id/skip', auth, billingController.skipCredits);
-
+router.get('/getFinalizedHospitalBill/:id',auth,billingController.finalizedHospitalBill);
 module.exports = router;
