@@ -87,6 +87,7 @@ const gethospitalBillingRequestById =async(req,res,next)=>{
 				patientName,
 				age,
 				bloodGroup,
+				isHospital:true,
 				bloodBankProfile: profile.id,
 			});
 			let sum = 0;
@@ -106,7 +107,7 @@ const gethospitalBillingRequestById =async(req,res,next)=>{
 				}
 				if (item.component == 'Platelet') {
 					data.price = price.Platelet;
-					sum += price.WBC;
+					sum += price.Platelet;
 				}
 				if (item.component == 'Plasma') {
 					data.price = price.Plasma;
@@ -137,10 +138,11 @@ const gethospitalBillingRequestById =async(req,res,next)=>{
 					sum += price.SDPlasma;
 				}
 				bill.components.push(data);
+				
 			});
+			
 			bill.subTotal = sum;
 			bill.grandTotal = sum;
-			bill.isHospital=true;
 			await bill.save();
 			
 		}
@@ -608,29 +610,19 @@ const skipCredits = async (req, res, next) => {
 		});
 		request.status=true;
 		await request.save();
-		return res.status(200).json();
+		const bill = await Billing.findOne({request:req.params.id});
+		if (bill.isHospital==false) {
+			return res.status(404).json({ errors: [{ msg: 'Not a Hospital request!' }] });
+		}
+		return res.status(200).json(bill);
+
 	} catch (err) {
 		console.error(err);
 		return res.status(500).send('Server error');
 	}
 };
 
-//  @route GET /api/hospital/getbill/:id
-// @desc  Create bill without credits
-// @access Private hospital access only
-const getBill = async (req, res, next) => {
-	try {
-		const reqinfo = await BillingRequest.findById(req.params.id).select('request');
-		const bill = await Billing.findOne({request:reqinfo.id});
-		if (bill.isHospital==false || !reqinfo) {
-			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
-		}
-		return res.status(200).json(bill);
-	} catch (err) {
-		console.error(err);
-		return res.status(500).send('Server error');
-	}
-};
+
 
 exports.getHospitalBillingRequests=getHospitalBillingRequests;
 exports.gethospitalBillingRequestById=gethospitalBillingRequestById;
@@ -642,4 +634,3 @@ exports.useCredits=useCredits;
 exports.sendBenificiaryOtp=sendBenificiaryOtp;
 exports.verifyBenificiaryOtp=verifyBenificiaryOtp;
 exports.skipCredits=skipCredits;
-exports.getBill=getBill;

@@ -40,7 +40,7 @@ const primaryTest = async (req, res, next) => {
 	const { gender } = await Profile.findOne({ user: request.donor }).select(
 		'gender'
 	);
-
+	
 	//request = await DonorRequest.findOne({ donor: req.params.user_id });
 
 	if (!gender) {
@@ -49,24 +49,29 @@ const primaryTest = async (req, res, next) => {
 
 	if (gender == 'male')
 		if (weight < 50) {
+			
 			return res.status(422).send('Weight must be greater than 50');
 		}
 	if (hb < 13 || hb > 20) {
+		
 		return res.status(422).send('hb must be in the range 13-20');
 	}
 	if (gender == 'female') {
 		if (weight < 45) {
 			return res.status(422).send('Weight must be greater than 45');
+			
 		}
 	}
 	if (hb < 12.5 || hb > 20) {
 		return res.status(422).send('hb must be in the range 12.5-20');
+		
 	}
 	if (pulse < 60 || pulse > 100) {
-		return res.status(422).send('Pulse must be in the range 60-100');
+		return res.status(422).send('Pulse must be in the range 60-100');	
 	}
 	if (bp < 100 || bp > 180) {
 		return res.status(422).send('bp must be in the range 100-180');
+		
 	}
 	if (temp > 99.5) {
 		return res.status(422).send('tempreture must be less than 99.5');
@@ -83,7 +88,7 @@ const primaryTest = async (req, res, next) => {
 		};
 		//console.log(data);
 		primary = new primarytestSchema(data);
-
+		
 		const donation = new Donation({
 			bloodBank: req.bloodBank.id,
 			user: request.donor,
@@ -116,10 +121,7 @@ const postBagNumber = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).send('No request Found');
 		}
-		let report = await BloodTestReport.findOne({
-			bloodBank: req.bloodBank.id,
-			bagNumber: bagNumber,
-		});
+		let report = await BloodTestReport.findOne({ bagNumber: bagNumber });
 		if (report) {
 			return res
 				.status(302)
@@ -207,6 +209,7 @@ const getDonorById = async (req, res, next) => {
 const whole = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
+		
 		if (
 			(await WHOLE.findOne({
 				bankID: req.bloodBank.id,
@@ -217,6 +220,7 @@ const whole = async (req, report, bgroup, segNumber, bagNumber) => {
 				segment: segNumber,
 			}))
 		) {
+			
 			return -1;
 		}
 		component = await new WHOLE({
@@ -241,6 +245,7 @@ const whole = async (req, report, bgroup, segNumber, bagNumber) => {
 				expiresIn: '35d',
 			}
 		);
+
 		await component.save();
 	} catch (err) {
 		console.error(err);
@@ -251,6 +256,7 @@ const whole = async (req, report, bgroup, segNumber, bagNumber) => {
 const platelet = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
+		
 		if (
 			(await PLATELET.findOne({
 				bankID: req.bloodBank.id,
@@ -261,6 +267,7 @@ const platelet = async (req, report, bgroup, segNumber, bagNumber) => {
 				segment: segNumber,
 			}))
 		) {
+			
 			return -1;
 		}
 		component = await new PLATELET({
@@ -296,7 +303,9 @@ const platelet = async (req, report, bgroup, segNumber, bagNumber) => {
 const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
+
 		if (
+			
 			(await WBC.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
@@ -306,6 +315,7 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 				segment: segNumber,
 			}))
 		) {
+			
 			return -1;
 		}
 		component = await new WBC({
@@ -317,7 +327,7 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 			bagNumber,
 			segment: segNumber,
 		});
-
+		
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -330,6 +340,7 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 				expiresIn: '42d',
 			}
 		);
+
 		await component.save();
 	} catch (err) {
 		console.error(err);
@@ -340,7 +351,9 @@ const wbc = async (req, report, bgroup, segNumber, bagNumber) => {
 const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
+
 		if (
+			
 			(await PLASMA.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
@@ -350,6 +363,7 @@ const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 				segment: segNumber,
 			}))
 		) {
+			
 			return -1;
 		}
 		component = await new PLASMA({
@@ -361,7 +375,7 @@ const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 			bagNumber,
 			segment: segNumber,
 		});
-
+		
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -385,7 +399,9 @@ const plasma = async (req, report, bgroup, segNumber, bagNumber) => {
 const prbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
+
 		if (
+			
 			(await RBC.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
@@ -395,6 +411,7 @@ const prbc = async (req, report, bgroup, segNumber, bagNumber) => {
 				segment: segNumber,
 			}))
 		) {
+			
 			return -1;
 		}
 		component = await new RBC({
@@ -431,6 +448,7 @@ const ffp = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
 		if (
+			
 			(await FFP.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
@@ -440,6 +458,7 @@ const ffp = async (req, report, bgroup, segNumber, bagNumber) => {
 				segment: segNumber,
 			}))
 		) {
+			
 			return -1;
 		}
 		component = await new FFP({
@@ -452,6 +471,7 @@ const ffp = async (req, report, bgroup, segNumber, bagNumber) => {
 			segment: segNumber,
 		});
 
+		
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -475,7 +495,10 @@ const ffp = async (req, report, bgroup, segNumber, bagNumber) => {
 const cryo = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
+
+		
 		if (
+			
 			(await CRYOPRI.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
@@ -485,6 +508,7 @@ const cryo = async (req, report, bgroup, segNumber, bagNumber) => {
 				segment: segNumber,
 			}))
 		) {
+			
 			return -1;
 		}
 		component = await new CRYOPRI({
@@ -497,6 +521,7 @@ const cryo = async (req, report, bgroup, segNumber, bagNumber) => {
 			segment: segNumber,
 		});
 
+		
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -520,7 +545,11 @@ const cryo = async (req, report, bgroup, segNumber, bagNumber) => {
 const sprbc = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
+
+		
+
 		if (
+			
 			(await SAGM.findOne({
 				bankID: req.bloodBank.id,
 				bagNumber,
@@ -529,7 +558,9 @@ const sprbc = async (req, report, bgroup, segNumber, bagNumber) => {
 				bankID: req.bloodBank.id,
 				segment: segNumber,
 			}))
+			
 		) {
+			
 			return -1;
 		}
 		component = await new SAGM({
@@ -542,6 +573,7 @@ const sprbc = async (req, report, bgroup, segNumber, bagNumber) => {
 			bagNumber,
 		});
 
+		
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -565,6 +597,7 @@ const sprbc = async (req, report, bgroup, segNumber, bagNumber) => {
 const sdplate = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
+
 		if (
 			(await SDPLATE.findOne({
 				bankID: req.bloodBank.id,
@@ -575,6 +608,7 @@ const sdplate = async (req, report, bgroup, segNumber, bagNumber) => {
 				segment: segNumber,
 			}))
 		) {
+			
 			return -1;
 		}
 		component = await new SDPLATE({
@@ -587,6 +621,7 @@ const sdplate = async (req, report, bgroup, segNumber, bagNumber) => {
 			bagNumber,
 		});
 
+		
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -610,6 +645,7 @@ const sdplate = async (req, report, bgroup, segNumber, bagNumber) => {
 const sdplasma = async (req, report, bgroup, segNumber, bagNumber) => {
 	let component;
 	try {
+
 		if (
 			(await SDPLASMA.findOne({
 				bankID: req.bloodBank.id,
@@ -620,6 +656,7 @@ const sdplasma = async (req, report, bgroup, segNumber, bagNumber) => {
 				segment: segNumber,
 			}))
 		) {
+			
 			return -1;
 		}
 		component = await new SDPLASMA({
@@ -632,6 +669,7 @@ const sdplasma = async (req, report, bgroup, segNumber, bagNumber) => {
 			segment: segNumber,
 		});
 
+		
 		// assign expiry ticket
 		component.ticket = jwt.sign(
 			{
@@ -667,16 +705,16 @@ const testCredit = async (
 ) => {
 	try {
 		if (gender == 'Male') {
-			if (rbcCount >= 4.7 && rbcCount <= 6.1) {
+			if (rbcCount >= 4.7 &&  rbcCount <= 6.1) {
+				credits += 25;	
+			}
+			if (wbcCount >= 4.5 &&  wbcCount <= 11) {
 				credits += 25;
 			}
-			if (wbcCount >= 4.5 && wbcCount <= 11) {
+			if (hemoglobinCount >= 13.5 && hemoglobinCount <= 17.5)  {
 				credits += 25;
 			}
-			if (hemoglobinCount >= 13.5 && hemoglobinCount <= 17.5) {
-				credits += 25;
-			}
-			if (hematocrit >= 41 && hematocrit <= 50) {
+			if (hematocrit >= 41 && hematocrit <= 50)  {
 				credits += 25;
 			}
 		}
@@ -694,11 +732,13 @@ const testCredit = async (
 				credits += 25;
 			}
 		}
-		if (plateCount >= 150000 && plateCount <= 450000) {
+		if (plateCount >= 150000 && plateCount <= 450000 )
+		 {
 			credits += 25;
+			
 		}
 		if (bglucose == 140) {
-			credits += 25;
+			credits += 25;	
 		}
 		if (diastolic == 80 && systrolic == 120) {
 			credits += 25;
@@ -751,7 +791,7 @@ const testReportAndCredits = async (req, res, next) => {
 		SDPLASMA_STATUS = 0;
 
 	// Error validations
-	const errors = validationResult(req);
+	const errors = validationRgitesult(req);
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
 	}
@@ -766,9 +806,9 @@ const testReportAndCredits = async (req, res, next) => {
 		report = await BloodTestReport.findOne({
 			user: request.user,
 			bloodBank: req.bloodBank.id,
-			bagNumber: request.bagNumber,
+			bagNumber:request.bagNumber
 		});
-		if (!report) {
+		if (!report) { 
 			return res
 				.status(302)
 				.json({ errors: [{ msg: 'Bag number do not exist!' }] });
@@ -1061,13 +1101,14 @@ const testReportAndCredits = async (req, res, next) => {
 			}).sort('-donatedOn'),
 			donation = donationArray[0];
 		if (credits) donation.credits = credits;
+		
 
 		//profile updation Credit and Blood Group
-		let profile = await Profile.findOne({ user: request.user });
+		let profile = await Profile.findOne({user:request.user});
 		profile.bloodGroup = bgroup;
 		profile.credits = profile.credits + credits;
 		await profile.save();
-
+		
 		// add expiry for credits
 		donation.expiryTicket = jwt.sign(
 			{
@@ -1099,6 +1140,10 @@ const testReportAndCredits = async (req, res, next) => {
 		await report.save();
 		donation.report = report.id;
 		await donation.save();
+		
+		
+		//"WholeBlood","Platelet","WBC","Plasma","PRBC","FFP","Cryoprecipitate","SPRBC","SDPlatelet","SDPlasma"
+		
 		await request.delete();
 		return res.status(200).json(report);
 	} catch (err) {
