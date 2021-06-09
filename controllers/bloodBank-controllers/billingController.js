@@ -403,12 +403,12 @@ const sendBenificiaryOtp = async (req, res, next) => {
 				.status(400)
 				.json({ errors: [{ msg: "You don't have enough credits to use" }] });
 		}
-		if (!profile.benificiary.phone) {
+		if (!profile.benificiary.bphone) {
 			return res
 				.status(404)
 				.json({ errors: [{ msg: 'No Benificary Found!!' }] });
 		}
-		const bPhone = profile.benificiary.phone;
+		const bPhone = profile.benificiary.bphone;
 		client.verify
 			.services(sid)
 			.verifications.create({ to: bPhone, channel: 'sms' })
@@ -486,12 +486,12 @@ const verifyBenificiaryOtp = async (req, res, next) => {
 		}
 		const user = await User.findOne({ phone });
 		let profile = await Profile.findOne({ user: user.id });
-		if (!profile.benificiary.phone) {
+		if (!profile.benificiary.bphone) {
 			return res
 				.status(404)
 				.json({ errors: [{ msg: 'No Benificary Found!!' }] });
 		}
-		const bPhone = profile.benificiary.phone;
+		const bPhone = profile.benificiary.bphone;
 		client.verify
 			.services(sid)
 			.verificationChecks.create({ to: bPhone, code: code })
@@ -598,22 +598,25 @@ const skipCredits = async (req, res, next) => {
 	}
 };
 
-
 //  @route get /api/bloodBank/billing/:id/finalizedHospitalBill
 // @desc  Create get Finalized Bill
 // @access Private blood bank access only
-const  finalizedHospitalBill= async (req, res, next) => {
+const finalizedHospitalBill = async (req, res, next) => {
 	try {
 		const request = await BillingRequest.findById(req.params.id);
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
-		if(request.status==false){
-			return res.status(404).json({ errors: [{ msg: 'Hospital Not Finalized the Bill!' }] });
+		if (request.status == false) {
+			return res
+				.status(404)
+				.json({ errors: [{ msg: 'Hospital Not Finalized the Bill!' }] });
 		}
-		const bill = await Billing.findOne({request:req.params.id});
-		if (bill.isHospital==false) {
-			return res.status(404).json({ errors: [{ msg: 'Not a Hospital request!' }] });
+		const bill = await Billing.findOne({ request: req.params.id });
+		if (bill.isHospital == false) {
+			return res
+				.status(404)
+				.json({ errors: [{ msg: 'Not a Hospital request!' }] });
 		}
 		await request.delete();
 		return res.status(200).json(bill);
@@ -622,8 +625,6 @@ const  finalizedHospitalBill= async (req, res, next) => {
 		return res.status(500).send('Server error');
 	}
 };
-
-
 
 exports.getBillingRequests = getBillingRequests;
 exports.rejectRequest = rejectRequest;
@@ -635,4 +636,4 @@ exports.useCredits = useCredits;
 exports.skipCredits = skipCredits;
 exports.sendBenificiaryOtp = sendBenificiaryOtp;
 exports.verifyBenificiaryOtp = verifyBenificiaryOtp;
-exports.finalizedHospitalBill=finalizedHospitalBill;
+exports.finalizedHospitalBill = finalizedHospitalBill;
