@@ -1,9 +1,10 @@
 const router = require('express').Router(),
 	userControllers = require('../../controllers/user-controllers/user-controllers'),
 	bloodBankController = require('../../controllers/bloodBank-controllers/bloodBankController'),
-	campController = require('../../controllers/camp-controllers/camp-controllers')
+	campController = require('../../controllers/camp-controllers/camp-controllers'),
 	posterController = require('../../controllers/admin-controllers/post-controllers'),
 	{ check } = require('express-validator'),
+	creditUpdate = require('../../middleware/creditsUpdate'),
 	auth = require('../../middleware/userAuth');
 
 router.post(
@@ -38,13 +39,18 @@ router.post(
 	check('password', 'password is required').isLength({ min: 6 }),
 	userControllers.logIn
 );
-router.get('/', auth, userControllers.getUser);
+router.get('/', auth, creditUpdate, userControllers.getUser);
 
 router.get('/bloodbankinfo/:id', auth, bloodBankController.getBloodBankById);
 
 router.get('/campinfo/:id', auth, campController.getCampById);
 
-router.post('/updatelocation', auth, userControllers.updateLocation);
+router.post(
+	'/updatelocation',
+	auth,
+	creditUpdate,
+	userControllers.updateLocation
+);
 
 router.get('/dashboardPoster', auth, posterController.getPoster);
 
