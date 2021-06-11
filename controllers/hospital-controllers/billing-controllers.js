@@ -133,7 +133,7 @@ const gethospitalBillingRequestById = async (req, res, next) => {
 					data.price = price.SPRBC;
 					sum += price.SPRBC;
 				}
-				if (item.component == 'SDPlatele') {
+				if (item.component == 'SDPlate') {
 					data.price = price.SDPlatele;
 					sum += price.SDPlatele;
 				}
