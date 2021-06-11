@@ -18,7 +18,6 @@ const bookingSchema = mongoose.Schema({
 	},
 	segment: {
 		type: String,
-		unique: true,
 	},
 	expiryDate: {
 		type: String,
@@ -31,7 +30,6 @@ const bookingSchema = mongoose.Schema({
 	},
 	bagNumber: {
 		type: String,
-		unique: true,
 	},
 	createdOn: {
 		type: Date,
