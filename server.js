@@ -63,6 +63,10 @@ app.use('/api/bloodBank/billing', require('./routes/bloodBank/billing-routes'));
 app.use('/api/bloodBank/bill', require('./routes/bloodBank/bill-routes'));
 
 app.use('/api/bloodBank/expiry', require('./routes/bloodBank/expiry-routes'));
+app.use(
+	'/api/bloodBank/components',
+	require('./routes/bloodBank/component-routes')
+);
 //hospital routes
 app.use('/api/hospital', require('./routes/hospital/hospital-routes'));
 
