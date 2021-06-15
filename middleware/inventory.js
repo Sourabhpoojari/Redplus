@@ -10,6 +10,7 @@ const Inventory = require('../models/bloodBank/inventory/inventorySchema'),
 	WBC = require('../models/bloodBank/storage/wbc-schema'),
 	WHOLE = require('../models/bloodBank/storage/whole-schema'),
 	jwt = require('jsonwebtoken'),
+	Expiry = require('../models/bloodBank/inventory/expirySchema'),
 	config = require('config');
 module.exports = async (req, res, next) => {
 	await next();
@@ -28,7 +29,7 @@ module.exports = async (req, res, next) => {
 		// A+Ve
 		let count = 0;
 		let cryo = await CRYO.find({ bankID, group: 'A+Ve' });
-		cryo.map((item) => {
+		cryo.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -36,6 +37,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Cryoprecipitate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await CRYO.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -45,7 +68,7 @@ module.exports = async (req, res, next) => {
 		// A-Ve
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'A-Ve' });
-		cryo.map((item) => {
+		cryo.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -53,6 +76,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Cryoprecipitate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await CRYO.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -62,7 +107,7 @@ module.exports = async (req, res, next) => {
 		// AB+Ve
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'AB+Ve' });
-		cryo.map((item) => {
+		cryo.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -70,6 +115,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Cryoprecipitate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await CRYO.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -79,7 +146,7 @@ module.exports = async (req, res, next) => {
 		// AB-Ve
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'AB-Ve' });
-		cryo.map((item) => {
+		cryo.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -87,6 +154,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Cryoprecipitate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await CRYO.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -96,7 +185,7 @@ module.exports = async (req, res, next) => {
 		// B+Ve
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'B+Ve' });
-		cryo.map((item) => {
+		cryo.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -104,6 +193,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Cryoprecipitate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await CRYO.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -113,7 +224,7 @@ module.exports = async (req, res, next) => {
 		// B-Ve
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'B-Ve' });
-		cryo.map((item) => {
+		cryo.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -121,6 +232,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Cryoprecipitate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await CRYO.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -130,7 +263,7 @@ module.exports = async (req, res, next) => {
 		// O+Ve
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'O+Ve' });
-		cryo.map((item) => {
+		cryo.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -138,6 +271,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Cryoprecipitate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await CRYO.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -147,7 +302,7 @@ module.exports = async (req, res, next) => {
 		// O-Ve
 		count = 0;
 		cryo = await CRYO.find({ bankID, group: 'O-Ve' });
-		cryo.map((item) => {
+		cryo.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -155,6 +310,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Cryoprecipitate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await CRYO.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -167,7 +344,7 @@ module.exports = async (req, res, next) => {
 		// A+Ve
 		count = 0;
 		let ffp = await FFP.find({ bankID, group: 'A+Ve' });
-		ffp.map((item) => {
+		ffp.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -175,6 +352,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'FFP',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await FFP.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -184,7 +383,7 @@ module.exports = async (req, res, next) => {
 		// A-Ve
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'A-Ve' });
-		ffp.map((item) => {
+		ffp.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -192,6 +391,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'FFP',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await FFP.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -201,7 +422,7 @@ module.exports = async (req, res, next) => {
 		// AB+Ve
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'AB+Ve' });
-		ffp.map((item) => {
+		ffp.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -209,6 +430,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'FFP',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await FFP.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -218,7 +461,7 @@ module.exports = async (req, res, next) => {
 		// AB-Ve
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'AB-Ve' });
-		ffp.map((item) => {
+		ffp.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -226,6 +469,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'FFP',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await FFP.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -235,7 +500,7 @@ module.exports = async (req, res, next) => {
 		// B+Ve
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'B+Ve' });
-		ffp.map((item) => {
+		ffp.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -243,6 +508,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'FFP',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await FFP.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -252,7 +539,7 @@ module.exports = async (req, res, next) => {
 		// B-Ve
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'B-Ve' });
-		ffp.map((item) => {
+		ffp.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -260,6 +547,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'FFP',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await FFP.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -269,7 +578,7 @@ module.exports = async (req, res, next) => {
 		// O+Ve
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'O+Ve' });
-		ffp.map((item) => {
+		ffp.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -277,6 +586,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'FFP',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await FFP.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -286,7 +617,7 @@ module.exports = async (req, res, next) => {
 		// O-Ve
 		count = 0;
 		ffp = await FFP.find({ bankID, group: 'O-Ve' });
-		ffp.map((item) => {
+		ffp.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -294,6 +625,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'FFP',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await FFP.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -306,7 +659,7 @@ module.exports = async (req, res, next) => {
 		// A+Ve
 		count = 0;
 		let plasma = await PLASMA.find({ bankID, group: 'A+Ve' });
-		plasma.map((item) => {
+		plasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -314,6 +667,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Plasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -323,7 +698,7 @@ module.exports = async (req, res, next) => {
 		// A-Ve
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'A-Ve' });
-		plasma.map((item) => {
+		plasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -331,6 +706,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Plasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -340,7 +737,7 @@ module.exports = async (req, res, next) => {
 		// AB+Ve
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'AB+Ve' });
-		plasma.map((item) => {
+		plasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -348,6 +745,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Plasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -357,7 +776,7 @@ module.exports = async (req, res, next) => {
 		// AB-Ve
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'AB-Ve' });
-		plasma.map((item) => {
+		plasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -365,6 +784,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Plasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -374,7 +815,7 @@ module.exports = async (req, res, next) => {
 		// B+Ve
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'B+Ve' });
-		plasma.map((item) => {
+		plasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -382,6 +823,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Plasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -391,7 +854,7 @@ module.exports = async (req, res, next) => {
 		// B-Ve
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'B-Ve' });
-		plasma.map((item) => {
+		plasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -399,6 +862,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Plasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -408,7 +893,7 @@ module.exports = async (req, res, next) => {
 		// O+Ve
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'O+Ve' });
-		plasma.map((item) => {
+		plasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -416,6 +901,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Plasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -425,7 +932,7 @@ module.exports = async (req, res, next) => {
 		// O-Ve
 		count = 0;
 		plasma = await PLASMA.find({ bankID, group: 'O-Ve' });
-		plasma.map((item) => {
+		plasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -433,6 +940,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Plasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -445,7 +974,7 @@ module.exports = async (req, res, next) => {
 		// A+Ve
 		count = 0;
 		let platelet = await PLATELET.find({ bankID, group: 'A+Ve' });
-		platelet.map((item) => {
+		platelet.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -453,6 +982,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Platelet',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLATELET.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -462,7 +1013,7 @@ module.exports = async (req, res, next) => {
 		// A-Ve
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'A-Ve' });
-		platelet.map((item) => {
+		platelet.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -470,6 +1021,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Platelet',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLATELET.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -479,7 +1052,7 @@ module.exports = async (req, res, next) => {
 		// AB+Ve
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'AB+Ve' });
-		platelet.map((item) => {
+		platelet.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -487,6 +1060,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Platelet',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLATELET.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -496,7 +1091,7 @@ module.exports = async (req, res, next) => {
 		// AB-Ve
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'AB-Ve' });
-		platelet.map((item) => {
+		platelet.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -504,6 +1099,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Platelet',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLATELET.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -513,7 +1130,7 @@ module.exports = async (req, res, next) => {
 		// B+Ve
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'B+Ve' });
-		platelet.map((item) => {
+		platelet.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -521,6 +1138,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Platelet',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLATELET.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -530,7 +1169,7 @@ module.exports = async (req, res, next) => {
 		// B-Ve
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'B-Ve' });
-		platelet.map((item) => {
+		platelet.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -538,6 +1177,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Platelet',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLATELET.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -547,7 +1208,7 @@ module.exports = async (req, res, next) => {
 		// O+Ve
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'O+Ve' });
-		platelet.map((item) => {
+		platelet.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -555,6 +1216,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Platelet',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLATELET.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -564,7 +1247,7 @@ module.exports = async (req, res, next) => {
 		// O-Ve
 		count = 0;
 		platelet = await PLATELET.find({ bankID, group: 'O-Ve' });
-		platelet.map((item) => {
+		platelet.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -572,6 +1255,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'Platelet',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await PLATELET.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -584,7 +1289,7 @@ module.exports = async (req, res, next) => {
 		// A+Ve
 		count = 0;
 		let rbc = await RBC.find({ bankID, group: 'A+Ve' });
-		rbc.map((item) => {
+		rbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -592,6 +1297,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'PRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await RBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -601,7 +1328,7 @@ module.exports = async (req, res, next) => {
 		// A-Ve
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'A-Ve' });
-		rbc.map((item) => {
+		rbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -609,6 +1336,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'PRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await RBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -618,7 +1367,7 @@ module.exports = async (req, res, next) => {
 		// AB+Ve
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'AB+Ve' });
-		rbc.map((item) => {
+		rbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -626,6 +1375,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'PRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await RBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -635,7 +1406,7 @@ module.exports = async (req, res, next) => {
 		// AB-Ve
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'AB-Ve' });
-		rbc.map((item) => {
+		rbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -643,6 +1414,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'PRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await RBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -652,7 +1445,7 @@ module.exports = async (req, res, next) => {
 		// B+Ve
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'B+Ve' });
-		rbc.map((item) => {
+		rbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -660,6 +1453,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'PRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await RBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -669,7 +1484,7 @@ module.exports = async (req, res, next) => {
 		// B-Ve
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'B-Ve' });
-		rbc.map((item) => {
+		rbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -677,6 +1492,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'PRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await RBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -686,7 +1523,7 @@ module.exports = async (req, res, next) => {
 		// O+Ve
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'O+Ve' });
-		rbc.map((item) => {
+		rbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -694,6 +1531,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'PRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await RBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -703,7 +1562,7 @@ module.exports = async (req, res, next) => {
 		// O-Ve
 		count = 0;
 		rbc = await RBC.find({ bankID, group: 'O-Ve' });
-		rbc.map((item) => {
+		rbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -711,6 +1570,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'PRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await RBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -723,7 +1604,7 @@ module.exports = async (req, res, next) => {
 		// A+Ve
 		count = 0;
 		let sagm = await SAGM.find({ bankID, group: 'A+Ve' });
-		sagm.map((item) => {
+		sagm.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -731,6 +1612,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SPRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SAGM.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -740,7 +1643,7 @@ module.exports = async (req, res, next) => {
 		// A-Ve
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'A-Ve' });
-		sagm.map((item) => {
+		sagm.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -748,6 +1651,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SPRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SAGM.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -757,7 +1682,7 @@ module.exports = async (req, res, next) => {
 		// AB+Ve
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'AB+Ve' });
-		sagm.map((item) => {
+		sagm.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -765,6 +1690,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SPRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SAGM.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -774,7 +1721,7 @@ module.exports = async (req, res, next) => {
 		// AB-Ve
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'AB-Ve' });
-		sagm.map((item) => {
+		sagm.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -782,6 +1729,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SPRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SAGM.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -791,7 +1760,7 @@ module.exports = async (req, res, next) => {
 		// B+Ve
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'B+Ve' });
-		sagm.map((item) => {
+		sagm.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -799,6 +1768,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SPRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SAGM.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -808,7 +1799,7 @@ module.exports = async (req, res, next) => {
 		// B-Ve
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'B-Ve' });
-		sagm.map((item) => {
+		sagm.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -816,6 +1807,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SPRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SAGM.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -825,7 +1838,7 @@ module.exports = async (req, res, next) => {
 		// O+Ve
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'O+Ve' });
-		sagm.map((item) => {
+		sagm.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -833,6 +1846,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SPRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SAGM.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -842,7 +1877,7 @@ module.exports = async (req, res, next) => {
 		// O-Ve
 		count = 0;
 		sagm = await SAGM.find({ bankID, group: 'O-Ve' });
-		sagm.map((item) => {
+		sagm.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -850,6 +1885,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SPRBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SAGM.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -862,7 +1919,7 @@ module.exports = async (req, res, next) => {
 		// A+Ve
 		count = 0;
 		let sdplasma = await SDPLASMA.find({ bankID, group: 'A+Ve' });
-		sdplasma.map((item) => {
+		sdplasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -870,6 +1927,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -879,7 +1958,7 @@ module.exports = async (req, res, next) => {
 		// A-Ve
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'A-Ve' });
-		sdplasma.map((item) => {
+		sdplasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -887,6 +1966,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -896,7 +1997,7 @@ module.exports = async (req, res, next) => {
 		// AB+Ve
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'AB+Ve' });
-		sdplasma.map((item) => {
+		sdplasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -904,6 +2005,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -913,7 +2036,7 @@ module.exports = async (req, res, next) => {
 		// AB-Ve
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'AB-Ve' });
-		sdplasma.map((item) => {
+		sdplasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -921,6 +2044,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -930,7 +2075,7 @@ module.exports = async (req, res, next) => {
 		// B+Ve
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'B+Ve' });
-		sdplasma.map((item) => {
+		sdplasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -938,6 +2083,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -947,7 +2114,7 @@ module.exports = async (req, res, next) => {
 		// B-Ve
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'B-Ve' });
-		sdplasma.map((item) => {
+		sdplasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -955,6 +2122,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -964,7 +2153,7 @@ module.exports = async (req, res, next) => {
 		// O+Ve
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'O+Ve' });
-		sdplasma.map((item) => {
+		sdplasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -972,6 +2161,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -981,7 +2192,7 @@ module.exports = async (req, res, next) => {
 		// O-Ve
 		count = 0;
 		sdplasma = await SDPLASMA.find({ bankID, group: 'O-Ve' });
-		sdplasma.map((item) => {
+		sdplasma.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -989,6 +2200,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlasma',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLASMA.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1001,7 +2234,7 @@ module.exports = async (req, res, next) => {
 		// A+Ve
 		count = 0;
 		let sdplate = await SDPLATE.find({ bankID, group: 'A+Ve' });
-		sdplate.map((item) => {
+		sdplate.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1009,6 +2242,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLATE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1018,7 +2273,7 @@ module.exports = async (req, res, next) => {
 		// A-Ve
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'A-Ve' });
-		sdplate.map((item) => {
+		sdplate.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1026,6 +2281,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLATE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1035,7 +2312,7 @@ module.exports = async (req, res, next) => {
 		// AB+Ve
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'AB+Ve' });
-		sdplate.map((item) => {
+		sdplate.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1043,6 +2320,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLATE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1052,7 +2351,7 @@ module.exports = async (req, res, next) => {
 		// AB-Ve
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'AB-Ve' });
-		sdplate.map((item) => {
+		sdplate.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1060,6 +2359,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLATE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1069,7 +2390,7 @@ module.exports = async (req, res, next) => {
 		// B+Ve
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'B+Ve' });
-		sdplate.map((item) => {
+		sdplate.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1077,6 +2398,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLATE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1086,7 +2429,7 @@ module.exports = async (req, res, next) => {
 		// B-Ve
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'B-Ve' });
-		sdplate.map((item) => {
+		sdplate.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1094,6 +2437,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLATE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1103,7 +2468,7 @@ module.exports = async (req, res, next) => {
 		// O+Ve
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'O+Ve' });
-		sdplate.map((item) => {
+		sdplate.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1111,6 +2476,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLATE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1120,7 +2507,7 @@ module.exports = async (req, res, next) => {
 		// O-Ve
 		count = 0;
 		sdplate = await SDPLATE.find({ bankID, group: 'O-Ve' });
-		sdplate.map((item) => {
+		sdplate.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1128,6 +2515,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'SDPlate',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await SDPLATE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1140,7 +2549,7 @@ module.exports = async (req, res, next) => {
 		// A+Ve
 		count = 0;
 		let wbc = await WBC.find({ bankID, group: 'A+Ve' });
-		wbc.map((item) => {
+		wbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1148,6 +2557,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1157,7 +2588,7 @@ module.exports = async (req, res, next) => {
 		// A-Ve
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'A-Ve' });
-		wbc.map((item) => {
+		wbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1165,6 +2596,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1174,7 +2627,7 @@ module.exports = async (req, res, next) => {
 		// AB+Ve
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'AB+Ve' });
-		wbc.map((item) => {
+		wbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1182,6 +2635,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1191,7 +2666,7 @@ module.exports = async (req, res, next) => {
 		// AB-Ve
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'AB-Ve' });
-		wbc.map((item) => {
+		wbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1199,6 +2674,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1208,7 +2705,7 @@ module.exports = async (req, res, next) => {
 		// B+Ve
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'B+Ve' });
-		wbc.map((item) => {
+		wbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1216,6 +2713,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1225,7 +2744,7 @@ module.exports = async (req, res, next) => {
 		// B-Ve
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'B-Ve' });
-		wbc.map((item) => {
+		wbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1233,6 +2752,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1242,7 +2783,7 @@ module.exports = async (req, res, next) => {
 		// O+Ve
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'O+Ve' });
-		wbc.map((item) => {
+		wbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1250,6 +2791,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1259,7 +2822,7 @@ module.exports = async (req, res, next) => {
 		// O-Ve
 		count = 0;
 		wbc = await WBC.find({ bankID, group: 'O-Ve' });
-		wbc.map((item) => {
+		wbc.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1267,6 +2830,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WBC',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WBC.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1279,7 +2864,7 @@ module.exports = async (req, res, next) => {
 		// A+Ve
 		count = 0;
 		let whole = await WHOLE.find({ bankID, group: 'A+Ve' });
-		whole.map((item) => {
+		whole.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1287,6 +2872,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WholeBlood',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WHOLE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1296,7 +2903,7 @@ module.exports = async (req, res, next) => {
 		// A-Ve
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'A-Ve' });
-		whole.map((item) => {
+		whole.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1304,6 +2911,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WholeBlood',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WHOLE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1313,7 +2942,7 @@ module.exports = async (req, res, next) => {
 		// AB+Ve
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'AB+Ve' });
-		whole.map((item) => {
+		whole.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1321,6 +2950,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WholeBlood',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WHOLE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1330,7 +2981,7 @@ module.exports = async (req, res, next) => {
 		// AB-Ve
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'AB-Ve' });
-		whole.map((item) => {
+		whole.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1338,6 +2989,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WholeBlood',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WHOLE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1347,7 +3020,7 @@ module.exports = async (req, res, next) => {
 		// B+Ve
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'B+Ve' });
-		whole.map((item) => {
+		whole.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1355,6 +3028,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WholeBlood',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WHOLE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1364,7 +3059,7 @@ module.exports = async (req, res, next) => {
 		// B-Ve
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'B-Ve' });
-		whole.map((item) => {
+		whole.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1372,6 +3067,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WholeBlood',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WHOLE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1381,7 +3098,7 @@ module.exports = async (req, res, next) => {
 		// O+Ve
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'O+Ve' });
-		whole.map((item) => {
+		whole.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1389,6 +3106,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WholeBlood',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WHOLE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
@@ -1398,7 +3137,7 @@ module.exports = async (req, res, next) => {
 		// O-Ve
 		count = 0;
 		whole = await WHOLE.find({ bankID, group: 'O-Ve' });
-		whole.map((item) => {
+		whole.map(async (item) => {
 			try {
 				const ticket = jwt.verify(item.ticket, config.get('STOCKSECRET'));
 				if (ticket) {
@@ -1406,6 +3145,28 @@ module.exports = async (req, res, next) => {
 				}
 			} catch (err) {
 				if (err.name == 'TokenExpiredError') {
+					const {
+						donor,
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					} = item;
+					const expired = await new Expiry({
+						bankID: req.bloodBank.id,
+						donor,
+						Component: 'WholeBlood',
+						group,
+						segment,
+						expiryDate,
+						donationDate,
+						ticket,
+						bagNumber,
+					});
+					await expired.save();
+					await WHOLE.findByIdAndDelete(item.id);
 				} else {
 					console.error(err);
 				}
