@@ -641,7 +641,8 @@ const sdplasma = async (req, report, bgroup, segNumber, bagNumber) => {
 			},
 			config.get('STOCKSECRET'),
 			{
-				expiresIn: '1y',
+				// expiresIn: '1y',
+				expiresIn: '1',
 			}
 		);
 		await component.save();
