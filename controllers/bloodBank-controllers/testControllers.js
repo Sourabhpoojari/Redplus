@@ -595,8 +595,8 @@ const sdplate = async (req, report, bgroup, segNumber, bagNumber) => {
 			},
 			config.get('STOCKSECRET'),
 			{
-				// expiresIn: '5d',
-				expiresIn: '1',
+				expiresIn: '5d',
+				// expiresIn: '1',
 			}
 		);
 
@@ -641,8 +641,8 @@ const sdplasma = async (req, report, bgroup, segNumber, bagNumber) => {
 			},
 			config.get('STOCKSECRET'),
 			{
-				// expiresIn: '1y',
-				expiresIn: '1',
+				expiresIn: '1y',
+				// expiresIn: '1',
 			}
 		);
 		await component.save();
