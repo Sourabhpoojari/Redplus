@@ -49,7 +49,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Cryoprecipitate',
+						component: 'Cryoprecipitate',
 						group,
 						segment,
 						expiryDate,
@@ -88,7 +88,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Cryoprecipitate',
+						component: 'Cryoprecipitate',
 						group,
 						segment,
 						expiryDate,
@@ -127,7 +127,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Cryoprecipitate',
+						component: 'Cryoprecipitate',
 						group,
 						segment,
 						expiryDate,
@@ -166,7 +166,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Cryoprecipitate',
+						component: 'Cryoprecipitate',
 						group,
 						segment,
 						expiryDate,
@@ -205,7 +205,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Cryoprecipitate',
+						component: 'Cryoprecipitate',
 						group,
 						segment,
 						expiryDate,
@@ -244,7 +244,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Cryoprecipitate',
+						component: 'Cryoprecipitate',
 						group,
 						segment,
 						expiryDate,
@@ -283,7 +283,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Cryoprecipitate',
+						component: 'Cryoprecipitate',
 						group,
 						segment,
 						expiryDate,
@@ -322,7 +322,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Cryoprecipitate',
+						component: 'Cryoprecipitate',
 						group,
 						segment,
 						expiryDate,
@@ -364,7 +364,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'FFP',
+						component: 'FFP',
 						group,
 						segment,
 						expiryDate,
@@ -403,7 +403,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'FFP',
+						component: 'FFP',
 						group,
 						segment,
 						expiryDate,
@@ -442,7 +442,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'FFP',
+						component: 'FFP',
 						group,
 						segment,
 						expiryDate,
@@ -481,7 +481,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'FFP',
+						component: 'FFP',
 						group,
 						segment,
 						expiryDate,
@@ -520,7 +520,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'FFP',
+						component: 'FFP',
 						group,
 						segment,
 						expiryDate,
@@ -559,7 +559,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'FFP',
+						component: 'FFP',
 						group,
 						segment,
 						expiryDate,
@@ -598,7 +598,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'FFP',
+						component: 'FFP',
 						group,
 						segment,
 						expiryDate,
@@ -637,7 +637,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'FFP',
+						component: 'FFP',
 						group,
 						segment,
 						expiryDate,
@@ -679,7 +679,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Plasma',
+						component: 'Plasma',
 						group,
 						segment,
 						expiryDate,
@@ -718,7 +718,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Plasma',
+						component: 'Plasma',
 						group,
 						segment,
 						expiryDate,
@@ -757,7 +757,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Plasma',
+						component: 'Plasma',
 						group,
 						segment,
 						expiryDate,
@@ -796,7 +796,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Plasma',
+						component: 'Plasma',
 						group,
 						segment,
 						expiryDate,
@@ -835,7 +835,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Plasma',
+						component: 'Plasma',
 						group,
 						segment,
 						expiryDate,
@@ -874,7 +874,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Plasma',
+						component: 'Plasma',
 						group,
 						segment,
 						expiryDate,
@@ -913,7 +913,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Plasma',
+						component: 'Plasma',
 						group,
 						segment,
 						expiryDate,
@@ -952,7 +952,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Plasma',
+						component: 'Plasma',
 						group,
 						segment,
 						expiryDate,
@@ -994,7 +994,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Platelet',
+						component: 'Platelet',
 						group,
 						segment,
 						expiryDate,
@@ -1033,7 +1033,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Platelet',
+						component: 'Platelet',
 						group,
 						segment,
 						expiryDate,
@@ -1072,7 +1072,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Platelet',
+						component: 'Platelet',
 						group,
 						segment,
 						expiryDate,
@@ -1111,7 +1111,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Platelet',
+						component: 'Platelet',
 						group,
 						segment,
 						expiryDate,
@@ -1150,7 +1150,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Platelet',
+						component: 'Platelet',
 						group,
 						segment,
 						expiryDate,
@@ -1189,7 +1189,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Platelet',
+						component: 'Platelet',
 						group,
 						segment,
 						expiryDate,
@@ -1228,7 +1228,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Platelet',
+						component: 'Platelet',
 						group,
 						segment,
 						expiryDate,
@@ -1267,7 +1267,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'Platelet',
+						component: 'Platelet',
 						group,
 						segment,
 						expiryDate,
@@ -1309,7 +1309,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'PRBC',
+						component: 'PRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1348,7 +1348,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'PRBC',
+						component: 'PRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1387,7 +1387,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'PRBC',
+						component: 'PRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1426,7 +1426,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'PRBC',
+						component: 'PRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1465,7 +1465,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'PRBC',
+						component: 'PRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1504,7 +1504,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'PRBC',
+						component: 'PRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1543,7 +1543,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'PRBC',
+						component: 'PRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1582,7 +1582,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'PRBC',
+						component: 'PRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1624,7 +1624,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SPRBC',
+						component: 'SPRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1663,7 +1663,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SPRBC',
+						component: 'SPRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1702,7 +1702,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SPRBC',
+						component: 'SPRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1741,7 +1741,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SPRBC',
+						component: 'SPRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1780,7 +1780,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SPRBC',
+						component: 'SPRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1819,7 +1819,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SPRBC',
+						component: 'SPRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1858,7 +1858,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SPRBC',
+						component: 'SPRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1897,7 +1897,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SPRBC',
+						component: 'SPRBC',
 						group,
 						segment,
 						expiryDate,
@@ -1939,7 +1939,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlasma',
+						component: 'SDPlasma',
 						group,
 						segment,
 						expiryDate,
@@ -1978,7 +1978,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlasma',
+						component: 'SDPlasma',
 						group,
 						segment,
 						expiryDate,
@@ -2017,7 +2017,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlasma',
+						component: 'SDPlasma',
 						group,
 						segment,
 						expiryDate,
@@ -2056,7 +2056,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlasma',
+						component: 'SDPlasma',
 						group,
 						segment,
 						expiryDate,
@@ -2095,7 +2095,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlasma',
+						component: 'SDPlasma',
 						group,
 						segment,
 						expiryDate,
@@ -2134,7 +2134,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlasma',
+						component: 'SDPlasma',
 						group,
 						segment,
 						expiryDate,
@@ -2173,7 +2173,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlasma',
+						component: 'SDPlasma',
 						group,
 						segment,
 						expiryDate,
@@ -2212,7 +2212,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlasma',
+						component: 'SDPlasma',
 						group,
 						segment,
 						expiryDate,
@@ -2254,7 +2254,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlate',
+						component: 'SDPlate',
 						group,
 						segment,
 						expiryDate,
@@ -2293,7 +2293,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlate',
+						component: 'SDPlate',
 						group,
 						segment,
 						expiryDate,
@@ -2332,7 +2332,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlate',
+						component: 'SDPlate',
 						group,
 						segment,
 						expiryDate,
@@ -2371,7 +2371,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlate',
+						component: 'SDPlate',
 						group,
 						segment,
 						expiryDate,
@@ -2410,7 +2410,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlate',
+						component: 'SDPlate',
 						group,
 						segment,
 						expiryDate,
@@ -2449,7 +2449,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlate',
+						component: 'SDPlate',
 						group,
 						segment,
 						expiryDate,
@@ -2488,7 +2488,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlate',
+						component: 'SDPlate',
 						group,
 						segment,
 						expiryDate,
@@ -2527,7 +2527,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'SDPlate',
+						component: 'SDPlate',
 						group,
 						segment,
 						expiryDate,
@@ -2569,7 +2569,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WBC',
+						component: 'WBC',
 						group,
 						segment,
 						expiryDate,
@@ -2608,7 +2608,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WBC',
+						component: 'WBC',
 						group,
 						segment,
 						expiryDate,
@@ -2647,7 +2647,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WBC',
+						component: 'WBC',
 						group,
 						segment,
 						expiryDate,
@@ -2686,7 +2686,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WBC',
+						component: 'WBC',
 						group,
 						segment,
 						expiryDate,
@@ -2725,7 +2725,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WBC',
+						component: 'WBC',
 						group,
 						segment,
 						expiryDate,
@@ -2764,7 +2764,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WBC',
+						component: 'WBC',
 						group,
 						segment,
 						expiryDate,
@@ -2803,7 +2803,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WBC',
+						component: 'WBC',
 						group,
 						segment,
 						expiryDate,
@@ -2842,7 +2842,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WBC',
+						component: 'WBC',
 						group,
 						segment,
 						expiryDate,
@@ -2884,7 +2884,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WholeBlood',
+						component: 'WholeBlood',
 						group,
 						segment,
 						expiryDate,
@@ -2923,7 +2923,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WholeBlood',
+						component: 'WholeBlood',
 						group,
 						segment,
 						expiryDate,
@@ -2962,7 +2962,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WholeBlood',
+						component: 'WholeBlood',
 						group,
 						segment,
 						expiryDate,
@@ -3001,7 +3001,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WholeBlood',
+						component: 'WholeBlood',
 						group,
 						segment,
 						expiryDate,
@@ -3040,7 +3040,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WholeBlood',
+						component: 'WholeBlood',
 						group,
 						segment,
 						expiryDate,
@@ -3079,7 +3079,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WholeBlood',
+						component: 'WholeBlood',
 						group,
 						segment,
 						expiryDate,
@@ -3118,7 +3118,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WholeBlood',
+						component: 'WholeBlood',
 						group,
 						segment,
 						expiryDate,
@@ -3157,7 +3157,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						Component: 'WholeBlood',
+						component: 'WholeBlood',
 						group,
 						segment,
 						expiryDate,
