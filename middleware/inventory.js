@@ -2254,7 +2254,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						component: 'SDPlate',
+						component: 'SDPlatelet',
 						group,
 						segment,
 						expiryDate,
@@ -2293,7 +2293,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						component: 'SDPlate',
+						component: 'SDPlatelet',
 						group,
 						segment,
 						expiryDate,
@@ -2332,7 +2332,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						component: 'SDPlate',
+						component: 'SDPlatelet',
 						group,
 						segment,
 						expiryDate,
@@ -2371,7 +2371,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						component: 'SDPlate',
+						component: 'SDPlatelet',
 						group,
 						segment,
 						expiryDate,
@@ -2410,7 +2410,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						component: 'SDPlate',
+						component: 'SDPlatelet',
 						group,
 						segment,
 						expiryDate,
@@ -2449,7 +2449,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						component: 'SDPlate',
+						component: 'SDPlatelet',
 						group,
 						segment,
 						expiryDate,
@@ -2488,7 +2488,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						component: 'SDPlate',
+						component: 'SDPlatelet',
 						group,
 						segment,
 						expiryDate,
@@ -2527,7 +2527,7 @@ module.exports = async (req, res, next) => {
 					const expired = await new Expiry({
 						bankID: req.bloodBank.id,
 						donor,
-						component: 'SDPlate',
+						component: 'SDPlatelet',
 						group,
 						segment,
 						expiryDate,

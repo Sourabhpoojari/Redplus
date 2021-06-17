@@ -595,7 +595,8 @@ const sdplate = async (req, report, bgroup, segNumber, bagNumber) => {
 			},
 			config.get('STOCKSECRET'),
 			{
-				expiresIn: '5d',
+				// expiresIn: '5d',
+				expiresIn: '1',
 			}
 		);
 
