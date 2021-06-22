@@ -133,7 +133,7 @@ const gethospitalBillingRequestById = async (req, res, next) => {
 					data.price = price.SPRBC;
 					sum += price.SPRBC;
 				}
-				if (item.component == 'SDPlatele') {
+				if (item.component == 'SDPlate') {
 					data.price = price.SDPlatele;
 					sum += price.SDPlatele;
 				}
@@ -411,7 +411,7 @@ const sendBenificiaryOtp = async (req, res, next) => {
 		if (request.isHospital == false) {
 			return res
 				.status(400)
-				.json({ errors: [{ msg: 'Not aHospital request !!!' }] });
+				.json({ errors: [{ msg: 'Not a Hospital request !!!' }] });
 		}
 		const user = await User.findOne({ phone });
 		const profile = await Profile.findOne({ user: user.id });
@@ -498,7 +498,7 @@ const verifyBenificiaryOtp = async (req, res, next) => {
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No request found!' }] });
 		}
-		if (!request.isHospital == false) {
+		if (request.isHospital == false) {
 			return res
 				.status(400)
 				.json({ errors: [{ msg: 'Not a Hospital request!!!' }] });

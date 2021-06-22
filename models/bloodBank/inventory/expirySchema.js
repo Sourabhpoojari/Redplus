@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const bookingSchema = mongoose.Schema({
+const expirySchema = mongoose.Schema({
 	bankID: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'bloodBank',
@@ -37,4 +37,4 @@ const bookingSchema = mongoose.Schema({
 	},
 });
 
-module.exports = mongoose.model('Booking', bookingSchema);
+module.exports = mongoose.model('Expired', expirySchema);

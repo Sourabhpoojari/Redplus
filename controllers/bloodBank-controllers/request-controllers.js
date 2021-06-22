@@ -110,7 +110,7 @@ const rejectDonorRequest = async (req, res, next) => {
 // @access Private - blood bank access only
 const getBloodRequests = async (req, res, next) => {
 	try {
-		const request = await BloodRequest.find()
+		const request = await BloodRequest.find({ bloodBank: req.bloodBank.id })
 			.populate('donor', ['name', 'phone', 'profileImage'])
 			.populate('hospital', ['hospitalName']);
 		if (!request) {

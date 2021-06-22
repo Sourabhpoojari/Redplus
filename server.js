@@ -62,6 +62,11 @@ app.use(
 app.use('/api/bloodBank/billing', require('./routes/bloodBank/billing-routes'));
 app.use('/api/bloodBank/bill', require('./routes/bloodBank/bill-routes'));
 
+app.use('/api/bloodBank/expiry', require('./routes/bloodBank/expiry-routes'));
+app.use(
+	'/api/bloodBank/components',
+	require('./routes/bloodBank/component-routes')
+);
 //hospital routes
 app.use('/api/hospital', require('./routes/hospital/hospital-routes'));
 
@@ -72,7 +77,7 @@ app.use(
 
 app.use('/api/hospital/billing', require('././routes/hospital/billing-routes'));
 
-app.use('/api/hospital/bill',require('./routes/hospital/bill-routes'));
+app.use('/api/hospital/bill', require('./routes/hospital/bill-routes'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
