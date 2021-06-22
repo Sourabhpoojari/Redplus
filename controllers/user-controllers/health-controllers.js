@@ -61,6 +61,9 @@ const addHealthInfo = async (req, res, next) => {
 				},
         };
 			lastMeal = moment(lastMeal, 'HH:mm');
+			if(lastMeal > moment()){
+				return res.status(422).send('Please enter valid Time');
+			}
 			if (moment() >= lastMeal.add(2, 'h')) {
 				return res.status(422).send('Please have some food');
         }
