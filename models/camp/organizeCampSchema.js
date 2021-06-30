@@ -1,56 +1,67 @@
 const mongoose = require('mongoose');
 
-const campSchema = mongoose.Schema({
-    donor:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User'
-    },
-    bloodBank:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'BloodBank'
-    },
-    campAddress:{
-        type:String,
-        required:true
-    },
-    campName:{
-        type:String,
-        required:true
-    },
-    campSchedule:{
-        type:Date,
-    },
-    capacity:{
-        type:Number,
-    },
-    community:{
-        type:String,
-    },
-    referenceId:{
-        type:String,
-    },
-    sponserOrganization:{
-        type:String,
-    },
-    poster:{
-      type:String
-    },
-    location: {
-      type: {
-        type: "String",
-        default:"Point" // Don't do `{ location: { type: String } }`
-        // 'location.type' must be 'Point'
-        // required: true
-      },
-      // type:Point,
-      coordinates: {
-        type: [Number],
-        required: true
-      }
-    }
-    
-    
+const campshedule = mongoose.Schema({
+	orgainizer: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
+	},
+	bloodBankOrganizer: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'BloodBank',
+	},
+	hospitalOrganizer: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Hospital',
+	},
+	address: {
+		type: String,
+		required: true,
+	},
+	title: {
+		type: String,
+		required: true,
+	},
+	date: {
+		type: String,
+	},
+	time: {
+		type: String,
+	},
+	donations: {
+		type: Number,
+	},
+	organization: {
+		type: String,
+	},
+	requestForm: {
+		type: String,
+	},
+	poster: {
+		type: String,
+	},
+	bloodBanks: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'BloodBank',
+		},
+	],
+	location: {
+		type: {
+			type: 'String',
+			default: 'Point', // Don't do `{ location: { type: String } }`
+			// 'location.type' must be 'Point'
+			// required: true
+		},
+		// type:Point,
+		coordinates: {
+			type: [Number],
+			required: true,
+		},
+	},
 });
-campSchema.index({ location: "2dsphere" });
+campshedule.index({ location: '2dsphere' });
 
-module.exports  =  mongoose.model('OrganizeCamp',campSchema);
+module.exports = mongoose.model(
+	'OrganizeCamp',
+	campshedule
+);

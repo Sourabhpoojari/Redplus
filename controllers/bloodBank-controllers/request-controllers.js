@@ -110,7 +110,7 @@ const rejectDonorRequest = async (req, res, next) => {
 // @access Private - blood bank access only
 const getBloodRequests = async (req, res, next) => {
 	try {
-		const request = await BloodRequest.find({ bloodBank: req.bloodBank.id })
+		const request = await BloodRequest.find()
 			.populate('donor', ['name', 'phone', 'profileImage'])
 			.populate('hospital', ['hospitalName']);
 		if (!request) {
@@ -277,6 +277,10 @@ const acceptBloodRequest = async (req, res, next) => {
 		if (SDPlasma > 0) {
 			await sdplasmaUpdate(billing, bloodGroup, SDPlasma, bankID);
 		}
+
+		// bookings.forEach((item) => {
+		// 	billing.bookings.push(item);
+		// });
 
 		await billing.save();
 		await request.delete();
@@ -1229,7 +1233,7 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 		const billing = await new BillingRequest({
 			hospital: request.hospital,
 			bloodBank: req.bloodBank.id,
-			isHospital: true,
+			isHospital:true,
 			RequestDate,
 			contactNumber,
 			patientName,
@@ -1247,10 +1251,10 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 			SDPlatele,
 			SDPlasma,
 		});
-
+		
 		// update Inventory
 		if (WBC > 0) {
-			await wbcUpdate(bloodGroup, bankID, WBC, billing);
+			await wbcUpdate(billing,bloodGroup, WBC, billing,bankID);
 		}
 		if (WholeBlood > 0) {
 			await wholeUpdate(billing, bloodGroup, WholeBlood, bankID);
@@ -1260,7 +1264,11 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 		}
 		if (Plasma > 0) {
 			await plasmaUpdate(billing, bloodGroup, Plasma, bankID);
+		
 		}
+		
+		
+		
 		if (PRBC > 0) {
 			await prbcUpdate(billing, bloodGroup, PRBC, bankID);
 		}
@@ -1280,6 +1288,10 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 			await sdplasmaUpdate(billing, bloodGroup, SDPlasma, bankID);
 		}
 
+		// bookings.forEach((item) => {
+		// 	billing.bookings.push(item);
+		// });
+		
 		await billing.save();
 		await request.delete();
 
@@ -1289,6 +1301,7 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 		return res.status(500).send('Server error');
 	}
 };
+
 
 //  @route /api/admin/campsheduleRequests/:req_id
 // @desc DELETE reject camp shedule request

@@ -361,26 +361,22 @@ const acceptCampSheduleRequest = async (req, res, next) => {
 			return res.status(400).json({ errors: [{ msg: 'Request not found!' }] });
 		}
 		const {
-			campAddress,
-			campName,
-			campSchedule,
-			capacity,
-			community,
-			referenceId,
-			poster,
-			sponserOrganization,
+			orgainizer,
+			address, title,
+			date,
+			timefrom, 
+			timeto,
+			donations,organization, requestForm,poster,bloodBanks,
 			location,
 		} = request;
 
 		organize = await new OrganizeCamp({
-			campAddress,
-			campName,
-			campSchedule,
-			capacity,
-			community,
-			referenceId,
-			poster,
-			sponserOrganization,
+			orgainizer,
+			address, title,
+			date,
+			timefrom, 
+			timeto,
+			donations,organization, requestForm,poster,bloodBanks,
 			location,
 		});
 

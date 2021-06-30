@@ -1179,7 +1179,7 @@ const bloodRequestForm = async (req, res, next) => {
 			SDPlasma,
 		});
 		request.isHospital=true;
-	await request.save();
+		await request.save();
 		return res.status(200).json(request);
 	} catch (err) {
 		console.error(err);
