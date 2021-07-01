@@ -24,7 +24,10 @@ const campsheduleRequestSchema = mongoose.Schema({
 	date: {
 		type: String,
 	},
-	time: {
+	timefrom: {
+		type: String,
+	},
+	timeto: {
 		type: String,
 	},
 	donations: {
