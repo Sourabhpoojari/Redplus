@@ -4,6 +4,7 @@ router= require('express').Router(),
 
 router.get('/donateblood',auth,bloodDonateController.donateBloodInfo);
 
+router.get('/listofBloodBanks',auth,bloodDonateController.bloodBanklist);
 
 module.exports = router;
 

@@ -14,6 +14,10 @@ const campRequest = async(req,res,next) =>{
         if(!errors.isEmpty()){
             return res.status(400).json({errors:errors.array()});
         }
+        const profile= await Profile.findOne({ user: req.user.id });
+        if(!profile){
+            return res.status(400).json({ errors: [{ msg: 'Please compleate your profile!!' }] });
+        }
         try {
             let request = await new campSheduleRequest({
                 orgainizer:req.user.id,

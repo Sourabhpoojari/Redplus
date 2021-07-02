@@ -54,4 +54,21 @@ const donateBloodInfo = async (req, res, next) => {
 	}
 };
 
+//  @route /api/user/getBloodBank
+// @desc get bloodBank list
+// @access Private
+const bloodBanklist = async(req,res,next) =>{
+	try{
+	const bloodbank = await BloodBank.find();
+	if(!bloodbank){
+		return res.status(400).json({ errors: [{ msg: 'No bloodBanks found!' }] });
+	}
+	return res.status(200).json(bloodbank);
+	}
+	catch(err){
+		console.log(err);
+		return res.status(500).send('Server error');
+	}
+}
 exports.donateBloodInfo = donateBloodInfo;
+exports.bloodBanklist = bloodBanklist;
