@@ -6,6 +6,7 @@ const BloodBankRequest = require('../../models/admin/requests/bloodBankRequestSc
 	Hospitalprofile = require('../../models/hospital//hospital/profile'),
 	Hospital = require('../../models/hospital/hospital/hospital'),
 	OrganizeCamp = require('../../models/camp/camp'),
+	Profile = require('../../models/user/profileSchema'),
 	config = require('config'),
 	sgMail = require('@sendgrid/mail'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
@@ -360,6 +361,9 @@ const acceptCampSheduleRequest = async (req, res, next) => {
 		if (!request) {
 			return res.status(400).json({ errors: [{ msg: 'Request not found!' }] });
 		}
+		
+		const profile = await Profile.findOne({user:request.orgainizer});
+		
 		const {
 			orgainizer,
 			address,
@@ -389,9 +393,20 @@ const acceptCampSheduleRequest = async (req, res, next) => {
 			bloodBanks,
 			location,
 		});
-
+		
 		await organize.save();
 		await request.delete();
+
+		
+		const msg = {
+			to:profile.email, // Change to your recipient
+			from: 'redplus112@gmail.com', // Change to your verified sender
+			subject: 'Request accepted',
+			text:
+				'Your Camp shedule Request to Redplus is accepted.'
+		};
+
+		const status = await sgMail.send(msg);
 		return res.status(200).json({ msg: 'Request accepted' });
 	} catch (err) {
 		console.log(err);
@@ -409,8 +424,19 @@ const rejectcampsheduleRequest = async (req, res, next) => {
 		if (!request) {
 			return res.status(400).json({ errors: [{ msg: 'Request not found!' }] });
 		}
-		await request.delete();
-		return res.status(200).json({ msg: 'Request rejected!' });
+		const profile = await Profile.findOne({user:request.orgainizer});
+		const msg = {
+			to: profile.email, // Change to your recipient
+			from: 'redplus112@gmail.com', // Change to your verified sender
+			subject: 'Request Rejected',
+			text: 'Your Camp Shedule Request  to Redplus is rejected.',
+			// html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+		};
+		const status = await sgMail.send(msg);
+		if (status) {
+			await request.delete();
+			return res.status(200).json({ msg: 'Request rejected!' });
+		}
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');
