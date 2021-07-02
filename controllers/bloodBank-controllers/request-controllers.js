@@ -24,7 +24,9 @@ const getDonorRequests = async (req, res, next) => {
 	try {
 		const request = await DonorRequest.find({
 			bloodBank: req.bloodBank.id,
-		}).populate('donor', ['name', 'phone', 'profileImage']);
+		})
+			.populate('donor', ['name', 'phone', 'profileImage'])
+			.populate('camp');
 		if (!request) {
 			return res.status(404).json({ errors: [{ msg: 'No requests found!' }] });
 		}
@@ -66,7 +68,7 @@ const getDonorById = async (req, res, next) => {
 const acceptdonorRequest = async (req, res, next) => {
 	try {
 		//console.log({user:req.params.id.user});
-		const request = await DonorRequest.findById(req.params.req_id);
+		const request = await await DonorRequest.findById(req.params.req_id);
 		if (!request) {
 			return res
 				.status(400)
@@ -1233,7 +1235,7 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 		const billing = await new BillingRequest({
 			hospital: request.hospital,
 			bloodBank: req.bloodBank.id,
-			isHospital:true,
+			isHospital: true,
 			RequestDate,
 			contactNumber,
 			patientName,
@@ -1251,10 +1253,10 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 			SDPlatele,
 			SDPlasma,
 		});
-		
+
 		// update Inventory
 		if (WBC > 0) {
-			await wbcUpdate(billing,bloodGroup, WBC, billing,bankID);
+			await wbcUpdate(billing, bloodGroup, WBC, billing, bankID);
 		}
 		if (WholeBlood > 0) {
 			await wholeUpdate(billing, bloodGroup, WholeBlood, bankID);
@@ -1264,11 +1266,8 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 		}
 		if (Plasma > 0) {
 			await plasmaUpdate(billing, bloodGroup, Plasma, bankID);
-		
 		}
-		
-		
-		
+
 		if (PRBC > 0) {
 			await prbcUpdate(billing, bloodGroup, PRBC, bankID);
 		}
@@ -1291,7 +1290,7 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 		// bookings.forEach((item) => {
 		// 	billing.bookings.push(item);
 		// });
-		
+
 		await billing.save();
 		await request.delete();
 
@@ -1301,7 +1300,6 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 		return res.status(500).send('Server error');
 	}
 };
-
 
 //  @route /api/admin/campsheduleRequests/:req_id
 // @desc DELETE reject camp shedule request

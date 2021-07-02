@@ -17,7 +17,9 @@ module.exports = async (req, res, next) => {
 		const user = await User.findById(decoded.user.id);
 		const profile = await Profile.findOne({ user: decoded.user.id });
 		if (!profile) {
-			return res.status(401).json({ msg: 'Please fill your Profile before donation' });
+			return res
+				.status(401)
+				.json({ msg: 'Please fill your Profile before donation' });
 		}
 		if (user.donorTicket) {
 			try {
@@ -39,7 +41,6 @@ module.exports = async (req, res, next) => {
 			next();
 		}
 	} catch (err) {
-		console.error(err);
 		res.status(401).json({ msg: 'Token is not valid' });
 	}
 };
