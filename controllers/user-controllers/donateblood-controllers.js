@@ -1,9 +1,10 @@
 const BloodBank = require('../../models/bloodBank/bloodBank/profile'),
+	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
 	Camp = require('../../models/camp/camp'),
 	UserLocation = require('../../models/user/donorlocationSchema');
 
 //  @route /api/user/donateblood
-// @desc get bloodBank list based on currrent location
+// @desc get  & camp list based on currrent location
 // @access Private
 const donateBloodInfo = async (req, res, next) => {
 	const { location } = await UserLocation.findOne({ user: req.user.id }).select(
@@ -54,4 +55,25 @@ const donateBloodInfo = async (req, res, next) => {
 	}
 };
 
+//  @route /api/user/donateblood/:camp_id
+// @desc get bloodBank list based of camps
+// @access Private
+const getBloodBanks = async (req, res, next) => {
+	try {
+		const { bloodBanks } = await Camp.findById(req.params.camp_id);
+		const bloodBankProfiles = [];
+		for (let i = 0; i < bloodBanks.length; i++) {
+			const profile = await BloodBankProfile.findOne({
+				bloodBank: bloodBanks[i],
+			});
+			bloodBankProfiles.push(profile);
+		}
+		return res.status(200).json(bloodBankProfiles);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 exports.donateBloodInfo = donateBloodInfo;
+exports.getBloodBanks = getBloodBanks;

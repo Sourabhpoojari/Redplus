@@ -2,6 +2,7 @@ const bloodDonateController = require('../../controllers/user-controllers/donate
 	router = require('express').Router(),
 	auth = require('../../middleware/userAuth');
 
-router.get('/donateblood', auth, bloodDonateController.donateBloodInfo);
+router.get('/', auth, bloodDonateController.donateBloodInfo);
+router.get('/:camp_id', auth, bloodDonateController.getBloodBanks);
 
 module.exports = router;
