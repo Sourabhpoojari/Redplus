@@ -5,7 +5,7 @@ const BloodBankRequest = require('../../models/admin/requests/bloodBankRequestSc
 	HospitalRequest = require('../../models/admin/requests/hospitalRequestSchema'),
 	Hospitalprofile = require('../../models/hospital//hospital/profile'),
 	Hospital = require('../../models/hospital/hospital/hospital'),
-	OrganizeCamp = require('../../models/camp/organizeCampSchema'),
+	OrganizeCamp = require('../../models/camp/camp'),
 	config = require('config'),
 	sgMail = require('@sendgrid/mail'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
@@ -362,21 +362,31 @@ const acceptCampSheduleRequest = async (req, res, next) => {
 		}
 		const {
 			orgainizer,
-			address, title,
+			address,
+			title,
 			date,
-			timefrom, 
+			timefrom,
 			timeto,
-			donations,organization, requestForm,poster,bloodBanks,
+			donations,
+			organization,
+			requestForm,
+			poster,
+			bloodBanks,
 			location,
 		} = request;
 
 		organize = await new OrganizeCamp({
 			orgainizer,
-			address, title,
+			address,
+			title,
 			date,
-			timefrom, 
+			timefrom,
 			timeto,
-			donations,organization, requestForm,poster,bloodBanks,
+			donations,
+			organization,
+			requestForm,
+			poster,
+			bloodBanks,
 			location,
 		});
 

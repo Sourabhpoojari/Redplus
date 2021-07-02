@@ -27,7 +27,7 @@ const campshedule = mongoose.Schema({
 	timefrom: {
 		type: String,
 	},
-	timeto:{
+	timeto: {
 		type: String,
 	},
 	donations: {
@@ -64,7 +64,4 @@ const campshedule = mongoose.Schema({
 });
 campshedule.index({ location: '2dsphere' });
 
-module.exports = mongoose.model(
-	'OrganizeCamp',
-	campshedule
-);
+module.exports = mongoose.model('Camp', campshedule);
