@@ -1,3 +1,4 @@
+const { request } = require('express');
 const primarytestSchema = require('../../models/user/primarytestSchema'),
 	BloodTestReport = require('../../models/user/bloodTestReportSchema'),
 	Profile = require('../../models/user/profileSchema'),
@@ -87,6 +88,7 @@ const primaryTest = async (req, res, next) => {
 		const donation = new Donation({
 			bloodBank: req.bloodBank.id,
 			user: request.donor,
+			camp: request.camp,
 			primaryTest: primary.id,
 			donationDate: moment().format('DD-MM-YYYY'),
 		});
