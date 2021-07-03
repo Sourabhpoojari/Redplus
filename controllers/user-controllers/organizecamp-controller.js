@@ -37,7 +37,7 @@ const campRequest = async (req, res, next) => {
 			orgainizer: req.user.id,
 			address,
 			title,
-			date,
+			date: moment(date).format('DD-MM-YYYY'),
 			timefrom: moment(timefrom, 'HH:mm').format('hh:mm A'),
 			timeto: moment(timeto, 'HH:mm').format('hh:mm A'),
 			donations,

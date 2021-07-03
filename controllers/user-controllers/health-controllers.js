@@ -214,6 +214,7 @@ const campHealthInfo = async (req, res, next) => {
 				donor: req.user.id,
 				bloodBank: req.params.bloodBank_id,
 				camp: req.params.camp_id,
+				isCamp:true
 			});
 
 			await request.save();

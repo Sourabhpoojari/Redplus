@@ -1,6 +1,7 @@
 const BloodBank = require('../../models/bloodBank/bloodBank/profile'),
 	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
 	Camp = require('../../models/camp/camp'),
+	moment = require('moment'),
 	UserLocation = require('../../models/user/donorlocationSchema');
 
 //  @route /api/user/donateblood
@@ -40,6 +41,11 @@ const donateBloodInfo = async (req, res, next) => {
 					distanceField: 'distance',
 					maxDistance: 75000,
 					spherical: true,
+				},
+			},
+			{
+				$match: {
+					date: moment().format('DD-MM-YYYY'),
 				},
 			},
 		]);
