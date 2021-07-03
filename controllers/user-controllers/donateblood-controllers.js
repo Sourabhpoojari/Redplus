@@ -66,7 +66,8 @@ const donateBloodInfo = async (req, res, next) => {
 // @access Private
 const getBloodBanks = async (req, res, next) => {
 	try {
-		const { bloodBanks } = await Camp.findById(req.params.camp_id);
+		const camp = await Camp.findById(req.params.camp_id);
+		const { bloodBanks } = camp;
 		const bloodBankProfiles = [];
 		for (let i = 0; i < bloodBanks.length; i++) {
 			const profile = await BloodBankProfile.findOne({
@@ -74,7 +75,7 @@ const getBloodBanks = async (req, res, next) => {
 			});
 			bloodBankProfiles.push(profile);
 		}
-		return res.status(200).json(bloodBankProfiles);
+		return res.status(200).json({ camp, bloodBankProfiles });
 	} catch (err) {
 		console.error(err);
 		return res.status(500).send('Server error');
