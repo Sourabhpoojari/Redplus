@@ -163,7 +163,7 @@ const logIn = async (req, res, next) => {
 		jwt.sign(
 			payload,
 			config.get('jwtSecret'),
-			{ expiresIn: 3600 },
+			{ expiresIn: '7d' },
 			(err, token) => {
 				if (err) throw err;
 				res.status(200).json({ token: token });

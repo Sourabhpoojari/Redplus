@@ -9,6 +9,14 @@ const userRequestSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'BloodBank',
 	},
+	camp: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Camp',
+	},
+	isCamp: {
+		type: Boolean,
+		default: false,
+	},
 	createdOn: {
 		type: Date,
 		default: Date.now(),
