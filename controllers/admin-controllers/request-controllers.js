@@ -351,7 +351,7 @@ const getCampSheduleById = async (req, res, next) => {
 	}
 };
 
-//  @route /api/admin/campsheduleRequests/:req_id
+//  @route /api/admin/campScheduleRequests/:req_id
 // @desc POST accept camp shedule request
 // @access Private - admin access only
 const acceptCampSheduleRequest = async (req, res, next) => {
@@ -361,9 +361,9 @@ const acceptCampSheduleRequest = async (req, res, next) => {
 		if (!request) {
 			return res.status(400).json({ errors: [{ msg: 'Request not found!' }] });
 		}
-		
-		const profile = await Profile.findOne({user:request.orgainizer});
-		
+
+		const profile = await Profile.findOne({ user: request.orgainizer });
+
 		const {
 			orgainizer,
 			address,
@@ -393,17 +393,15 @@ const acceptCampSheduleRequest = async (req, res, next) => {
 			bloodBanks,
 			location,
 		});
-		
+
 		await organize.save();
 		await request.delete();
 
-		
 		const msg = {
-			to:profile.email, // Change to your recipient
+			to: profile.email, // Change to your recipient
 			from: 'redplus112@gmail.com', // Change to your verified sender
 			subject: 'Request accepted',
-			text:
-				'Your Camp shedule Request to Redplus is accepted.'
+			text: 'Your Camp shedule Request to Redplus is accepted.',
 		};
 
 		const status = await sgMail.send(msg);
@@ -414,7 +412,7 @@ const acceptCampSheduleRequest = async (req, res, next) => {
 	}
 };
 
-//  @route /api/admin/campsheduleRequests/:req_id
+//  @route /api/admin/campScheduleRequests/:req_id
 // @desc DELETE reject camp shedule request
 // @access Private - admin access only
 const rejectcampsheduleRequest = async (req, res, next) => {
@@ -424,7 +422,7 @@ const rejectcampsheduleRequest = async (req, res, next) => {
 		if (!request) {
 			return res.status(400).json({ errors: [{ msg: 'Request not found!' }] });
 		}
-		const profile = await Profile.findOne({user:request.orgainizer});
+		const profile = await Profile.findOne({ user: request.orgainizer });
 		const msg = {
 			to: profile.email, // Change to your recipient
 			from: 'redplus112@gmail.com', // Change to your verified sender
