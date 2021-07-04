@@ -344,7 +344,15 @@ const getCampSheduleById = async (req, res, next) => {
 		if (!camp) {
 			return res.status(400).json({ errors: [{ msg: 'Request not found!' }] });
 		}
-		return res.status(200).json(camp);
+		const { bloodBanks } = camp;
+		const bloodBankProfiles = [];
+		for (let i = 0; i < bloodBanks.length; i++) {
+			const profile = await BloodBankProfile.findOne({
+				bloodBank: bloodBanks[i],
+			});
+			bloodBankProfiles.push(profile);
+		}
+		return res.status(200).json({camp,bloodBankProfiles});
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');
