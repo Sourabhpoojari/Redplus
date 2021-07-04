@@ -1,4 +1,3 @@
-const { request } = require('express');
 const primarytestSchema = require('../../models/user/primarytestSchema'),
 	BloodTestReport = require('../../models/user/bloodTestReportSchema'),
 	Profile = require('../../models/user/profileSchema'),
@@ -32,7 +31,7 @@ const primaryTest = async (req, res, next) => {
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
 	}
-	request = await DonorRequest.findById(req.params.req_id);
+	const request = await DonorRequest.findById(req.params.req_id);
 
 	if (!request) {
 		return res.status(404).send('No request Found');
@@ -41,8 +40,6 @@ const primaryTest = async (req, res, next) => {
 	const { gender } = await Profile.findOne({ user: request.donor }).select(
 		'gender'
 	);
-
-	//request = await DonorRequest.findOne({ donor: req.params.user_id });
 
 	if (!gender) {
 		return res.status(422).send('Donor not found!');
