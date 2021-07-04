@@ -60,11 +60,11 @@ const addHealthInfo = async (req, res, next) => {
 					periods,
 				},
 			};
-			lastMeal = moment(lastMeal, 'HH:mm').format('hh:mm A');
+			// lastMeal = moment(lastMeal, 'HH:mm').format('hh:mm A');
 			if (lastMeal > moment()) {
 				return res.status(422).send('Please enter valid Time');
 			}
-			if (moment() >= lastMeal.add(2, 'h')) {
+			if (moment() >= moment(lastMeal, 'HH:mm').add(2, 'hours')) {
 				return res.status(422).send('Please have some food');
 			}
 			let health;
@@ -169,11 +169,11 @@ const campHealthInfo = async (req, res, next) => {
 					periods,
 				},
 			};
-			lastMeal = moment(lastMeal, 'HH:mm').format('hh:mm A');
+			//lastMeal = moment(lastMeal, 'HH:mm').format('hh:mm A');
 			if (lastMeal > moment()) {
 				return res.status(422).send('Please enter valid Time');
 			}
-			if (moment() >= lastMeal.add(2, 'h')) {
+			if (moment() >= moment(lastMeal, 'HH:mm').add(2, 'hours')) {
 				return res.status(422).send('Please have some food');
 			}
 			let health;
@@ -214,14 +214,14 @@ const campHealthInfo = async (req, res, next) => {
 				donor: req.user.id,
 				bloodBank: req.params.bloodBank_id,
 				camp: req.params.camp_id,
-				isCamp:true
+				isCamp: true,
 			});
 
 			await request.save();
 			return res.status(201).json(data);
 		}
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 		return res.status(500).send('Server error!');
 	}
 };
