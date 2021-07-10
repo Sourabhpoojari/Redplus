@@ -34,6 +34,7 @@ const campRequest = async (req, res, next) => {
 			.json({ errors: [{ msg: 'Please complete your profile!!' }] });
 	}
 	try {
+		console.log(moment(date).format('DD-MM-YYYY'));
 		const request = await new campSheduleRequest({
 			orgainizer: req.user.id,
 			address,
