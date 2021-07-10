@@ -399,12 +399,13 @@ const acceptCampSheduleRequest = async (req, res, next) => {
 			bloodBanks,
 			location,
 		});
+		let email;
 		if (request.isHospital) {
-			const { email } = await Hospitalprofile.findOne({
-				hospital: request.orgainizer,
-			});
+			  email  = await Hospitalprofile.findOne({hospital: request.orgainizer});
+			  email = email.hospitalEmail;
+			  
 		} else {
-			const { email } = await Profile.findOne({ user: request.orgainizer });
+			 email  = await Profile.findOne({ user: request.orgainizer });
 		}
 		const msg = {
 			to: email, // Change to your recipient
@@ -439,56 +440,33 @@ const rejectcampsheduleRequest = async (req, res, next) => {
 		if (!request) {
 			return res.status(400).json({ errors: [{ msg: 'Request not found!' }] });
 		}
-		let status;
-<<<<<<< HEAD
-		if(request.isHospital==false){
-=======
-		if (request.isHospital == 'false') {
->>>>>>> 70f696c449a7d153509f43ee559a28009a8a5e48
-			const profile = await Profile.findOne({ user: request.orgainizer });
-			const msg = {
-				to: profile.email, // Change to your recipient
-				from: 'redplus112@gmail.com', // Change to your verified sender
-				subject: 'Request Rejected',
-				text: 'Your Camp shedule Request to Redplus is Rejected.',
-			};
-<<<<<<< HEAD
-			 status =await sgMail.send(msg);
-			}
-	
-			if(request.isHospital== true){
-				const profile = await Hospitalprofile.findOne({ hospital: request.orgainizer });
-				const msg = {
-					to: profile.email, // Change to your recipient
-					from: 'redplus112@gmail.com', // Change to your verified sender
-					subject: 'Request Rejected',
-					text: 'Your Camp shedule Request to Redplus is Rejected.',
-				};
-	
-				 status = await sgMail.send(msg);
-			}	
-=======
-			status = await sgMail.send(msg);
-		}
-
-		if (request.isHospital == 'true') {
-			const profile = await Hospitalprofile.findOne({
+		let email;
+		if (request.isHospital) {
+			  email  = await Hospitalprofile.findOne({
 				hospital: request.orgainizer,
 			});
-			const msg = {
-				to: profile.email, // Change to your recipient
-				from: 'redplus112@gmail.com', // Change to your verified sender
-				subject: 'Request Rejected',
-				text: 'Your Camp shedule Request to Redplus is Rejected.',
-			};
-
-			status = await sgMail.send(msg);
+			email = email.hospitalEmail;
+		} else {
+			 email  = await Profile.findOne({ user: request.orgainizer });
 		}
->>>>>>> 70f696c449a7d153509f43ee559a28009a8a5e48
-		if (status) {
-			await request.delete();
-			return res.status(200).json({ msg: 'Request rejected!' });
-		}
+		const msg = {
+			to: email, // Change to your recipient
+			from: 'redplus112@gmail.com', // Change to your verified sender
+			subject: 'Request Rejected',
+			text: 'Your Camp shedule Request to Redplus is rejected.',
+		};
+		sgMail
+			.send(msg)
+			.then(async () => {
+				
+				await request.delete();
+				return res.status(200).json({ msg: 'Request rejected' });
+			})
+			.catch((err) => {
+				console.error(err);
+				return res.status(500).send('Send grid error!');
+			});
+		
 	} catch (err) {
 		console.log(err);
 		return res.status(500).send('Server error');
