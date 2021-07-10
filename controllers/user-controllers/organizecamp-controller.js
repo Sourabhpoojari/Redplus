@@ -34,12 +34,11 @@ const campRequest = async (req, res, next) => {
 			.json({ errors: [{ msg: 'Please complete your profile!!' }] });
 	}
 	try {
-		console.log(moment(date).format('DD-MM-YYYY'));
 		const request = await new campSheduleRequest({
 			orgainizer: req.user.id,
 			address,
 			title,
-			date: moment(date).format('DD-MM-YYYY'),
+			date: moment(date, 'DD-MM-YYYY').format('DD-MM-YYYY'),
 			timefrom: moment(timefrom, 'HH:mm').format('hh:mm A'),
 			timeto: moment(timeto, 'HH:mm').format('hh:mm A'),
 			donations,
