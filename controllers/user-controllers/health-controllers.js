@@ -60,11 +60,11 @@ const addHealthInfo = async (req, res, next) => {
 					periods,
 				},
 			};
-			lastMeal = moment(lastMeal, 'HH:mm').format('hh:mm A');
+			//lastMeal = moment(lastMeal, 'HH:mm').format('hh:mm A');
 			if (lastMeal > moment()) {
 				return res.status(422).send('Please enter valid Time');
 			}
-			if (moment() >= lastMeal.add(2, 'h')) {
+			if (moment() >= moment(lastMeal, 'HH:mm').add(2, 'hours')) {
 				return res.status(422).send('Please have some food');
 			}
 			let health;
@@ -78,7 +78,7 @@ const addHealthInfo = async (req, res, next) => {
 				//    return res.json(health);
 			} else {
 				data = new Health(data);
-				await data.save();
+				//await data.save();
 			}
 
 			if (
@@ -106,7 +106,7 @@ const addHealthInfo = async (req, res, next) => {
 				bloodBank: req.params.bloodBank_id,
 			});
 
-			await request.save();
+			//await request.save();
 			return res.status(201).json(data);
 		}
 	} catch (err) {
