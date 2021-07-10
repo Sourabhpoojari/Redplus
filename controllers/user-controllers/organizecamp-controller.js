@@ -2,7 +2,7 @@ const { validationResult } = require('express-validator'),
 	campSheduleRequest = require('../../models/admin/requests/campsheduleReuestSchema'),
 	moment = require('moment'),
 	Profile = require('../../models/user/profileSchema'),
-	BloodBank = require('../../models/bloodBank/bloodBank/bloodBank');
+	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile');
 
 //  @route /api/user/campshedule
 // @desc  post campshedule request form
@@ -69,9 +69,7 @@ const getBloodBanks = async (req, res, next) => {
 				.status(400)
 				.json({ errors: [{ msg: 'Please complete your profile!!' }] });
 		}
-		const bloodbank = await BloodBank.find({ isBloodBank: true }).select(
-			'-password'
-		);
+		const bloodbank = await BloodBankProfile.find();
 		if (!bloodbank) {
 			return res
 				.status(404)

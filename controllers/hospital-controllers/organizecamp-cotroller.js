@@ -2,7 +2,7 @@ const { validationResult } = require('express-validator'),
 	campSheduleRequest = require('../../models/admin/requests/campsheduleReuestSchema'),
 	moment = require('moment'),
 	Profile = require('../../models/hospital/hospital/hospital'),
-	BloodBank = require('../../models/bloodBank/bloodBank/bloodBank');
+	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile');
 
 //  @route /api/hospital/campshedule
 // @desc  post campshedule request form
@@ -55,15 +55,13 @@ const campRequest = async (req, res, next) => {
 	}
 };
 
-//  @route GET /api/hospital/bloodBanks
+//  @route GET /api/user/bloodBanks
 // @desc get bloodBank list
 // @access Private
 const getBloodBanks = async (req, res, next) => {
 	try {
 		
-		const bloodbank = await BloodBank.find({ isBloodBank: true }).select(
-			'-password'
-		);
+		const bloodbank = await BloodBankProfile.find();
 		if (!bloodbank) {
 			return res
 				.status(404)
