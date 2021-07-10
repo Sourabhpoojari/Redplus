@@ -13,6 +13,10 @@ const campsheduleRequestSchema = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Hospital',
 	},
+	isHospital:{
+		type:Boolean,
+		default:false
+	},
 	address: {
 		type: String,
 		required: true,

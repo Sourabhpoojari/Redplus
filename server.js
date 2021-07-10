@@ -77,6 +77,7 @@ app.use(
 app.use('/api/hospital/billing', require('././routes/hospital/billing-routes'));
 
 app.use('/api/hospital/bill', require('./routes/hospital/bill-routes'));
+app.use('/api/hospital/camp', require('./routes/hospital/organizeCamp-routes'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

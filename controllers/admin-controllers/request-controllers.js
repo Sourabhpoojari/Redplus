@@ -370,7 +370,7 @@ const acceptCampSheduleRequest = async (req, res, next) => {
 			return res.status(400).json({ errors: [{ msg: 'Request not found!' }] });
 		}
 
-		const profile = await Profile.findOne({ user: request.orgainizer });
+		
 
 		const {
 			orgainizer,
@@ -403,16 +403,30 @@ const acceptCampSheduleRequest = async (req, res, next) => {
 		});
 
 		await organize.save();
-		await request.delete();
-
+		if(request.isHospital == 'false'){
+		const profile = await Profile.findOne({ user: request.orgainizer });
 		const msg = {
 			to: profile.email, // Change to your recipient
 			from: 'redplus112@gmail.com', // Change to your verified sender
 			subject: 'Request accepted',
 			text: 'Your Camp shedule Request to Redplus is accepted.',
 		};
+		await sgMail.send(msg);
+		}
 
-		const status = await sgMail.send(msg);
+		if(request.isHospital=='true'){
+			const profile = await Hospitalprofile.findOne({ hospital: request.orgainizer });
+			const msg = {
+				to: profile.email, // Change to your recipient
+				from: 'redplus112@gmail.com', // Change to your verified sender
+				subject: 'Request accepted',
+				text: 'Your Camp shedule Request to Redplus is accepted.',
+			};
+
+		await sgMail.send(msg);
+		}	
+		await request.delete();
+
 		return res.status(200).json({ msg: 'Request accepted' });
 	} catch (err) {
 		console.log(err);
@@ -430,15 +444,29 @@ const rejectcampsheduleRequest = async (req, res, next) => {
 		if (!request) {
 			return res.status(400).json({ errors: [{ msg: 'Request not found!' }] });
 		}
-		const profile = await Profile.findOne({ user: request.orgainizer });
-		const msg = {
-			to: profile.email, // Change to your recipient
-			from: 'redplus112@gmail.com', // Change to your verified sender
-			subject: 'Request Rejected',
-			text: 'Your Camp Shedule Request  to Redplus is rejected.',
-			// html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-		};
-		const status = await sgMail.send(msg);
+		let status;
+		if(request.isHospital == 'false'){
+			const profile = await Profile.findOne({ user: request.orgainizer });
+			const msg = {
+				to: profile.email, // Change to your recipient
+				from: 'redplus112@gmail.com', // Change to your verified sender
+				subject: 'Request Rejected',
+				text: 'Your Camp shedule Request to Redplus is Rejected.',
+			};
+			 status =await sgMail.send(msg);
+			}
+	
+			if(request.isHospital=='true'){
+				const profile = await Hospitalprofile.findOne({ hospital: request.orgainizer });
+				const msg = {
+					to: profile.email, // Change to your recipient
+					from: 'redplus112@gmail.com', // Change to your verified sender
+					subject: 'Request Rejected',
+					text: 'Your Camp shedule Request to Redplus is Rejected.',
+				};
+	
+				 status = await sgMail.send(msg);
+			}	
 		if (status) {
 			await request.delete();
 			return res.status(200).json({ msg: 'Request rejected!' });
