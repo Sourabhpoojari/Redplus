@@ -1,10 +1,11 @@
 const { validationResult } = require('express-validator'),
 	campSheduleRequest = require('../../models/admin/requests/campsheduleReuestSchema'),
+	Camp = require('../../models/camp/camp'),
 	moment = require('moment'),
 	Profile = require('../../models/user/profileSchema'),
 	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile');
 
-//  @route /api/user/campshedule
+//  @route /api/user/camp
 // @desc  post campshedule request form
 // @access private
 const campRequest = async (req, res, next) => {
@@ -58,6 +59,20 @@ const campRequest = async (req, res, next) => {
 	}
 };
 
+//  @route GET /api/user/camp
+// @desc  GET camps
+// @access private - user access only
+const getCamps = async (req, res, next) => {
+	try {
+		let camps = await Camp.find();
+		camps = camps.filter((camp) => camp.date >= moment().format('DD-MM-YYYY'));
+		return res.status(200).json(camps);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 //  @route GET /api/user/bloodBanks
 // @desc get bloodBank list
 // @access Private
@@ -84,3 +99,4 @@ const getBloodBanks = async (req, res, next) => {
 
 exports.campRequest = campRequest;
 exports.getBloodBanks = getBloodBanks;
+exports.getCamps = getCamps;
