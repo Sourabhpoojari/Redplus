@@ -445,7 +445,7 @@ const rejectcampsheduleRequest = async (req, res, next) => {
 			return res.status(400).json({ errors: [{ msg: 'Request not found!' }] });
 		}
 		let status;
-		if(request.isHospital == 'false'){
+		if(request.isHospital==false){
 			const profile = await Profile.findOne({ user: request.orgainizer });
 			const msg = {
 				to: profile.email, // Change to your recipient
@@ -456,7 +456,7 @@ const rejectcampsheduleRequest = async (req, res, next) => {
 			 status =await sgMail.send(msg);
 			}
 	
-			if(request.isHospital=='true'){
+			if(request.isHospital== true){
 				const profile = await Hospitalprofile.findOne({ hospital: request.orgainizer });
 				const msg = {
 					to: profile.email, // Change to your recipient
