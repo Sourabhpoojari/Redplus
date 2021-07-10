@@ -2,6 +2,12 @@ const Admin = require('../../models/admin/adminSchema'),
 	config = require('config'),
 	{ validationResult } = require('express-validator'),
 	bcrypt = require('bcryptjs'),
+	CampRequest = require('../../models/admin/requests/campsheduleReuestSchema'),
+	BloodBankRequest = require('../../models/admin/requests/bloodBankRequestSchema'),
+	HospitalRequest = require('../../models/admin/requests/hospitalRequestSchema'),
+	Camp = require('../../models/camp/camp'),
+	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
+	HospitalProfile = require('../../models/hospital/hospital/profile'),
 	jwt = require('jsonwebtoken');
 
 //  @route /api/user/signup
@@ -90,5 +96,34 @@ const logIn = async (req, res, next) => {
 	}
 };
 
+//  @route /api/admin/dashboard
+// @desc GET  admin dashboard info
+// @access Private
+const getDashBoard = async (req, res, next) => {
+	try {
+		const campRequest = await (await CampRequest.find()).length,
+			bloodBankRequest = await (await BloodBankRequest.find()).length,
+			hospitalRequest = await (await HospitalRequest.find()).length,
+			camps = await (await Camp.find()).length,
+			bloodBanks = await (await BloodBankProfile.find()).length,
+			hospitals = await (await HospitalProfile.find()).length;
+
+		return res
+			.status(200)
+			.json({
+				campRequest,
+				bloodBankRequest,
+				hospitalRequest,
+				camps,
+				bloodBanks,
+				hospitals,
+			});
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 exports.logIn = logIn;
+exports.getDashBoard = getDashBoard;
 // exports.signUp = signUp;
