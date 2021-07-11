@@ -2,6 +2,9 @@ const hospitalRequest = require('../../models/admin/requests/hospitalRequestSche
 	bcrypt = require('bcryptjs'),
 	Hospital = require('../../models/hospital/hospital/hospital'),
 	jwt = require('jsonwebtoken'),
+	BloodRequest = require('../../models/bloodBank/request/bloodrequestSchema'),
+	BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
+	Bill = require('../../models/bloodBank/billing/billingSchema'),
 	config = require('config'),
 	{ validationResult } = require('express-validator'),
 	HospitalProfile = require('../../models/hospital/hospital/profile');
@@ -146,7 +149,33 @@ const getProfile = async (req, res, next) => {
 	}
 };
 
+//@route /api/hospital/dashboard
+// @desc get hospital dashboard info
+// @access Private hospital access only
+const getDashboard = async (req, res, next) => {
+	try {
+		const pendingRequest = await (
+				await BloodRequest.find({
+					hospital: req.hospital.id,
+				})
+			).length,
+			acceptedRequest = await (
+				await BillingRequest.find({ hospital: req.hospital.id })
+			).length,
+			totalRequests = await (
+				await Bill.find({ hospital: req.hospital.id })
+			).length;
+		return res
+			.status(200)
+			.json({ pendingRequest, acceptedRequest, totalRequests });
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 exports.signUpRequest = signUpRequest;
 exports.setPassword = setPassword;
 exports.logIn = logIn;
 exports.getProfile = getProfile;
+exports.getDashboard = getDashboard;
