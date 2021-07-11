@@ -4,6 +4,7 @@ const { validationResult } = require('express-validator'),
 	moment = require('moment'),
 	Profile = require('../../models/user/profileSchema'),
 	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile');
+const camp = require('../../models/camp/camp');
 
 //  @route /api/user/camp
 // @desc  post campshedule request form
@@ -66,6 +67,20 @@ const getCamps = async (req, res, next) => {
 	try {
 		let camps = await Camp.find();
 		camps = camps.filter((camp) => camp.date >= moment().format('DD-MM-YYYY'));
+
+		let i;
+		
+
+		for (i = 0; i < camps.length; i++) {
+			if(camps[i].date ==  moment().format('DD-MM-YYYY'))
+			{
+				camps[i].isCampToday = true;
+				
+			}
+		}
+
+		
+
 		return res.status(200).json(camps);
 	} catch (err) {
 		console.error(err);
