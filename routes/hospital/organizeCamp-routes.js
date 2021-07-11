@@ -22,7 +22,8 @@ router.post(
 
 	campOrganizeController.campRequest
 );
-
+router.get('/', auth, campOrganizeController.getCamps);
+router.get('/:camp_id', auth, campOrganizeController.getCampbyid);
 router.get('/bloodBanks', auth, campOrganizeController.getBloodBanks);
 
 module.exports = router;
