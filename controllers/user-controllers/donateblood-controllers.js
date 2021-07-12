@@ -66,6 +66,7 @@ const donateBloodInfo = async (req, res, next) => {
 // @access Private
 const getBloodBanks = async (req, res, next) => {
 	try {
+		let isCampToday = false;
 		const camp = await Camp.findById(req.params.camp_id);
 		const { bloodBanks } = camp;
 		const bloodBankProfiles = [];
@@ -75,7 +76,10 @@ const getBloodBanks = async (req, res, next) => {
 			});
 			bloodBankProfiles.push(profile);
 		}
-		return res.status(200).json({ camp, bloodBankProfiles });
+		if (camp.date == moment().format('DD-MM-YYYY')) {
+			isCampToday = true;
+		}
+		return res.status(200).json({ camp, bloodBankProfiles, isCampToday });
 	} catch (err) {
 		console.error(err);
 		return res.status(500).send('Server error');

@@ -2,7 +2,8 @@ const { validationResult } = require('express-validator'),
 	campSheduleRequest = require('../../models/admin/requests/campsheduleReuestSchema'),
 	moment = require('moment'),
 	Profile = require('../../models/hospital/hospital/hospital'),
-	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile');
+	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
+	Camp = require('../../models/camp/camp');
 
 //  @route /api/hospital/campshedule
 // @desc  post campshedule request form
@@ -54,6 +55,43 @@ const campRequest = async (req, res, next) => {
 		return res.status(500).send('Server error');
 	}
 };
+//  @route GET /api/hospital/camp
+// @desc  GET camps
+// @access private - user access only
+const getCamps = async (req, res, next) => {
+	try {
+		let camps = await Camp.find();
+		camps = camps.filter((camp) => camp.date >= moment().format('DD-MM-YYYY'));
+		return res.status(200).json(camps);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+//  @route /api/user/donateblood/:camp_id
+// @desc get bloodBank list based of camps
+// @access Private
+const getCampbyid = async (req, res, next) => {
+	try {
+		const camp = await Camp.findById(req.params.camp_id);
+		const { bloodBanks } = camp;
+		const bloodBankProfiles = [];
+		for (let i = 0; i < bloodBanks.length; i++) {
+			const profile = await BloodBankProfile.findOne({
+				bloodBank: bloodBanks[i],
+			});
+			bloodBankProfiles.push(profile);
+		}
+		return res.status(200).json({ camp, bloodBankProfiles });
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+
+
 
 //  @route GET /api/user/bloodBanks
 // @desc get bloodBank list
@@ -76,3 +114,5 @@ const getBloodBanks = async (req, res, next) => {
 
 exports.campRequest = campRequest;
 exports.getBloodBanks = getBloodBanks;
+exports.getCamps=getCamps;
+exports.getCampbyid=getCampbyid;
