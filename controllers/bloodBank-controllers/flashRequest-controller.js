@@ -6,45 +6,47 @@ accountSid = config.get('TWILIO_ACCOUNT_SID1'),
 authToken = config.get('TWILIO_AUTH_TOKEN'),
 sid = config.get('TWILIO_SID'),
 client = require('twilio')(accountSid, authToken);
-// var TeleSignSDK = require('telesignsdk');
-
-	//   const customerId = "2C04EC32-53E4-4292-B976-B41694C54365";
-	//   const apiKey = "KZ6qHz1gH+GW79OMoD21PtjLNyJWFZumyySokIVZofOOmwKAKucsu/SftREqg2TN2ka95e5eBrZkDwD1iO0tLg==";
-	//   const rest_endpoint = "https://rest-api.telesign.com";
-
-//  Vonage = require('@vonage/server-sdk')
-
-// const vonage = new Vonage({
-//   apiKey: "4e41a3b5",
-//   apiSecret: "rxVqwTo0OH6lnKjo"
-// });
 
 //  @route /api/bloodbank/flashrequest
 // @desc request for donor for blood
 // @access Private
-
+const fast2sms = require('fast-two-sms');
+ const options = {
+              authorization : 'cPziVu4sAdfIwCq3GnpvEJ5X1O8WQgtZrSa2KBRTUol97myHYbuAhEte2rM5oRcHwOFfIi08Lv9p6Sbq' , 
+              message : "Red Plus",  
+              numbers :[+919741925186]
+              }
+ 
 const flashRequest = async(req,res,next) =>{
-    let {lat, lang} = req.body;
-      lat = parseFloat(lat);
-      lang = parseFloat(lang);
-     const errors = validationResult(req);
-     if(!errors.isEmpty()){
-       return res.status(400).json({errors:errors.array()});
-     } 
+    // let {lat, lang} = req.body;
+    //   lat = parseFloat(lat);
+    //   lang = parseFloat(lang);
+    //  const errors = validationResult(req);
+    //  if(!errors.isEmpty()){
+    //    return res.status(400).json({errors:errors.array()});
+    //  } 
      try{
-        let donor = await  Donor.aggregate([
-          {
-            $geoNear: {
-               near: { 
-                 type: "Point",
-                 coordinates: [ lat , lang]
-               },
-               distanceField: "distance",
-               maxDistance:300000,
-               spherical: true
-            }
-          }
-         ]);
+      fast2sms.sendMessage(options)
+      .then(resmes=>{
+          
+          return res.json("message");
+      })
+      .catch(err=>{console.log(err)
+          return res.status(401).json({"error":"Something Went Wrong"})
+      })
+        // let donor = await  Donor.aggregate([
+        //   {
+        //     $geoNear: {
+        //        near: { 
+        //          type: "Point",
+        //          coordinates: [ lat , lang]
+        //        },
+        //        distanceField: "distance",
+        //        maxDistance:300000,
+        //        spherical: true
+        //     }
+        //   }
+        //  ]);
          
   //       var messagebird = require('messagebird')('W1KuTg575l5Q1QDZIxII1kI7T');
 

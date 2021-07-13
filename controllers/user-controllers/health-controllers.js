@@ -148,7 +148,7 @@ const addHealthInfo = async (req, res, next) => {
 				//    return res.json(health);
 			} else {
 				data = new Health(data);
-				//await data.save();
+				await data.save();
 			}
 
 			if (
@@ -176,7 +176,7 @@ const addHealthInfo = async (req, res, next) => {
 				bloodBank: req.params.bloodBank_id,
 			});
 
-			//await request.save();
+			await request.save();
 			return res.status(201).json(data);
 		}
 	} catch (err) {
