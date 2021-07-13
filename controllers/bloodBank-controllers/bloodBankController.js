@@ -1,4 +1,5 @@
 const BloodBankRequest = require('../../models/admin/requests/bloodBankRequestSchema'),
+	Notification = require('../../models/notification/notification'),
 	bcrypt = require('bcryptjs'),
 	BloodBank = require('../../models/bloodBank/bloodBank/bloodBank'),
 	jwt = require('jsonwebtoken'),
@@ -181,7 +182,7 @@ const getDonors = async (req, res, next) => {
 			return res.status(400).json({ msg: 'No Donor Found' });
 		}
 		let i;
-		const arr = []; 
+		const arr = [];
 
 		for (i = 0; i < donor.length; i++) {
 			const profile = await UserProfile.findOne({
@@ -227,6 +228,26 @@ const getDonorsById = async (req, res, next) => {
 	}
 };
 
+//  @route /api/bloodbank/getNotification
+// @desc  get blood bank notifications
+// @access Private - authorized bloodbank access only
+const getNotification = async (req, res, next) => {
+	try {
+		const notification = await Notification.find({
+			bloodBank: req.bloodBank.id,
+			status: true,
+		});
+		notification.map(async (item) => {
+			item.status = false;
+			await item.save();
+		});
+		return res.status(200).json(notification);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 exports.signUpRequest = signUpRequest;
 exports.setPassword = setPassword;
 exports.logIn = logIn;
@@ -234,3 +255,4 @@ exports.getProfile = getProfile;
 exports.getBloodBankById = getBloodBankById;
 exports.getDonors = getDonors;
 exports.getDonorsById = getDonorsById;
+exports.getNotification = getNotification;

@@ -1,5 +1,6 @@
 const BloodBank = require('../../models/bloodBank/bloodBank/profile'),
 	UserLocation = require('../../models/user/donorlocationSchema'),
+	Notification = require('../../models/notification/notification'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
 	BloodRequest = require('../../models/bloodBank/request/bloodrequestSchema'),
 	{ validationResult } = require('express-validator'),
@@ -1096,7 +1097,7 @@ const bloodRequestForm = async (req, res, next) => {
 		if (!errors.isEmpty()) {
 			return res.status(400).json({ errors: errors.array() });
 		}
-		
+
 		let request = await BloodRequest.findOne({ donor: req.user.id });
 		if (request) {
 			return res.status(422).send('Your Request is Already sent');
@@ -1175,7 +1176,12 @@ const bloodRequestForm = async (req, res, next) => {
 			SDPlatele,
 			SDPlasma,
 		});
-
+		const notification = await new Notification({
+			bloodBank: req.params.req_id,
+			body: 'New Blood Request',
+			status: true,
+		});
+		await notification.save();
 		await request.save();
 		return res.status(200).json(request);
 	} catch (err) {
@@ -1307,7 +1313,6 @@ const plateletStatus = (inventory, bgroup, count) => {
 			}
 		}
 		if (bgroup == 'AB-Ve') {
-			
 			if (inventory.platelet['AB-Ve'] < count) {
 				return false;
 			}

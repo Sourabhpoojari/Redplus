@@ -1,5 +1,6 @@
 const DonorRequest = require('../../models/bloodBank/request/userRequestSchema'),
 	Profile = require('../../models/user/profileSchema'),
+	Notification = require('../../models/notification/notification'),
 	Health = require('../../models/user/healthInfoSchema'),
 	BloodRequest = require('../../models/bloodBank/request/bloodrequestSchema'),
 	BillingRequest = require('../../models/bloodBank/request/billingRequestSchema'),
@@ -68,13 +69,18 @@ const getDonorById = async (req, res, next) => {
 const acceptdonorRequest = async (req, res, next) => {
 	try {
 		//console.log({user:req.params.id.user});
-		const request = await await DonorRequest.findById(req.params.req_id);
+		const request = await DonorRequest.findById(req.params.req_id);
 		if (!request) {
 			return res
 				.status(400)
 				.json({ errors: [{ msg: 'Donation Request not found!' }] });
 		}
-
+		const notification = await new Notification({
+			user: request.donor,
+			body: 'Your donation request is accepted',
+			status: true,
+		});
+		await notification.save();
 		return res.status(200).json({ msg: 'Request accepted' });
 	} catch (err) {
 		console.log(err);
@@ -98,6 +104,12 @@ const rejectDonorRequest = async (req, res, next) => {
 				.status(400)
 				.json({ errors: [{ msg: 'Donation request not found!' }] });
 		}
+		const notification = await new Notification({
+			user: request.donor,
+			body: 'Your donation request is rejected',
+			status: true,
+		});
+		await notification.save();
 		await request.delete();
 		await health.delete();
 		return res.status(200).json({ msg: 'Request rejected!' });
@@ -283,7 +295,12 @@ const acceptBloodRequest = async (req, res, next) => {
 		// bookings.forEach((item) => {
 		// 	billing.bookings.push(item);
 		// });
-
+		const notification = await new Notification({
+			user: request.donor,
+			body: 'Your Blood request is accepted',
+			status: true,
+		});
+		await notification.save();
 		await billing.save();
 		await request.delete();
 
@@ -1290,7 +1307,12 @@ const acceptHospitalBloodRequest = async (req, res, next) => {
 		// bookings.forEach((item) => {
 		// 	billing.bookings.push(item);
 		// });
-
+		const notification = await new Notification({
+			hospital: request.hospital,
+			body: 'Your Blood request for patient:' + patientName + ' is accepted',
+			status: true,
+		});
+		await notification.save();
 		await billing.save();
 		await request.delete();
 
@@ -1311,6 +1333,24 @@ const rejectBloodRequest = async (req, res, next) => {
 			return res
 				.status(400)
 				.json({ errors: [{ msg: 'Blood request not found!' }] });
+		}
+		if (request.isHospital) {
+			const notification = await new Notification({
+				hospital: request.hospital,
+				body:
+					'Your Blood request for patient:' +
+					request.patientName +
+					' is rejected',
+				status: true,
+			});
+			await notification.save();
+		} else {
+			const notification = await new Notification({
+				user: request.donor,
+				body: 'Your Blood request is rejected',
+				status: true,
+			});
+			await notification.save();
 		}
 		await request.delete();
 		return res.status(200).json({ msg: 'Request rejected!' });

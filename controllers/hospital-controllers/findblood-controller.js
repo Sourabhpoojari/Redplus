@@ -1,21 +1,21 @@
 const BloodBank = require('../../models/bloodBank/bloodBank/profile'),
 	HospitalLocation = require('../../models/hospital/hospital/profile'),
 	Inventory = require('../../models/bloodBank/inventory/inventorySchema'),
+	Notification = require('../../models/notification/notification'),
 	BloodRequest = require('../../models/bloodBank/request/bloodrequestSchema'),
-	Hospital=require('../../models/hospital/hospital/profile'),
+	Hospital = require('../../models/hospital/hospital/profile'),
 	{ validationResult } = require('express-validator'),
 	moment = require('moment');
-
 
 //  @route /api/hospital/findblood
 // @desc get bloodBank list based on currrent location
 // @access Private
 
 const getnearbybloodBank = async (req, res, next) => {
-	const {location} = await HospitalLocation.findOne({hospital: req.hospital.id }).select(
-		'location'
-	);
-   
+	const { location } = await HospitalLocation.findOne({
+		hospital: req.hospital.id,
+	}).select('location');
+
 	const lat = location.coordinates[0];
 	lang = location.coordinates[1];
 	try {
@@ -43,14 +43,15 @@ const getnearbybloodBank = async (req, res, next) => {
 	}
 };
 
-
 //  @route /api/hospital/findblood/:component/:bgroup
 // @desc get bloodBank list based on currrent location with blood available status
 // @access Private to hospital
 const getBloodBlanks = async (req, res, next) => {
 	const { component, bgroup } = req.params;
 	try {
-		const { location } = await HospitalLocation.findOne({hospital: req.hospital.id }).select('location');
+		const { location } = await HospitalLocation.findOne({
+			hospital: req.hospital.id,
+		}).select('location');
 
 		const lat = location.coordinates[0],
 			lang = location.coordinates[1];
@@ -1072,8 +1073,6 @@ const sdplasma = (arr, i, bgroup, inventory) => {
 	return i;
 };
 
-
-
 //  @route /api/user/findblood/bloodrequest/:req_id
 // @desc post user getprofile
 // @access Private
@@ -1100,7 +1099,7 @@ const bloodRequestForm = async (req, res, next) => {
 		if (!errors.isEmpty()) {
 			return res.status(400).json({ errors: errors.array() });
 		}
-		
+
 		const inventory = await Inventory.findOne({
 			bloodBankID: req.params.req_id,
 		});
@@ -1155,9 +1154,11 @@ const bloodRequestForm = async (req, res, next) => {
 				return res.status(422).send('SDPlasma out of stock!');
 			}
 		}
-        
-		const hospitalinfo = await Hospital.findOne({hospital:req.hospital.id}).select('hospitalName');
-		 hospitalName =hospitalinfo.hospitalName;
+
+		const hospitalinfo = await Hospital.findOne({
+			hospital: req.hospital.id,
+		}).select('hospitalName');
+		hospitalName = hospitalinfo.hospitalName;
 		request = await new BloodRequest({
 			hospital: req.hospital.id,
 			bloodBank: req.params.req_id,
@@ -1178,7 +1179,13 @@ const bloodRequestForm = async (req, res, next) => {
 			SDPlatele,
 			SDPlasma,
 		});
-		request.isHospital=true;
+		request.isHospital = true;
+		const notification = await new Notification({
+			bloodBank: req.params.req_id,
+			body: 'New Blood Request',
+			status: true,
+		});
+		await notification.save();
 		await request.save();
 		return res.status(200).json(request);
 	} catch (err) {
@@ -1425,7 +1432,6 @@ const prbcStatus = (inventory, bgroup, count) => {
 };
 const ffpStatus = (inventory, bgroup, count) => {
 	try {
-		
 		if (bgroup == 'A+Ve') {
 			if (inventory.ffp['A+Ve'] < count) {
 				return false;
@@ -1661,6 +1667,5 @@ const sdplasmaStatus = (inventory, bgroup, count) => {
 };
 
 exports.getnearbybloodBank = getnearbybloodBank;
-exports.getBloodBlanks=getBloodBlanks;
+exports.getBloodBlanks = getBloodBlanks;
 exports.bloodRequestForm = bloodRequestForm;
-	

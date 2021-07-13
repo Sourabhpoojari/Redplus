@@ -3,6 +3,7 @@ const BillingRequest = require('../../models/bloodBank/request/billingRequestSch
 	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
 	User = require('../../models/user/userSchema'),
 	Billing = require('../../models/bloodBank/billing/billingSchema'),
+	Notification = require('../../models/notification/notification'),
 	Pricing = require('../../models/bloodBank/bloodBank/pricingSchema'),
 	Booking = require('../../models/bloodBank/inventory/bookingSchema'),
 	wbcSchema = require('../../models/bloodBank/storage/wbc-schema'),
@@ -299,6 +300,12 @@ const rejectRequest = async (req, res, next) => {
 			}
 			await Booking.findByIdAndDelete(item.id);
 		});
+		const notification = await new Notification({
+			user: request.donor,
+			body: 'Your blood request is rejected',
+			status: true,
+		});
+		await notification.save();
 		await request.delete();
 		return res.status('200').json({ msg: 'Request Rejected!!' });
 	} catch (err) {
