@@ -33,4 +33,5 @@ router.post(
 
 router.get('/dashboard', isHospital, hospitalController.getDashboard);
 router.get('/profile', isHospital, hospitalController.getProfile);
+router.get('/getNotification', isHospital, hospitalController.getNotification);
 module.exports = router;

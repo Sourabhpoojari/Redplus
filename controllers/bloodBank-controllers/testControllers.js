@@ -5,6 +5,7 @@ const primarytestSchema = require('../../models/user/primarytestSchema'),
 	{ validationResult } = require('express-validator'),
 	jwt = require('jsonwebtoken'),
 	config = require('config'),
+	Notification = require('../../models/notification/notification'),
 	WHOLE = require('../../models/bloodBank/storage/whole-schema'),
 	CRYOPRI = require('../../models/bloodBank/storage/cryo-schema'),
 	FFP = require('../../models/bloodBank/storage/ffp-schema'),
@@ -1099,7 +1100,12 @@ const testReportAndCredits = async (req, res, next) => {
 		await report.save();
 		donation.report = report.id;
 		await donation.save();
-
+		const notification = await new Notification({
+			user: request.user,
+			body: 'Your Report is updated',
+			status: true,
+		});
+		await notification.save();
 		//"WholeBlood","Platelet","WBC","Plasma","PRBC","FFP","Cryoprecipitate","SPRBC","SDPlatelet","SDPlasma"
 
 		await request.delete();
