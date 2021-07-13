@@ -36,5 +36,10 @@ router.get('/profile', isBloodBank, bloodBankController.getProfile);
 router.get('/getDonors', isBloodBank, bloodBankController.getDonors);
 
 router.get('/getDonors/:id', isBloodBank, bloodBankController.getDonorsById);
+router.get(
+	'/getNotification',
+	isBloodBank,
+	bloodBankController.getNotification
+);
 
 module.exports = router;
