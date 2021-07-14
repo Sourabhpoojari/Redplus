@@ -1,6 +1,7 @@
 const User = require('../../models/user/userSchema'),
 	Profile = require('../../models/user/profileSchema'),
 	Donation = require('../../models/user/donationSchema'),
+	Notification = require('../../models/notification/notification'),
 	DonorLocation = require('../../models/user/donorlocationSchema'),
 	config = require('config'),
 	accountSid = config.get('TWILIO_ACCOUNT_SID1'),
@@ -265,6 +266,38 @@ const updateLocation = async (req, res, next) => {
 	}
 };
 
+//  @route /api/user/getNotification
+// @desc  get blood bank notifications
+// @access Private - authorized bloodbank access only
+const getNotification = async (req, res, next) => {
+	try {
+		const notification = await Notification.find({
+			user: req.user.id,
+			status: true,
+		});
+		notification.map(async (item) => {
+			item.status = false;
+			await item.save();
+		});
+		return res.status(200).json(notification);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
+//  @route /api/user/getAllNotifications
+// @desc  get all user notifications
+// @access Private - authorized bloodbank access only
+const getAllNotifications = async (req, res, next) => {
+	try {
+		const notifications = await Notification.find({ user: req.user.id });
+		return res.status(200).json(notifications);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
 exports.getPhone = getPhone;
 exports.verifyOtp = verifyOtp;
 exports.signUp = signUp;
@@ -273,3 +306,5 @@ exports.getUser = getUser;
 exports.getDonors = getDonors;
 exports.getDonorsById = getDonorsById;
 exports.updateLocation = updateLocation;
+exports.getNotification = getNotification;
+exports.getAllNotifications = getAllNotifications;

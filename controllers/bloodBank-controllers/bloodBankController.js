@@ -237,7 +237,6 @@ const getNotification = async (req, res, next) => {
 			bloodBank: req.bloodBank.id,
 			status: true,
 		});
-		console.log(notification);
 		notification.map(async (item) => {
 			item.status = false;
 			await item.save();

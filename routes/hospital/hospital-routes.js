@@ -33,4 +33,11 @@ router.post(
 
 router.get('/dashboard', isHospital, hospitalController.getDashboard);
 router.get('/profile', isHospital, hospitalController.getProfile);
+router.get('/getNotification', isHospital, hospitalController.getNotification);
+router.get(
+	'/getAllNotifications',
+	isHospital,
+	hospitalController.getAllNotifications
+);
+router.get('/bloodRequests', isHospital, hospitalController.getBloodRequests);
 module.exports = router;

@@ -55,5 +55,7 @@ router.post(
 router.get('/dashboardPoster', auth, posterController.getPoster);
 
 router.get('/dashboardPoster/:id', auth, posterController.getPosterById);
+router.get('/getNotification', auth, userControllers.getNotification);
+router.get('/getAllNotifications', auth, userControllers.getAllNotifications);
 
 module.exports = router;
