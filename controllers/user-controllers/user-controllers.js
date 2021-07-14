@@ -286,6 +286,18 @@ const getNotification = async (req, res, next) => {
 	}
 };
 
+//  @route /api/user/getAllNotifications
+// @desc  get all user notifications
+// @access Private - authorized bloodbank access only
+const getAllNotifications = async (req, res, next) => {
+	try {
+		const notifications = await Notification.find({ user: req.user.id });
+		return res.status(200).json(notifications);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
 exports.getPhone = getPhone;
 exports.verifyOtp = verifyOtp;
 exports.signUp = signUp;
@@ -295,3 +307,4 @@ exports.getDonors = getDonors;
 exports.getDonorsById = getDonorsById;
 exports.updateLocation = updateLocation;
 exports.getNotification = getNotification;
+exports.getAllNotifications = getAllNotifications;
