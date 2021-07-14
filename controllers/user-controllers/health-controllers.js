@@ -103,43 +103,7 @@ const addHealthInfo = async (req, res, next) => {
 				donor: req.user.id,
 				bloodBank: req.params.bloodBank_id,
 			});
-<<<<<<< HEAD
-
-			await request.save();
-			return res.status(201).json(data);
-		}
-	} catch (err) {
-		console.error(err.message);
-		return res.status(500).send('Server error!');
-	}
-};await data.save();
-			}
-
-			if (
-				history.length != 0 ||
-				disease.length != 0 ||
-				consumptions.length != 0 ||
-				isPregnant
-			) {
-				return res.status(422).send('You cannot donate blood');
-			}
-			date = new Date(date);
-			date.setDate(date.getDate() + 90);
-			const current = new Date();
-			if (current <= date) {
-				return res.status(422).send('You cannot donate blood');
-			}
-
-			request = await DonorRequest.findOne({ donor: req.user.id });
-			if (request) {
-				return res.status(422).send('You already sent Donation Request');
-			}
-
-			request = await new DonorRequest({
-				donor: req.user.id,
-=======
 			const notification = await Notification({
->>>>>>> 0916a187d354b4ccce68a1774e4f436dfce23a94
 				bloodBank: req.params.bloodBank_id,
 				body: 'New Donation Request',
 				status: true,
