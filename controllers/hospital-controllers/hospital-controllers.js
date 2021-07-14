@@ -195,9 +195,40 @@ const getNotification = async (req, res, next) => {
 	}
 };
 
+//  @route /api/hospital/getAllNotifications
+// @desc  get all user notifications
+// @access Private - authorized bloodbank access only
+const getAllNotifications = async (req, res, next) => {
+	try {
+		const notifications = await Notification.find({
+			hospital: req.hospital.id,
+		});
+		return res.status(200).json(notifications);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+//  @route /api/hospital/bloodRequets
+// @desc  get all hospital blood requests
+// @access Private - authorized bloodbank access only
+const getBloodRequests = async (req, res, next) => {
+	try {
+		const requests = await BloodRequest.find({
+			hospital: req.hospital.id,
+		});
+		return res.status(200).json(requests);
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
+
 exports.signUpRequest = signUpRequest;
 exports.setPassword = setPassword;
 exports.logIn = logIn;
 exports.getProfile = getProfile;
 exports.getDashboard = getDashboard;
 exports.getNotification = getNotification;
+exports.getAllNotifications = getAllNotifications;
+exports.getBloodRequests = getBloodRequests;
