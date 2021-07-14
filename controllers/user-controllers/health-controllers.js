@@ -113,7 +113,7 @@ const addHealthInfo = async (req, res, next) => {
 			return res.status(201).json(data);
 		}
 	} catch (err) {
-		console.error(err.message);
+		console.error(err);
 		return res.status(500).send('Server error!');
 	}
 };
