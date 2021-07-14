@@ -66,7 +66,7 @@ const campRequest = async (req, res, next) => {
 const getCamps = async (req, res, next) => {
 	try {
 		let camps = await Camp.find();
-		camps = camps.filter((camp) => camp.date >= moment().format('DD-MM-YYYY'));
+		camps = camps.filter((camp) => camp.date >= moment().format('YYYY-MM-DD'));
 		return res.status(200).json(camps);
 	} catch (err) {
 		console.error(err);

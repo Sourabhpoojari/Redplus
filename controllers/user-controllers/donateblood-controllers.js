@@ -45,7 +45,7 @@ const donateBloodInfo = async (req, res, next) => {
 			},
 			{
 				$match: {
-					date: moment().format('DD-MM-YYYY'),
+					date: moment().format('YYYY-MM-DD'),
 				},
 			},
 		]);
@@ -76,7 +76,7 @@ const getBloodBanks = async (req, res, next) => {
 			});
 			bloodBankProfiles.push(profile);
 		}
-		if (camp.date == moment().format('DD-MM-YYYY')) {
+		if (camp.date == moment().format('YYYY-MM-DD')) {
 			isCampToday = true;
 		}
 		return res.status(200).json({ camp, bloodBankProfiles, isCampToday });

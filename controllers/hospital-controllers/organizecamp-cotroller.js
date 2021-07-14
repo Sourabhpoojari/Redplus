@@ -27,14 +27,13 @@ const campRequest = async (req, res, next) => {
 	if (!errors.isEmpty()) {
 		return res.status(400).json({ errors: errors.array() });
 	}
-	
+
 	try {
-       
 		const request = await new campSheduleRequest({
 			orgainizer: req.hospital.id,
 			address,
 			title,
-			date:  moment(date, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+			date: moment(date, 'YYYY-MM-DD').format('YYYY-MM-DD'),
 			timefrom: moment(timefrom, 'HH:mm').format('hh:mm A'),
 			timeto: moment(timeto, 'HH:mm').format('hh:mm A'),
 			donations,
@@ -42,7 +41,7 @@ const campRequest = async (req, res, next) => {
 			requestForm,
 			poster,
 			bloodBanks,
-            isHospital:true
+			isHospital: true,
 		});
 		if (campLat && campLng) {
 			request.location.coordinates = [campLat, campLng];
@@ -61,7 +60,7 @@ const campRequest = async (req, res, next) => {
 const getCamps = async (req, res, next) => {
 	try {
 		let camps = await Camp.find();
-		camps = camps.filter((camp) => camp.date >= moment().format('DD-MM-YYYY'));
+		camps = camps.filter((camp) => camp.date >= moment().format('YYYY-MM-DD'));
 		return res.status(200).json(camps);
 	} catch (err) {
 		console.error(err);
@@ -90,15 +89,11 @@ const getCampbyid = async (req, res, next) => {
 	}
 };
 
-
-
-
 //  @route GET /api/user/bloodBanks
 // @desc get bloodBank list
 // @access Private
 const getBloodBanks = async (req, res, next) => {
 	try {
-		
 		const bloodbank = await BloodBankProfile.find();
 		if (!bloodbank) {
 			return res
@@ -114,5 +109,5 @@ const getBloodBanks = async (req, res, next) => {
 
 exports.campRequest = campRequest;
 exports.getBloodBanks = getBloodBanks;
-exports.getCamps=getCamps;
-exports.getCampbyid=getCampbyid;
+exports.getCamps = getCamps;
+exports.getCampbyid = getCampbyid;
