@@ -1,143 +1,71 @@
+const { response } = require('express');
 const Donor = require('../../models/user/donorlocationSchema'),
-Profile = require('../../models/user/userSchema'),
-{validationResult}  = require('express-validator'),
-config = require('config');
-accountSid = config.get('TWILIO_ACCOUNT_SID1'),
-authToken = config.get('TWILIO_AUTH_TOKEN'),
-sid = config.get('TWILIO_SID'),
-client = require('twilio')(accountSid, authToken);
+	BloodBankProfile = require('../../models/bloodBank/bloodBank/profile'),
+	Profile = require('../../models/user/profileSchema'),
+	{ validationResult } = require('express-validator'),
+	fast2sms = require('fast-two-sms'),
+	config = require('config');
 
 //  @route /api/bloodbank/flashrequest
 // @desc request for donor for blood
 // @access Private
-const fast2sms = require('fast-two-sms');
- const options = {
-              authorization : 'cPziVu4sAdfIwCq3GnpvEJ5X1O8WQgtZrSa2KBRTUol97myHYbuAhEte2rM5oRcHwOFfIi08Lv9p6Sbq' , 
-              message : "Red Plus varification",  
-              numbers :[+919741925186]
-              }
- 
-const flashRequest = async(req,res,next) =>{
-    // let {lat, lang} = req.body;
-    //   lat = parseFloat(lat);
-    //   lang = parseFloat(lang);
-    //  const errors = validationResult(req);
-    //  if(!errors.isEmpty()){
-    //    return res.status(400).json({errors:errors.array()});
-    //  } 
-     try{
-      fast2sms.sendMessage(options)
-      .then(resmes=>{
-          
-          return res.json("message");
-      })
-      .catch(err=>{console.log(err)
-          return res.status(401).json({"error":"Something Went Wrong"})
-      })
-        // let donor = await  Donor.aggregate([
-        //   {
-        //     $geoNear: {
-        //        near: { 
-        //          type: "Point",
-        //          coordinates: [ lat , lang]
-        //        },
-        //        distanceField: "distance",
-        //        maxDistance:300000,
-        //        spherical: true
-        //     }
-        //   }
-        //  ]);
-         
-  //       var messagebird = require('messagebird')('W1KuTg575l5Q1QDZIxII1kI7T');
+const flashRequest = async (req, res, next) => {
+	try {
+		const { bgroup } = req.body;
+		const bloodBankProfile = await BloodBankProfile.findOne({
+			bloodBank: req.bloodBank.id,
+		});
+		const { location } = bloodBankProfile;
+		const lat = location.coordinates[0],
+			lang = location.coordinates[1];
+		let donors = await Donor.aggregate([
+			{
+				$geoNear: {
+					near: {
+						type: 'Point',
+						coordinates: [lat, lang],
+					},
+					distanceField: 'distance',
+					maxDistance: 50000,
+					spherical: true,
+				},
+			},
+		]);
+		let donor = [];
+		for (let i = 0; i < donors.length; i++) {
+			const profile = await Profile.findOne({
+				user: donors[i].user,
+				bloodGroup: bgroup,
+			}).populate('user', ['phone']);
+			if (profile) {
+				let { phone } = profile.user;
+				phone = phone.slice(3, 13);
+				donor.push(parseInt(phone));
+			}
+		}
+		const text =
+			'Urgent Requirement of ' +
+			bgroup +
+			' blood in ' +
+			bloodBankProfile.bloodBankName;
+		const options = {
+			authorization: config.get('FAST2SMS'),
+			message: text,
+			numbers: donor,
+		};
+		fast2sms
+			.sendMessage(options)
+			.then((response) => {
+				return res.status(200).json(response.message);
+			})
+			.catch((err) => {
+				console.error(err);
+				return res.status(500).send('SMS Error');
+			});
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Server error');
+	}
+};
 
-  //   var params = {
-  //     'originator': 'MessageBird',
-  //     'recipients': [
-  //       '+919741925186'
-  //   ],
-  //     'body': 'This is a test message'
-  //   };
-
-  //   messagebird.messages.create(params, function (err, response) {
-  //     if (err) {
-  //       return console.log(err);
-  //     }
-  //     console.log(response);
-  //   });
-  // }
-//   const from = "Vonage APIs"
-// const to = "919741925186"
-// const text = 'A text message sent using the Vonage SMS API'
-
-// vonage.message.sendSms(from, to, text, (err, responseData) => {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         if(responseData.messages[0]['status'] === "0") {
-//             console.log("Message sent successfully.");
-//         } else {
-//             console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-//         }
-//     }
-// });
-// console.log('sent');
-//      }
-
-//   catch(err){
-
-//   }
-// }
-         
-//         console.log(donor);
-//         //const profile = await Profile.findById(donor.user).populate('user');
-//         //console.log(profile);
-//         client.messages
-//   .create({
-//         to:+91963226989,
-//         from: +16209797645,
-//         body: "hello"
-//   })
-//   // .then(message => {
-//   //       console.log(message.sid);
-//   // })
-//   .catch(err => console.error(err));
-// }
-// catch(err){
-
-// }
-// }
-//   const client = new TeleSignSDK( customerId,
-//     apiKey,
-//     rest_endpoint
-//     // timeout // optional
-//     // // userAgent
-// );
-
-// const phoneNumber = "+916361139380";
-// const message = "You're scheduled for a dentist appointment at 2:30PM.";
-// const messageType = "ARN";
-
-// console.log("## MessagingClient.message ##");
-
-// function messageCallback(error, responseBody) {
-//     if (error === null) {
-//         console.log(`Messaging response for messaging phone number: ${phoneNumber}` +
-//             ` => code: ${responseBody['status']['code']}` +
-//             `, description: ${responseBody['status']['description']}`);
-//     } else {
-//         console.error("Unable to send message. " + error);
-//     }
-// }
-// client.sms.message(messageCallback, phoneNumber, message, messageType);
-//     }
-//         catch(err){
-//             console.log(err);
-//             return res.status(500).send('Server error');
-//         }
-
- }
- catch(err){
-  console.log(err);
- }
-}
-exports.flashRequest=flashRequest;
+exports.flashRequest = flashRequest;

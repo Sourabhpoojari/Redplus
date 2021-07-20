@@ -3,12 +3,6 @@ const router = require('express').Router(),
 	FlashRequest = require('../../controllers/bloodBank-controllers/flashRequest-controller'),
 	auth = require('../../middleware/bloodBankAuth');
 
-router.post(
-	'/',
-	auth,
-	check('lat', 'Please Give Latitude value').exists(),
-	check('lang', 'Please Give Langitude value ').exists(),
-	FlashRequest.flashRequest
-);
+router.post('/', auth, FlashRequest.flashRequest);
 
 module.exports = router;

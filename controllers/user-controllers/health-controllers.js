@@ -172,7 +172,7 @@ const campHealthInfo = async (req, res, next) => {
 				},
 			};
 			//lastMeal = moment(lastMeal, 'HH:mm').format('hh:mm A');
-			if (lastMeal > moment()) {
+			if (lastMeal > moment().format('HH:mm')) {
 				return res.status(422).send('Please enter valid Time');
 			}
 			if (moment() >= moment(lastMeal, 'HH:mm').add(2, 'hours')) {
