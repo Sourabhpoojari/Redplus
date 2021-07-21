@@ -4,5 +4,7 @@ const router = require('express').Router(),
 	auth = require('../../middleware/bloodBankAuth');
 
 router.post('/', auth, FlashRequest.flashRequest);
+router.get('/', auth, FlashRequest.getRequests);
+router.delete('/:id', auth, FlashRequest.deleteRequest);
 
 module.exports = router;
